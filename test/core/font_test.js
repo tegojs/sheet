@@ -50,10 +50,12 @@ describe('fonts()', () => {
   });
 
   /** @type {BaseFont} */
-  const appendItem = [{
-    key: 'test',
-    title: 'test title',
-  }];
+  const appendItem = [
+    {
+      key: 'test',
+      title: 'test title',
+    },
+  ];
   const appendItems = [appendItem];
   it(`should include { ${appendItems[0].key}: ${JSON.stringify(appendItems[0])} } when the value is ${JSON.stringify(appendItems)}`, () => {
     const f = fonts(appendItems);

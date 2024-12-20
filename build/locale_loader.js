@@ -10,7 +10,7 @@ export default message;
 `;
 }
 
-module.exports = require('babel-loader').custom(babel => {
+module.exports = require('babel-loader').custom((babel) => {
   return {
     result(result, { options }) {
       // console.log('options:', options);

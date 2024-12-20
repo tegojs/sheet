@@ -7,8 +7,16 @@ const menuItems = [
   { key: 'copy', title: tf('contextmenu.copy'), label: 'Ctrl+C' },
   { key: 'cut', title: tf('contextmenu.cut'), label: 'Ctrl+X' },
   { key: 'paste', title: tf('contextmenu.paste'), label: 'Ctrl+V' },
-  { key: 'paste-value', title: tf('contextmenu.pasteValue'), label: 'Ctrl+Shift+V' },
-  { key: 'paste-format', title: tf('contextmenu.pasteFormat'), label: 'Ctrl+Alt+V' },
+  {
+    key: 'paste-value',
+    title: tf('contextmenu.pasteValue'),
+    label: 'Ctrl+Shift+V',
+  },
+  {
+    key: 'paste-format',
+    title: tf('contextmenu.pasteFormat'),
+    label: 'Ctrl+Alt+V',
+  },
   { key: 'divider' },
   { key: 'insert-row', title: tf('contextmenu.insertRow') },
   { key: 'insert-column', title: tf('contextmenu.insertColumn') },
@@ -36,14 +44,11 @@ function buildMenuItem(item) {
       this.itemClick(item.key);
       this.hide();
     })
-    .children(
-      item.title(),
-      h('div', 'label').child(item.label || ''),
-    );
+    .children(item.title(), h('div', 'label').child(item.label || ''));
 }
 
 function buildMenu() {
-  return menuItems.map(it => buildMenuItem.call(this, it));
+  return menuItems.map((it) => buildMenuItem.call(this, it));
 }
 
 export default class ContextMenu {

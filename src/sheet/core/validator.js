@@ -37,9 +37,10 @@ export default class Validator {
   }
 
   equals(other) {
-    let flag = this.type === other.type
-      && this.required === other.required
-      && this.operator === other.operator;
+    let flag =
+      this.type === other.type &&
+      this.required === other.required &&
+      this.operator === other.operator;
     if (flag) {
       if (Array.isArray(this.value)) {
         flag = helper.arrayEquals(this.value, other.value);
@@ -55,9 +56,7 @@ export default class Validator {
   }
 
   validate(v) {
-    const {
-      required, operator, value, type,
-    } = this;
+    const { required, operator, value, type } = this;
     if (required && /^\s*$/.test(v)) {
       return returnMessage(false, 'required');
     }
@@ -89,25 +88,13 @@ export default class Validator {
         );
       }
       if (operator === 'eq') {
-        return returnMessage(
-          v1 === this.parseValue(value),
-          'equal',
-          value,
-        );
+        return returnMessage(v1 === this.parseValue(value), 'equal', value);
       }
       if (operator === 'neq') {
-        return returnMessage(
-          v1 !== this.parseValue(value),
-          'notEqual',
-          value,
-        );
+        return returnMessage(v1 !== this.parseValue(value), 'notEqual', value);
       }
       if (operator === 'lt') {
-        return returnMessage(
-          v1 < this.parseValue(value),
-          'lessThan',
-          value,
-        );
+        return returnMessage(v1 < this.parseValue(value), 'lessThan', value);
       }
       if (operator === 'lte') {
         return returnMessage(
@@ -117,11 +104,7 @@ export default class Validator {
         );
       }
       if (operator === 'gt') {
-        return returnMessage(
-          v1 > this.parseValue(value),
-          'greaterThan',
-          value,
-        );
+        return returnMessage(v1 > this.parseValue(value), 'greaterThan', value);
       }
       if (operator === 'gte') {
         return returnMessage(

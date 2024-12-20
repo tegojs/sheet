@@ -1,9 +1,6 @@
 import assert from 'assert';
 import { describe, it } from 'mocha';
-import {
-  formatm,
-  baseFormats,
-} from '../../src/core/format';
+import { formatm, baseFormats } from '../../src/core/format';
 
 const gformats = formatm;
 describe('formatm', () => {
@@ -37,33 +34,45 @@ describe('formatm', () => {
 
 describe('baseFormats', () => {
   // item.key
-  it('typeof item.key should be "string"',
-    () => {
-      const KEY = 'key';
-      assert.equal(baseFormats.find(i => typeof i[KEY] !== 'string'), undefined);
-    });
+  it('typeof item.key should be "string"', () => {
+    const KEY = 'key';
+    assert.equal(
+      baseFormats.find((i) => typeof i[KEY] !== 'string'),
+      undefined,
+    );
+  });
   // item.title
-  it('typeof item.title should be "function"',
-    () => {
-      const KEY = 'title';
-      assert.equal(baseFormats.find(i => typeof i[KEY] !== 'function'), undefined);
-    });
+  it('typeof item.title should be "function"', () => {
+    const KEY = 'title';
+    assert.equal(
+      baseFormats.find((i) => typeof i[KEY] !== 'function'),
+      undefined,
+    );
+  });
   // item.type
-  it('typeof item.type should be "string"',
-    () => {
-      const KEY = 'type';
-      assert.equal(baseFormats.find(i => typeof i[KEY] !== 'string'), undefined);
-    });
+  it('typeof item.type should be "string"', () => {
+    const KEY = 'type';
+    assert.equal(
+      baseFormats.find((i) => typeof i[KEY] !== 'string'),
+      undefined,
+    );
+  });
   // item.render
-  it('typeof item.render should be "function"',
-    () => {
-      const KEY = 'render';
-      assert.equal(baseFormats.find(i => typeof i[KEY] !== 'function'), undefined);
-    });
+  it('typeof item.render should be "function"', () => {
+    const KEY = 'render';
+    assert.equal(
+      baseFormats.find((i) => typeof i[KEY] !== 'function'),
+      undefined,
+    );
+  });
   // item.label
-  it('typeof item.label should be "string" or "undefined"',
-    () => {
-      const KEY = 'label';
-      assert.equal(baseFormats.find(i => typeof i[KEY] !== 'string' && typeof i[KEY] !== 'undefined'), undefined);
-    });
+  it('typeof item.label should be "string" or "undefined"', () => {
+    const KEY = 'label';
+    assert.equal(
+      baseFormats.find(
+        (i) => typeof i[KEY] !== 'string' && typeof i[KEY] !== 'undefined',
+      ),
+      undefined,
+    );
+  });
 });

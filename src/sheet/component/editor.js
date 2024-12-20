@@ -8,11 +8,9 @@ import { cssPrefix } from '../config';
 function resetTextareaSize() {
   const { inputText } = this;
   if (!/^\s*$/.test(inputText)) {
-    const {
-      textlineEl, textEl, areaOffset,
-    } = this;
+    const { textlineEl, textEl, areaOffset } = this;
     const txts = inputText.split('\n');
-    const maxTxtSize = Math.max(...txts.map(it => it.length));
+    const maxTxtSize = Math.max(...txts.map((it) => it.length));
     const tlOffset = textlineEl.offset();
     const fontWidth = tlOffset.width / inputText.length;
     const tlineWidth = (maxTxtSize + 1) * fontWidth + 5;
@@ -23,7 +21,7 @@ function resetTextareaSize() {
       if (tlineWidth > maxWidth) {
         twidth = maxWidth;
         h1 += parseInt(tlineWidth / maxWidth, 10);
-        h1 += (tlineWidth % maxWidth) > 0 ? 1 : 0;
+        h1 += tlineWidth % maxWidth > 0 ? 1 : 0;
       }
       textEl.css('width', `${twidth}px`);
     }
@@ -61,7 +59,10 @@ function inputEventHandler(evt) {
   const { suggest, textlineEl, validator } = this;
   const { cell } = this;
   if (cell !== null) {
-    if (('editable' in cell && cell.editable === true) || (cell.editable === undefined)) {
+    if (
+      ('editable' in cell && cell.editable === true) ||
+      cell.editable === undefined
+    ) {
       this.inputText = v;
       if (validator) {
         if (validator.type === 'list') {
@@ -174,18 +175,17 @@ export default class Editor {
     });
     this.areaEl = h('div', `${cssPrefix}-editor-area`)
       .children(
-        this.textEl = h('textarea', '')
-          .on('input', evt => inputEventHandler.call(this, evt))
+        (this.textEl = h('textarea', '')
+          .on('input', (evt) => inputEventHandler.call(this, evt))
           .on('paste.stop', () => {})
-          .on('keydown', evt => keydownEventHandler.call(this, evt)),
-        this.textlineEl = h('div', 'textline'),
+          .on('keydown', (evt) => keydownEventHandler.call(this, evt))),
+        (this.textlineEl = h('div', 'textline')),
         this.suggest.el,
         this.datepicker.el,
       )
       .on('mousemove.stop', () => {})
       .on('mousedown.stop', () => {});
-    this.el = h('div', `${cssPrefix}-editor`)
-      .child(this.areaEl).hide();
+    this.el = h('div', `${cssPrefix}-editor`).child(this.areaEl).hide();
     this.suggest.bindInputEvents(this.textEl);
 
     this.areaOffset = null;
@@ -217,14 +217,10 @@ export default class Editor {
   }
 
   setOffset(offset, suggestPosition = 'top') {
-    const {
-      textEl, areaEl, suggest, freeze, el,
-    } = this;
+    const { textEl, areaEl, suggest, freeze, el } = this;
     if (offset) {
       this.areaOffset = offset;
-      const {
-        left, top, width, height, l, t,
-      } = offset;
+      const { left, top, width, height, l, t } = offset;
       // console.log('left:', left, ',top:', top, ', freeze:', freeze);
       const elOffset = { left: 0, top: 0 };
       // top left
@@ -239,7 +235,10 @@ export default class Editor {
         elOffset.left = freeze.w;
       }
       el.offset(elOffset);
-      areaEl.offset({ left: left - elOffset.left - 0.8, top: top - elOffset.top - 0.8 });
+      areaEl.offset({
+        left: left - elOffset.left - 0.8,
+        top: top - elOffset.top - 0.8,
+      });
       textEl.offset({ width: width - 9 + 0.8, height: height - 3 + 0.8 });
       const sOffset = { left: 0 };
       sOffset[suggestPosition] = height;

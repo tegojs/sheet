@@ -1,12 +1,7 @@
 // const = require('../../src/data/);
 import assert from 'assert';
 import { describe, it } from 'mocha';
-import {
-  indexAt,
-  stringAt,
-  expr2xy,
-  expr2expr,
-} from '../../src/core/alphabet';
+import { indexAt, stringAt, expr2xy, expr2expr } from '../../src/core/alphabet';
 
 describe('alphabet', () => {
   describe('.indexAt()', () => {
@@ -32,7 +27,7 @@ describe('alphabet', () => {
       assert.equal(indexAt('ZA'), 26 * 26);
     });
     it('should return 26 * 26 + 26 when the value is AAA', () => {
-      assert.equal(indexAt('AAA'), (26 * 26) + 26);
+      assert.equal(indexAt('AAA'), 26 * 26 + 26);
     });
   });
   describe('.stringAt()', () => {
@@ -55,10 +50,10 @@ describe('alphabet', () => {
       assert.equal(stringAt(26 * 26), 'ZA');
     });
     it('should return Z when the value is 26 * 26 + 1', () => {
-      assert.equal(stringAt((26 * 26) + 1), 'ZB');
+      assert.equal(stringAt(26 * 26 + 1), 'ZB');
     });
     it('should return AAA when the value is 26 * 26 + 26', () => {
-      assert.equal(stringAt((26 * 26) + 26), 'AAA');
+      assert.equal(stringAt(26 * 26 + 26), 'AAA');
     });
   });
   describe('.expr2xy()', () => {

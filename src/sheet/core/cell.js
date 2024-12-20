@@ -17,7 +17,11 @@ const infixExprToSuffixExpr = (src) => {
     if (c !== ' ') {
       if (c >= 'a' && c <= 'z') {
         subStrs.push(c.toUpperCase());
-      } else if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || c === '.') {
+      } else if (
+        (c >= '0' && c <= '9') ||
+        (c >= 'A' && c <= 'Z') ||
+        c === '.'
+      ) {
         subStrs.push(c);
       } else if (c === '"') {
         i += 1;
@@ -171,15 +175,15 @@ const evalSuffixExpr = (srcStack, formulaMap, cellRender, cellList) => {
       if (!Number.isNaN(left)) left = Number(left);
       let ret = false;
       if (fc === '=') {
-        ret = (left === top);
+        ret = left === top;
       } else if (expr === '>') {
-        ret = (left > top);
+        ret = left > top;
       } else if (expr === '>=') {
-        ret = (left >= top);
+        ret = left >= top;
       } else if (expr === '<') {
-        ret = (left < top);
+        ret = left < top;
       } else if (expr === '<=') {
-        ret = (left <= top);
+        ret = left <= top;
       }
       stack.push(ret);
     } else if (Array.isArray(expr)) {
@@ -211,7 +215,8 @@ const cellRender = (src, formulaMap, getCellText, cellList = []) => {
     return evalSuffixExpr(
       stack,
       formulaMap,
-      (x, y) => cellRender(getCellText(x, y), formulaMap, getCellText, cellList),
+      (x, y) =>
+        cellRender(getCellText(x, y), formulaMap, getCellText, cellList),
       cellList,
     );
   }
@@ -221,6 +226,4 @@ const cellRender = (src, formulaMap, getCellText, cellList = []) => {
 export default {
   render: cellRender,
 };
-export {
-  infixExprToSuffixExpr,
-};
+export { infixExprToSuffixExpr };

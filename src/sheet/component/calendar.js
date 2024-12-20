@@ -22,7 +22,8 @@ function monthDays(year, month, cdate) {
       const d = weekday(startDate, index);
       const disabled = d.getMonth() !== month;
       // console.log('d:', d, ', cdate:', cdate);
-      const active = d.getMonth() === cdate.getMonth() && d.getDate() === cdate.getDate();
+      const active =
+        d.getMonth() === cdate.getMonth() && d.getDate() === cdate.getDate();
       datess[i][j] = { d, disabled, active };
     }
   }
@@ -37,28 +38,27 @@ export default class Calendar {
     this.headerLeftEl = h('div', 'calendar-header-left');
     this.bodyEl = h('tbody', '');
     this.buildAll();
-    this.el = h('div', 'x-spreadsheet-calendar')
-      .children(
-        h('div', 'calendar-header').children(
-          this.headerLeftEl,
-          h('div', 'calendar-header-right').children(
-            h('a', 'calendar-prev')
-              .on('click.stop', () => this.prev())
-              .child(new Icon('chevron-left')),
-            h('a', 'calendar-next')
-              .on('click.stop', () => this.next())
-              .child(new Icon('chevron-right')),
+    this.el = h('div', 'x-spreadsheet-calendar').children(
+      h('div', 'calendar-header').children(
+        this.headerLeftEl,
+        h('div', 'calendar-header-right').children(
+          h('a', 'calendar-prev')
+            .on('click.stop', () => this.prev())
+            .child(new Icon('chevron-left')),
+          h('a', 'calendar-next')
+            .on('click.stop', () => this.next())
+            .child(new Icon('chevron-right')),
+        ),
+      ),
+      h('table', 'calendar-body').children(
+        h('thead', '').child(
+          h('tr', '').children(
+            ...t('calendar.weeks').map((week) => h('th', 'cell').child(week)),
           ),
         ),
-        h('table', 'calendar-body').children(
-          h('thead', '').child(
-            h('tr', '').children(
-              ...t('calendar.weeks').map(week => h('th', 'cell').child(week)),
-            ),
-          ),
-          this.bodyEl,
-        ),
-      );
+        this.bodyEl,
+      ),
+    );
     this.selectChange = () => {};
   }
 
@@ -87,7 +87,9 @@ export default class Calendar {
 
   buildHeaderLeft() {
     const { value } = this;
-    this.headerLeftEl.html(`${t('calendar.months')[value.getMonth()]} ${value.getFullYear()}`);
+    this.headerLeftEl.html(
+      `${t('calendar.months')[value.getMonth()]} ${value.getFullYear()}`,
+    );
   }
 
   buildBody() {

@@ -9,7 +9,10 @@ export default class Item {
   // shortcut: shortcut key
   constructor(tag, shortcut, value) {
     this.tip = '';
-    if (tag) this.tip = t(`toolbar.${tag.replace(/-[a-z]/g, c => c[1].toUpperCase())}`);
+    if (tag)
+      this.tip = t(
+        `toolbar.${tag.replace(/-[a-z]/g, (c) => c[1].toUpperCase())}`,
+      );
     if (shortcut) this.tip += ` (${shortcut})`;
     this.tag = tag;
     this.shortcut = shortcut;

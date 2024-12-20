@@ -20,18 +20,22 @@ export default class Dropdown extends Element {
     this.setContentChildren(...children);
 
     this.headerEl = h('div', `${cssPrefix}-dropdown-header`);
-    this.headerEl.on('click', () => {
-      if (this.contentEl.css('display') !== 'block') {
-        this.show();
-      } else {
-        this.hide();
-      }
-    }).children(
-      this.title,
-      showArrow ? h('div', `${cssPrefix}-icon arrow-right`).child(
-        h('div', `${cssPrefix}-icon-img arrow-down`),
-      ) : '',
-    );
+    this.headerEl
+      .on('click', () => {
+        if (this.contentEl.css('display') !== 'block') {
+          this.show();
+        } else {
+          this.hide();
+        }
+      })
+      .children(
+        this.title,
+        showArrow
+          ? h('div', `${cssPrefix}-icon arrow-right`).child(
+              h('div', `${cssPrefix}-icon-img arrow-down`),
+            )
+          : '',
+      );
     this.children(this.headerEl, this.contentEl);
   }
 

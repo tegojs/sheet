@@ -1,10 +1,6 @@
 import assert from 'assert';
 import { describe, it } from 'mocha';
-import {
-  locale,
-  t,
-  tf
-} from '../../src/locale/locale';
+import { locale, t, tf } from '../../src/locale/locale';
 
 // Add window global if it doesn't exist
 // Some tests depend on this global variable's existence
@@ -15,21 +11,21 @@ if (typeof window === 'undefined') {
 // Override messages that exist in the fallback locale
 const localeTest1 = 'TEST_1';
 const localeTest1Messages = {
-	toolbar: {
-		undo: 'Test 1 Undo',
-		redo: 'Test 1 Redo',
-	},
-	formula: {
-		"VAR\\.P": "Test 1 VARP"
-	}
+  toolbar: {
+    undo: 'Test 1 Undo',
+    redo: 'Test 1 Redo',
+  },
+  formula: {
+    'VAR\\.P': 'Test 1 VARP',
+  },
 };
 
 const localeTest2 = 'TEST_2';
 const localeTest2Messages = {
-	toolbar: {
-		undo: 'Test 2 Undo',
+  toolbar: {
+    undo: 'Test 2 Undo',
     // Do not define "redo" message in locale test 2
-	},
+  },
 };
 
 describe('locale', () => {
@@ -48,11 +44,11 @@ describe('locale', () => {
     });
   });
   describe('.locale()', () => {
-  	// Must be the first test which calls the locale function,
-  	// as it depends on the first locale in the language list to be unchanged
-  	// from the default (English). Subsequent tests must clear the language
-  	// list to work as intended (otherwise thet language list will grow with
-  	// each test).
+    // Must be the first test which calls the locale function,
+    // as it depends on the first locale in the language list to be unchanged
+    // from the default (English). Subsequent tests must clear the language
+    // list to work as intended (otherwise thet language list will grow with
+    // each test).
     it('should return Print when the value is toolbar.print and the fallback locale is English', () => {
       // Provides no value for toolbar.print, so the English fallback will be used
       locale(localeTest1, localeTest1Messages, false);
@@ -85,9 +81,11 @@ describe('locale', () => {
 
       // Depends on existence of window global variable
       // Supply a fallback locale test 2 message dictionary (from locale test 1)
-      window.x_spreadsheet = { $messages: {
-        'TEST_2': localeTest1Messages
-      }};
+      window.x_spreadsheet = {
+        $messages: {
+          TEST_2: localeTest1Messages,
+        },
+      };
 
       assert.equal(t('toolbar.redo'), 'Test 1 Redo');
     });

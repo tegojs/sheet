@@ -5,7 +5,7 @@ export interface ExtendToolbarOption {
   onClick?: (data: object, sheet: object) => void;
 }
 export interface Options {
-  mode?: "edit" | "read";
+  mode?: 'edit' | 'read';
   showToolbar?: boolean;
   showGrid?: boolean;
   showContextmenu?: boolean;
@@ -31,14 +31,14 @@ export interface Options {
   };
   style?: {
     bgcolor: string;
-    align: "left" | "center" | "right";
-    valign: "top" | "middle" | "bottom";
+    align: 'left' | 'center' | 'right';
+    valign: 'top' | 'middle' | 'bottom';
     textwrap: boolean;
     strike: boolean;
     underline: boolean;
     color: string;
     font: {
-      name: "Helvetica";
+      name: 'Helvetica';
       size: number;
       bold: boolean;
       italic: false;
@@ -46,27 +46,27 @@ export interface Options {
   };
 }
 
-export type CELL_SELECTED = "cell-selected";
-export type CELLS_SELECTED = "cells-selected";
-export type CELL_EDITED = "cell-edited";
+export type CELL_SELECTED = 'cell-selected';
+export type CELLS_SELECTED = 'cells-selected';
+export type CELL_EDITED = 'cell-edited';
 
 export type CellMerge = [number, number];
 
 export interface SpreadsheetEventHandler {
   (
     envt: CELL_SELECTED,
-    callback: (cell: Cell, rowIndex: number, colIndex: number) => void
+    callback: (cell: Cell, rowIndex: number, colIndex: number) => void,
   ): void;
   (
     envt: CELLS_SELECTED,
     callback: (
       cell: Cell,
-      parameters: { sri: number; sci: number; eri: number; eci: number }
-    ) => void
+      parameters: { sri: number; sci: number; eri: number; eci: number },
+    ) => void,
   ): void;
   (
     evnt: CELL_EDITED,
-    callback: (text: string, rowIndex: number, colIndex: number) => void
+    callback: (text: string, rowIndex: number, colIndex: number) => void,
   ): void;
 }
 
@@ -116,8 +116,8 @@ export interface SpreadsheetData {
 }
 
 export interface CellStyle {
-  align?: "left" | "center" | "right";
-  valign?: "top" | "middle" | "bottom";
+  align?: 'left' | 'center' | 'right';
+  valign?: 'top' | 'middle' | 'bottom';
   font?: {
     bold?: boolean;
   };
@@ -167,7 +167,7 @@ export default class Spreadsheet {
     rowIndex: number,
     colIndex: number,
     text: string,
-    sheetIndex?: number
+    sheetIndex?: number,
   ): this;
   /**
    * remove current sheet

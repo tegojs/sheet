@@ -12,16 +12,16 @@ describe('helper', () => {
     });
   });
   describe('.merge()', () => {
-    it('should return { a: \'a\' } where the value is { a: \'a\' }', () => {
+    it("should return { a: 'a' } where the value is { a: 'a' }", () => {
       const merge = helper.merge({ a: 'a' });
       assert.equal(merge.a, 'a');
     });
-    it('should return {a: \'a\', b: \'b\'} where the value is {a: \'a\'}, {b: \'b\'}', () => {
+    it("should return {a: 'a', b: 'b'} where the value is {a: 'a'}, {b: 'b'}", () => {
       const merge = helper.merge({ a: 'a' }, { b: 'b' });
       assert.equal(merge.a, 'a');
       assert.equal(merge.b, 'b');
     });
-    it('should return { a: { a1: \'a2\' }, b: \'b\' } where the value is {a: {a1: \'a1\'}, b: \'b\'}, {a: {a1: \'b\'}}', () => {
+    it("should return { a: { a1: 'a2' }, b: 'b' } where the value is {a: {a1: 'a1'}, b: 'b'}, {a: {a1: 'b'}}", () => {
       const obj = { a: { a1: 'a1' }, b: 'b' };
       const merge = helper.merge(obj, { a: { a1: 'a2' } });
       assert.equal(obj.a.a1, 'a1');
