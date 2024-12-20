@@ -1,9 +1,10 @@
 {
   "name": "@tachybase/sheet",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.0",
   "scripts": {
     "dev": "rsbuild dev --open",
     "build": "rsbuild build",
+    "prerelease": "npm version prerelease --preid=alpha",
     "preview": "rsbuild preview"
   },
   "dependencies": {
