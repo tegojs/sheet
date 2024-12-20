@@ -1,6 +1,5 @@
 {
-  "name": "migrate-app",
-  "private": true,
+  "name": "@tachybase/sheet",
   "version": "1.0.0",
   "scripts": {
     "dev": "rsbuild dev --open",
