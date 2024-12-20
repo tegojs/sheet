@@ -6,6 +6,7 @@
     "dev": "rsbuild dev --open",
     "build": "rsbuild build",
     "prerelease": "npm version prerelease --preid=alpha",
+    "test": "vitest",
     "preview": "rsbuild preview",
     "prepare": "husky"
   },
@@ -22,6 +23,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "husky": "^9.1.7",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
   }
 }
