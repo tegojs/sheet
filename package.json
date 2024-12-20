@@ -1,22 +1,27 @@
 {
   "name": "@tachybase/sheet",
   "version": "1.0.0-alpha.1",
+  "type": "module",
   "scripts": {
     "dev": "rsbuild dev --open",
     "build": "rsbuild build",
     "prerelease": "npm version prerelease --preid=alpha",
-    "preview": "rsbuild preview"
+    "preview": "rsbuild preview",
+    "prepare": "husky"
   },
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@rsbuild/plugin-less": "1.1.0",
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
     "@rsbuild/core": "^1.1.8",
+    "@rsbuild/plugin-less": "1.1.0",
     "@rsbuild/plugin-react": "^1.0.7",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "husky": "^9.1.7",
     "typescript": "^5.7.2"
   }
 }
