@@ -14,7 +14,10 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{js,json,sql,ts,tsx}": ["prettier --write .", "biome check --write"]
+    "*.{js,json,sql,ts,tsx}": [
+      "biome check --write",
+      "prettier --write ."
+    ]
   },
   "dependencies": {
     "react": "^19.0.0",
