@@ -7,7 +7,7 @@ const App = () => {
     if (ref.current) {
       new Sheet(ref.current);
     }
-  }, [ref.current]);
+  }, []);
   return <div ref={ref} />;
 };
 

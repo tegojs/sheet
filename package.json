@@ -15,7 +15,6 @@
   },
   "lint-staged": {
     "*.{js,json,sql,ts,tsx}": [
-      "biome check --write",
       "prettier --write ."
     ]
   },
