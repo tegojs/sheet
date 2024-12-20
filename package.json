@@ -13,6 +13,9 @@
     "preview": "rsbuild preview",
     "prepare": "husky"
   },
+  "lint-staged": {
+    "*.{js,json,sql,ts,tsx}": ["prettier --write .", "biome check --write"]
+  },
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -21,6 +24,7 @@
     "@commitlint/cli": "^19.6.1",
     "@commitlint/config-conventional": "^19.6.0",
     "@rsbuild/core": "^1.1.8",
+    "lint-staged": "15.2.11",
     "@rsbuild/plugin-less": "1.1.0",
     "@rsbuild/plugin-react": "^1.0.7",
     "@types/react": "^19.0.0",
