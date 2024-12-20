@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "rsbuild dev --open",
     "build": "rsbuild build",
+    "check": "biome check --write",
+    "format": "prettier --write .",
+    "lint": "eslint .",
     "prerelease": "npm version prerelease --preid=alpha",
     "test": "vitest",
     "preview": "rsbuild preview",
@@ -24,6 +27,15 @@
     "@types/react-dom": "^19.0.0",
     "husky": "^9.1.7",
     "typescript": "^5.7.2",
+    "@biomejs/biome": "^1.9.3",
+    "@eslint/compat": "^1.2.0",
+    "@eslint/js": "^9.12.0",
+    "eslint": "^9.12.0",
+    "eslint-plugin-react": "^7.37.1",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "globals": "^15.11.0",
+    "prettier": "^3.3.3",
+    "typescript-eslint": "^8.8.1",
     "vitest": "^2.1.8"
   }
 }
