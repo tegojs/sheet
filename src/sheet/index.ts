@@ -149,51 +149,57 @@ export interface Cell {}
 export interface Sheet {}
 
 export default class Spreadsheet {
-  constructor(selectors: string | HTMLElement, options: Options = {}) {
-    let targetEl = selectors;
-    this.options = { showBottomBar: true, ...options };
-    this.sheetIndex = 1;
-    this.datas = [];
-    if (typeof selectors === 'string') {
-      targetEl = document.querySelector(selectors);
-    }
-    this.bottombar = this.options.showBottomBar
+  #options: Options;
+  #sheetIndex: number = 1;
+  #datas: any;
+  #data: any;
+  #sheet: any;
+
+  #bottomBar;
+
+  constructor(
+    targetEl: HTMLElement,
+    options: Options = { showBottomBar: true },
+  ) {
+    this.#options = { showBottomBar: true, ...options };
+    this.#datas = [];
+    this.#bottomBar = this.#options.showBottomBar
       ? new Bottombar(
           () => {
-            if (this.options.mode === 'read') return;
+            if (this.#options.mode === 'read') return;
             const d = this.addSheet();
-            this.sheet.resetData(d);
+            this.#sheet.resetData(d);
           },
-          (index) => {
-            const d = this.datas[index];
-            this.sheet.resetData(d);
+          (index: number) => {
+            const d = this.#datas[index];
+            this.#sheet.resetData(d);
           },
           () => {
             this.deleteSheet();
           },
-          (index, value) => {
-            this.datas[index].name = value;
-            this.sheet.trigger('change');
+          (index: number, value: string) => {
+            this.#datas[index].name = value;
+            this.#sheet.trigger('change');
           },
         )
       : null;
-    this.data = this.addSheet();
-    const rootEl = h('div', `${cssPrefix}`).on('contextmenu', (evt) =>
+    this.#data = this.addSheet();
+    const rootEl = h('div', `${cssPrefix}`).on('contextmenu', (evt: Event) =>
       evt.preventDefault(),
     );
     // create canvas element
     targetEl.appendChild(rootEl.el);
-    this.sheet = new Sheet(rootEl, this.data);
-    if (this.bottombar !== null) {
-      rootEl.child(this.bottombar.el);
+    this.#sheet = new Sheet(rootEl, this.#data);
+    if (this.#bottomBar !== null) {
+      rootEl.child(this.#bottomBar.el);
     }
   }
-  on(eventName, func) {
-    this.sheet.on(eventName, func);
+  on(eventName: string, func: Function) {
+    this.#sheet.on(eventName, func);
     return this;
   }
   reRender() {
-    this.sheet.table.render();
+    this.#sheet.table.render();
     return this;
   }
   /**
@@ -203,7 +209,7 @@ export default class Spreadsheet {
    * @param sheetIndex {number} sheet iindex
    */
   cell(rowIndex: number, colIndex: number, sheetIndex: number = 0): Cell {
-    return this.datas[sheetIndex].getCell(rowIndex, colIndex);
+    return this.#datas[sheetIndex].getCell(rowIndex, colIndex);
   }
   /**
    * retrieve cell style
@@ -216,7 +222,7 @@ export default class Spreadsheet {
     colIndex: number,
     sheetIndex: number = 0,
   ): CellStyle {
-    return this.datas[sheetIndex].getCellStyle(rowIndex, colIndex);
+    return this.#datas[sheetIndex].getCellStyle(rowIndex, colIndex);
   }
   /**
    * get/set cell text
@@ -231,20 +237,20 @@ export default class Spreadsheet {
     text: string,
     sheetIndex: number = 0,
   ): this {
-    this.datas[sheetIndex].setCellText(rowIndex, colIndex, text, 'finished');
+    this.#datas[sheetIndex].setCellText(rowIndex, colIndex, text, 'finished');
     return this;
   }
   /**
    * remove current sheet
    */
   deleteSheet(): void {
-    if (this.bottombar === null) return;
+    if (this.#bottomBar === null) return;
 
-    const [oldIndex, nindex] = this.bottombar.deleteItem();
+    const [oldIndex, nindex] = this.#bottomBar.deleteItem();
     if (oldIndex >= 0) {
-      this.datas.splice(oldIndex, 1);
-      if (nindex >= 0) this.sheet.resetData(this.datas[nindex]);
-      this.sheet.trigger('change');
+      this.#datas.splice(oldIndex, 1);
+      if (nindex >= 0) this.#sheet.resetData(this.#datas[nindex]);
+      this.#sheet.trigger('change');
     }
   }
 
@@ -254,17 +260,17 @@ export default class Spreadsheet {
    */
   loadData(data: Record<string, any>): this {
     const ds = Array.isArray(data) ? data : [data];
-    if (this.bottombar !== null) {
-      this.bottombar.clear();
+    if (this.#bottomBar !== null) {
+      this.#bottomBar.clear();
     }
-    this.datas = [];
+    this.#datas = [];
     if (ds.length > 0) {
       for (let i = 0; i < ds.length; i += 1) {
         const it = ds[i];
         const nd = this.addSheet(it.name, i === 0);
         nd.setData(it);
         if (i === 0) {
-          this.sheet.resetData(nd);
+          this.#sheet.resetData(nd);
         }
       }
     }
@@ -274,11 +280,11 @@ export default class Spreadsheet {
    * get data
    */
   getData(): Record<string, any> {
-    return this.datas.map((it) => it.getData());
+    return this.#datas.map((it) => it.getData());
   }
 
   validate() {
-    const { validations } = this.data;
+    const { validations } = this.#data;
     return validations.errors.size <= 0;
   }
 
@@ -287,7 +293,7 @@ export default class Spreadsheet {
    * @param callback
    */
   change(callback: (json: Record<string, any>) => void): this {
-    this.sheet.on('change', callback);
+    this.#sheet.on('change', callback);
     return this;
   }
   /**
@@ -299,18 +305,18 @@ export default class Spreadsheet {
     locale(lang, message);
   }
 
-  addSheet(name, active = true) {
-    const n = name || `sheet${this.sheetIndex}`;
-    const d = new DataProxy(n, this.options);
+  addSheet(name?: string, active = true) {
+    const n = name || `sheet${this.#sheetIndex}`;
+    const d = new DataProxy(n, this.#options);
     d.change = (...args) => {
-      this.sheet.trigger('change', ...args);
+      this.#sheet.trigger('change', ...args);
     };
-    this.datas.push(d);
+    this.#datas.push(d);
     // console.log('d:', n, d, this.datas);
-    if (this.bottombar !== null) {
-      this.bottombar.addItem(n, active, this.options);
+    if (this.#bottomBar !== null) {
+      this.#bottomBar.addItem(n, active, this.#options);
     }
-    this.sheetIndex += 1;
+    this.#sheetIndex += 1;
     return d;
   }
 }
