@@ -5,7 +5,7 @@ const App = () => {
   const ref = useRef(null);
   useEffect(() => {
     if (ref.current) {
-      new Sheet(ref.current);
+      Sheet.makeSheet(ref.current);
     }
   }, []);
   return <div ref={ref} />;

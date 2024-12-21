@@ -155,12 +155,23 @@ export default class Spreadsheet {
   #data: any;
   #sheet: any;
 
+  static targets = new WeakMap<HTMLElement, Spreadsheet>();
+
   #bottomBar;
 
-  constructor(
-    targetEl: HTMLElement,
-    options: Options = { showBottomBar: true },
-  ) {
+  static makeSheet(el: HTMLElement, options: Options = {}) {
+    // 防止同一个 DOM 上面挂载多次
+    if (Spreadsheet.targets.has(el)) {
+      const sheet = Spreadsheet.targets.get(el);
+      if (sheet) {
+        return sheet;
+      }
+    }
+    const sheet = new Spreadsheet(el, options);
+    Spreadsheet.targets.set(el, sheet);
+  }
+
+  private constructor(targetEl: HTMLElement, options: Options = {}) {
     this.#options = { showBottomBar: true, ...options };
     this.#datas = [];
     this.#bottomBar = this.#options.showBottomBar
