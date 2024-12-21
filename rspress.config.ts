@@ -1,6 +1,7 @@
 import { defineConfig } from 'rspress/config';
 
 export default defineConfig({
+  base: '/sheet/',
   root: 'docs',
   lang: 'zh',
   locales: [
