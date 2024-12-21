@@ -15,7 +15,7 @@ hero:
 
 features:
   - title: '轻量级'
-    details:  完整功能，包含所有插件。代码打包后只不到 200kb
+    details: 完整功能，包含所有插件。代码打包后只不到 200kb
     icon: 📦
   - title: '易于使用'
     details: 如果只需要一些简单的功能可以零配置

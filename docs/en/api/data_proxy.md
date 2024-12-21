@@ -3,10 +3,10 @@
 数据核心类，里边代理了很多功能
 
 ```js
-  // instance 你创建的实例，公有方法可以直接调用，私有方法不可以
-  instance.data.publicFn(args)
-  // 或者
-  instance.sheet.data.publicFn(args)
+// instance 你创建的实例，公有方法可以直接调用，私有方法不可以
+instance.data.publicFn(args);
+// 或者
+instance.sheet.data.publicFn(args);
 ```
 
 ## 私有方法
@@ -83,7 +83,7 @@ function setStyleBorder(ri, ci, bss) {
 })
 ```
 
-### Method:`setStyleBorders` 
+### Method:`setStyleBorders`
 
 根据当前选区（this.selector）批量设置多个单元格的边框
 
@@ -114,7 +114,8 @@ function getCellRowByY(y, scrollOffsety) {
   // 根据 Y 坐标返回 { ri, top, height }
 })
 ```
-### Method: `getCellRowByX` 
+
+### Method: `getCellRowByX`
 
 获得单元格的通过 X 的坐标
 
@@ -128,11 +129,12 @@ function getCellRowByY(y, scrollOffsety) {
 
 ```ts
 interface ICellRetun {
-  ci: number
-  left: number
-  width: number
+  ci: number;
+  left: number;
+  width: number;
 }
 ```
+
 ## DataProxy 类
 
 ### Method: `addValidation(mode, ref, validator)`
@@ -148,17 +150,19 @@ interface ICellRetun {
 ### Method: `removeValidation()`
 
 移除验证范围
-### Method: `getSelectedValidator()` 
+
+### Method: `getSelectedValidator()`
 
 获得选中范围类的过滤或验证器
 
-### Method: `getSelectedValidation()` 
+### Method: `getSelectedValidation()`
 
 获得选中范围类的过滤或验证器具体信息
 
 ### Method: `canUndo()`
 
 是否可以不做，撤销操作
+
 ### Method: `canRedo()`
 
 是否可以重做
@@ -219,7 +223,6 @@ interface ICellRetun {
 
 @param ci 列索引
 
-
 ### Method: `calSelectedRangeByStart(ri, ci)`
 
 计算选区范围，通过开始坐标
@@ -274,7 +277,6 @@ interface ICellRetun {
 
 @param y: number
 
-
 ### Method: `isSignleSelected()`
 
 判断是否是单个选中
@@ -307,7 +309,7 @@ interface ICellRetun {
 
 @param order 排序方式
 
-@param operator  操作
+@param operator 操作
 
 @param value 值
 
@@ -390,7 +392,6 @@ interface ICellRetun {
 @param ri: number 行索引
 
 @param ci: number 列索引
-
 
 ### Method: `getSelectedCellStyle()`
 
@@ -498,9 +499,7 @@ interface ICellRetun {
 
 @param cb: Function
 
-
 ### Method: `colEach(min, max, cb)`
-
 
 列遍历，可以指定范围
 
@@ -509,7 +508,6 @@ interface ICellRetun {
 @param max: number 最大列
 
 @param cb: Function
-
 
 ### Method: `defaultStyle()`
 
@@ -527,13 +525,11 @@ interface ICellRetun {
 
 @param cb: Function
 
-
 ### Method: `setData(d)`
 
 设置表格数据，d 如果不知道可以通过 getData() 方法先获取一份默认的看看
 
 @param d: object
-
 
 ### Method: `getData()`
 

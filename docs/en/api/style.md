@@ -4,20 +4,20 @@
 const style = [
   {
     border: {
-      bottom: ["thick", "#000"]
+      bottom: ['thick', '#000'],
     },
-    color: "#ddd",
-    bgColor: "#eee",
+    color: '#ddd',
+    bgColor: '#eee',
     font: {
       italic: true,
       size: 16,
-      name: "YaHei",
-      bold: true
+      name: 'YaHei',
+      bold: true,
     },
     underline: true,
-    valign: "middle",
-    align: "center"
-  }
+    valign: 'middle',
+    align: 'center',
+  },
 ];
 ```
 

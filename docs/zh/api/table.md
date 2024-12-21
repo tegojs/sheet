@@ -9,8 +9,8 @@
 调用方法为：
 
 ```js
-  // instance 你创建的实例，公有方法可以直接调用，私有方法不可以
-  instance.sheet.table.publicFn(args)
+// instance 你创建的实例，公有方法可以直接调用，私有方法不可以
+instance.sheet.table.publicFn(args);
 ```
 
 ## 实例化
@@ -18,7 +18,7 @@
 需要传递代理 data_proxy 生成的对象，需要自定义 Element，不是
 
 ```js
-const table = new Table(el, data)
+const table = new Table(el, data);
 ```
 
 ## 实例属性
@@ -105,7 +105,7 @@ const table = new Table(el, data)
 
 `@param w` 宽度
 
-`@param h`  高度
+`@param h` 高度
 
 `@param tx` 表格中如果存有冻结行列，那么 tx 为冻结行宽度总和
 
@@ -158,8 +158,8 @@ const table = new Table(el, data)
 用法：
 
 ```js
-const table = new Table(el, data)
-table.render()
+const table = new Table(el, data);
+table.render();
 ```
 
 ### clear()
@@ -167,8 +167,8 @@ table.render()
 **功能**： 清除表格绘制画板区域
 
 ```js
-const table = new Table(el, data)
-table.clear()
+const table = new Table(el, data);
+table.clear();
 ```
 
 ## 其他

@@ -5,8 +5,8 @@
 调用方法：
 
 ```js
-  // instance 你创建的实例，公有方法可以直接调用，私有方法不可以
-  instance.sheet.editor.publicFn(args)
+// instance 你创建的实例，公有方法可以直接调用，私有方法不可以
+instance.sheet.editor.publicFn(args);
 ```
 
 ## 说明

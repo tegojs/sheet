@@ -7,16 +7,14 @@
 :::
 
 ```js
-
 // instance 你创建的实例，公有方法可以直接调用，私有方法不可以
 
 // 你当前表的名字
-const target_sheet_name = `sheet2`
+const target_sheet_name = `sheet2`;
 
-const target_data = instance.datas.find(it => it.name === target_sheet_name)
+const target_data = instance.datas.find((it) => it.name === target_sheet_name);
 
-target_data.rows.publicFn(args)
-
+target_data.rows.publicFn(args);
 ```
 
 ## 实例化
@@ -25,7 +23,7 @@ target_data.rows.publicFn(args)
 
 ## 实例属性
 
-### _(下划线)
+### \_(下划线)
 
 为数据存放位置
 

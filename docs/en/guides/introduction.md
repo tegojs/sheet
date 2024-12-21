@@ -1,6 +1,6 @@
 # 快速上手
 
-```
+````
 
 ## 默认配置
 
@@ -40,7 +40,7 @@
     },
   },
 }
-```
+````
 
 ## 导入和导出
 
@@ -52,12 +52,12 @@
 简单的事件绑定
 
 ```js
-  const s = new Spreadsheet("#x-spreadsheet-demo")
-  // event of click on cell
-  s.on('cell-selected', (cell, ri, ci) => {});
-  s.on('cells-selected', (cell, { sri, sci, eri, eci }) => {});
-  // edited on cell
-  s.on('cell-edited', (text, ri, ci) => {});
+const s = new Spreadsheet('#x-spreadsheet-demo');
+// event of click on cell
+s.on('cell-selected', (cell, ri, ci) => {});
+s.on('cells-selected', (cell, { sri, sci, eri, eci }) => {});
+// edited on cell
+s.on('cell-edited', (text, ri, ci) => {});
 ```
 
 ## 快速设定单元格值
@@ -65,14 +65,14 @@
 通过`instance.cellText(ri,ci,text)`来设定值，调用`reRender()`来刷新，你将会看到数据的变化
 
 ```js
-  const s = new Spreadsheet("#x-spreadsheet-demo")
-  s.cellText(5, 5, 'xxxx').cellText(6, 5, 'yyy').reRender();
+const s = new Spreadsheet('#x-spreadsheet-demo');
+s.cellText(5, 5, 'xxxx').cellText(6, 5, 'yyy').reRender();
 ```
 
 ## 获取选定表格中单元的样式和值
 
 ```javascript
-const s = new Spreadsheet("#x-spreadsheet-demo")
+const s = new Spreadsheet('#x-spreadsheet-demo');
 // cell(ri, ci, sheetIndex = 0)
 s.cell(ri, ci);
 // cellStyle(ri, ci, sheetIndex = 0)

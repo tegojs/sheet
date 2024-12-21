@@ -7,7 +7,7 @@
 你只需要将配置中的 `mode` 设置为 `read` 或者 `edit` 在第一次加载的时候
 
 ```js
-  mode: 'read'// 'edit'
+mode: 'read'; // 'edit'
 ```
 
 ## 工具栏
@@ -17,8 +17,8 @@
 底部工具栏 `showBottomBar: boolean`, 默认为 true
 
 ```js
-  showToolbar: true // false
-  showBottomBar: true // false
+showToolbar: true; // false
+showBottomBar: true; // false
 ```
 
 ## 网格
@@ -26,7 +26,7 @@
 内容区域网格显示状态 `showGrid: boolean`
 
 ```js
-  showGrid: true // false
+showGrid: true; // false
 ```
 
 ## 右键菜单
@@ -34,7 +34,7 @@
 切换右键菜单显示状态 `showContextmenu: boolean`
 
 ```js
-  showContextmenu: true // false
+showContextmenu: true; // false
 ```
 
 ## 指定表格宽高

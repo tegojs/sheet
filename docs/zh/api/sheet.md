@@ -3,8 +3,8 @@
 **主要功能：** 表格初始化，事件初始化，绑定，调用方法为：
 
 ```js
-  // instance 你创建的实例，公有方法可以直接调用，私有方法不可以
-  instance.sheet.publicFn(args)
+// instance 你创建的实例，公有方法可以直接调用，私有方法不可以
+instance.sheet.publicFn(args);
 ```
 
 ## 实例属性
@@ -13,7 +13,7 @@
 
 ### eventMap
 
-`eventMap`  初始化事件 Map 对象，类似事件管理中心，挂载到 Sheet 类上
+`eventMap` 初始化事件 Map 对象，类似事件管理中心，挂载到 Sheet 类上
 
 ### el
 
@@ -21,15 +21,15 @@
 
 ### toolbar
 
-`toolbar`  初始化工具栏实例化对象，挂载到 Sheet 类上
+`toolbar` 初始化工具栏实例化对象，挂载到 Sheet 类上
 
 ### print
 
-`print`  初始化打印实例对象，挂载到 Sheet 类上
+`print` 初始化打印实例对象，挂载到 Sheet 类上
 
 ### data
 
-`print`  初始化 data_proxy 实例对象，挂载到 Sheet 类上
+`print` 初始化 data_proxy 实例对象，挂载到 Sheet 类上
 
 ### tableEl
 
@@ -49,11 +49,11 @@
 
 ### horizontalScrollbar
 
-`horizontalScrollbar`  初始化水平方向滚动条实例对象，挂载到 Sheet 类上
+`horizontalScrollbar` 初始化水平方向滚动条实例对象，挂载到 Sheet 类上
 
 ### editor
 
-`editor`  初始化表格编辑功能实例对象，挂载到 Sheet 类上
+`editor` 初始化表格编辑功能实例对象，挂载到 Sheet 类上
 
 ### modalValidation
 
@@ -61,19 +61,19 @@
 
 ### contextMenu
 
-`contextMenu`  初始化右键菜单实例对象，挂载到 Sheet 类上
+`contextMenu` 初始化右键菜单实例对象，挂载到 Sheet 类上
 
 ### selector
 
-`selector`  初始化选择器实例对象，功能涉及点选操作，挂载到 Sheet 类上
+`selector` 初始化选择器实例对象，功能涉及点选操作，挂载到 Sheet 类上
 
 ### overlayerEl
 
-`overlayerEl`  初始化覆盖层 dom 实例对象，挂载到 Sheet 类上
+`overlayerEl` 初始化覆盖层 dom 实例对象，挂载到 Sheet 类上
 
 ### sortFilter
 
-`sortFilter`  初始化筛选实例对象，挂载到 Sheet 类上
+`sortFilter` 初始化筛选实例对象，挂载到 Sheet 类上
 
 ### table
 
@@ -251,9 +251,9 @@
 
 可以通过实例化后的 Sheet 实例调用，绑定事件函数
 
-`@param eventName`  事件名
+`@param eventName` 事件名
 
-`@param func`  自定义事件
+`@param func` 自定义事件
 
 调用方法 `实例.on(eventName, func){}`
 
