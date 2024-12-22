@@ -1,1 +1,2 @@
-export { ReactSheet } from './sheet';
+export * from './sheet';
+export type * from './sheet';
