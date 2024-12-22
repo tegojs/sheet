@@ -2,28 +2,35 @@
   "name": "@tachybase/sheet",
   "version": "1.0.0-alpha.1",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "doc:dev": "rspress dev",
-    "doc:build": "rspress build",
-    "doc:preview": "rspress preview",
-    "dev": "rsbuild dev --open",
-    "build": "rsbuild build",
+    "build": "rslib build",
+    "build:storybook": "storybook build",
     "check": "biome check --write",
-    "format": "prettier --write .",
+    "dev": "rslib build --watch",
+    "format": "biome format --write",
+    "storybook": "storybook dev",
+    "doc:build": "rspress build",
+    "doc:dev": "rspress dev",
+    "doc:preview": "rspress preview",
     "lint": "eslint .",
+    "prepare": "husky",
     "prerelease": "npm version prerelease --preid=alpha",
-    "test": "vitest",
-    "preview": "rsbuild preview",
-    "prepare": "husky"
+    "test": "vitest run"
   },
   "lint-staged": {
-    "*.{js,json,sql,ts,tsx}": [
-      "prettier --write ."
-    ]
+    "*.{js,json,sql,ts,tsx}": ["biome format --write"]
   },
-  "dependencies": {
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
+  "peerDependencies": {
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
@@ -34,6 +41,16 @@
     "@rsbuild/core": "^1.1.10",
     "@rsbuild/plugin-less": "1.1.0",
     "@rsbuild/plugin-react": "^1.1.0",
+    "@rslib/core": "^0.1.5",
+    "@storybook/addon-essentials": "^8.4.7",
+    "@storybook/addon-interactions": "^8.4.7",
+    "@storybook/addon-links": "^8.4.7",
+    "@storybook/addon-onboarding": "^8.4.7",
+    "@storybook/blocks": "^8.4.7",
+    "@storybook/react": "^8.4.7",
+    "@storybook/test": "^8.4.7",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "eslint": "^9.17.0",
@@ -41,10 +58,15 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "globals": "^15.14.0",
     "husky": "^9.1.7",
+    "jsdom": "^25.0.1",
     "lint-staged": "15.2.11",
     "prettier": "^3.4.2",
+    "react": "^19.0.0",
     "rspress": "^1.38.0",
-    "typescript": "^5.7.2",
+    "storybook": "^8.4.7",
+    "storybook-addon-rslib": "^0.1.6",
+    "storybook-react-rsbuild": "^0.1.6",
+    "typescript": "^5.6.3",
     "typescript-eslint": "^8.18.1",
     "vitest": "^2.1.8"
   }

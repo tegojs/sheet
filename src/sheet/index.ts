@@ -5,7 +5,6 @@ import Sheet from './component/sheet';
 import Bottombar from './component/bottombar';
 import { cssPrefix } from './config';
 import { locale } from './locale/locale';
-import './index.less';
 
 export interface ExtendToolbarOption {
   tip?: string;
@@ -331,3 +330,5 @@ export default class Spreadsheet {
     return d;
   }
 }
+
+export { default as ReactSheet } from './ReactSheet';
