@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import Sheet from './sheet';
+import Sheet from '.';
 
-const App = () => {
+const ReactSheet = () => {
   const ref = useRef(null);
   useEffect(() => {
     if (ref.current) {
@@ -11,4 +11,4 @@ const App = () => {
   return <div ref={ref} />;
 };
 
-export default App;
+export default ReactSheet;
