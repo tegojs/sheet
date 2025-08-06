@@ -12,9 +12,10 @@ const ReactSheet = () => {
       const elements = document.querySelectorAll(
         `.${config.cssPrefix}-icon-img`,
       );
-      elements.forEach((element) => {
+      // @ts-expect-error NodeListOf<Element> should treat as array
+      for (const element of elements) {
         (element as HTMLElement).style.backgroundImage = `url('${svg}')`;
-      });
+      }
     }
   }, []);
   return <div ref={ref} />;
