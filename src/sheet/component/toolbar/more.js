@@ -1,7 +1,7 @@
 import Dropdown from '../dropdown';
 import DropdownItem from './dropdown_item';
 
-import { cssPrefix } from '../../config';
+import { cssPrefix } from '../../configs';
 import { h } from '../element';
 import Icon from '../icon';
 

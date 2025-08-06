@@ -1,5 +1,5 @@
 import { Element, h } from './element';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../configs';
 
 export default class Icon extends Element {
   constructor(name) {

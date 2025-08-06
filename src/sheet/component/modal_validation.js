@@ -5,7 +5,7 @@ import FormField from './form_field';
 import Button from './button';
 import { t } from '../locale/locale';
 import { h } from './element';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../configs';
 
 const fieldLabelWidth = 100;
 

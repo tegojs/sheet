@@ -1,4 +1,4 @@
-import { cssPrefix } from '../../config';
+import { cssPrefix } from '../../configs';
 import tooltip from '../tooltip';
 import { h } from '../element';
 import { t } from '../../locale/locale';

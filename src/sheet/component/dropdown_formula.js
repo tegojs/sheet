@@ -2,7 +2,7 @@ import Dropdown from './dropdown';
 import Icon from './icon';
 import { h } from './element';
 import { baseFormulas } from '../core/formula';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../configs';
 
 export default class DropdownFormula extends Dropdown {
   constructor() {

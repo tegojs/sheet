@@ -1,6 +1,6 @@
 import { h } from './element';
 import { bindClickoutside, unbindClickoutside } from './event';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../configs';
 
 function inputMovePrev(evt) {
   evt.preventDefault();

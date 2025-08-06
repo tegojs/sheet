@@ -1,7 +1,7 @@
 import { h } from './element';
 import Button from './button';
 import { bindClickoutside, unbindClickoutside } from './event';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../configs';
 import { t } from '../locale/locale';
 
 function buildMenu(clsName) {

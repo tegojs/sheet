@@ -11,7 +11,7 @@ import DropdownAlign from './dropdown_align';
 import DropdownBorder from './dropdown_border';
 import Dropdown from './dropdown';
 import Icon from './icon';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../configs';
 import { t } from '../locale/locale';
 
 function buildIcon(name) {

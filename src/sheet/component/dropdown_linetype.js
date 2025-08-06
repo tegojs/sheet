@@ -1,7 +1,7 @@
 import Dropdown from './dropdown';
 import { h } from './element';
 import Icon from './icon';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../configs';
 
 const lineTypes = [
   [

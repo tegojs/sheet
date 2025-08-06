@@ -2,7 +2,7 @@
 /* global window */
 import { h } from './element';
 import Icon from './icon';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../configs';
 import { bind, unbind } from './event';
 
 export default class Modal {

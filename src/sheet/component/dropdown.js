@@ -1,6 +1,6 @@
 import { Element, h } from './element';
 import { bindClickoutside, unbindClickoutside } from './event';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../configs';
 
 export default class Dropdown extends Element {
   constructor(title, width, showArrow, placement, ...children) {

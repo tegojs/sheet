@@ -12,7 +12,7 @@ import Toolbar from './toolbar/index';
 import ModalValidation from './modal_validation';
 import SortFilter from './sort_filter';
 import { xtoast } from './message';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../configs';
 import { formulas } from '../core/formula';
 
 /**

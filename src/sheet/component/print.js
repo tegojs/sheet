@@ -1,6 +1,6 @@
 /* global window document */
 import { h } from './element';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../configs';
 import Button from './button';
 import { Draw } from '../canvas/draw';
 import { renderCell } from './table';

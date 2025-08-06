@@ -2,7 +2,7 @@ import { h } from './element';
 import Icon from './icon';
 import DropdownColor from './dropdown_color';
 import DropdownLineType from './dropdown_linetype';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../configs';
 
 function buildTable(...trs) {
   return h('table', '').child(h('tbody', '').children(...trs));

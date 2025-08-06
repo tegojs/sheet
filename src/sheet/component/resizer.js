@@ -1,7 +1,7 @@
 /* global window */
 import { h } from './element';
 import { mouseMoveUp } from './event';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../configs';
 
 export default class Resizer {
   constructor(vertical = false, minDistance) {

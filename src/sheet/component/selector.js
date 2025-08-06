@@ -1,5 +1,5 @@
 import { h } from './element';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../configs';
 import { CellRange } from '../core/cell_range';
 
 const selectorHeightBorderWidth = 2 * 2 - 1;

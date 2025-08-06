@@ -26,7 +26,7 @@ import More from './more';
 import Item from './item';
 
 import { h } from '../element';
-import { cssPrefix } from '../../config';
+import { cssPrefix } from '../../configs';
 import { bind } from '../event';
 
 function buildDivider() {
