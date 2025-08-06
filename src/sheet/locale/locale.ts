@@ -1,13 +1,26 @@
-/* global window */
 import en from './en';
+
+// TODO Define global window type
+declare global {
+  interface Window {
+    x_spreadsheet?: {
+      $messages?: Messages;
+      // 其他你用到的字段也可以写在这里
+    };
+  }
+}
 
 // Defines the fallback language as English
 let $languages = ['en'];
-const $messages = {
-  en,
+const $messages: Messages = {
+  en: en as unknown as Messages,
 };
 
-function translate(key, messages) {
+export type Messages = {
+  [key: string]: string | Messages;
+};
+
+function translate(key: string, messages: Messages) {
   if (messages) {
     // Return the translation from the first language in the languages array
     // that has a value for the provided key.
@@ -17,10 +30,12 @@ function translate(key, messages) {
       let message = messages[lang];
 
       // Splits the key at '.' except where escaped as '\.'
-      const keys = key.match(/(?:\\.|[^.])+/g);
+      const keys = key.match(/(?:\\.|[^.])+/g) ?? [];
 
       for (let i = 0; i < keys.length; i += 1) {
         const property = keys[i];
+        if (typeof message !== 'object') break;
+
         const value = message[property];
 
         // If value doesn't exist, try next language
@@ -37,15 +52,15 @@ function translate(key, messages) {
   return undefined;
 }
 
-function t(key) {
+function t(key: string) {
   let v = translate(key, $messages);
-  if (!v && window && window.x_spreadsheet && window.x_spreadsheet.$messages) {
+  if (!v && window?.x_spreadsheet?.$messages) {
     v = translate(key, window.x_spreadsheet.$messages);
   }
   return v || '';
 }
 
-function tf(key) {
+function tf(key: string) {
   return () => t(key);
 }
 
@@ -54,7 +69,7 @@ function tf(key) {
 // to find a translation. This allows the use of other languages as a fallback
 // if lang is missing some keys. The language array is preloaded with English.
 // To set the languages array to only include lang, set clearLangList to true.
-function locale(lang, message, clearLangList = false) {
+function locale(lang: string, message: Messages, clearLangList = false) {
   if (clearLangList) {
     $languages = [lang];
   } else {

@@ -1,7 +1,10 @@
-// const = require('../../src/data/);
-import assert from 'assert';
-import { describe, it } from 'mocha';
-import { indexAt, stringAt, expr2xy, expr2expr } from '../../src/core/alphabet';
+import { assert, describe, it } from 'vitest';
+import {
+  indexAt,
+  stringAt,
+  expr2xy,
+  expr2expr,
+} from '../../src/sheet/core/alphabet';
 
 describe('alphabet', () => {
   describe('.indexAt()', () => {

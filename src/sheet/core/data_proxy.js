@@ -1,12 +1,10 @@
-/* global document */
-
 import Selector from './selector';
 import Scroll from './scroll';
 import History from './history';
 import Clipboard from './clipboard';
 import AutoFilter from './auto_filter';
 import { Merges } from './merge';
-import helper from './helper';
+import { cloneDeep, merge, rangeReduceIf, equals } from './helper';
 import { Rows } from './row';
 import { Cols } from './col';
 import { Validations } from './validation';
@@ -162,9 +160,9 @@ function setStyleBorder(ri, ci, bss) {
   const cell = rows.getCellOrNew(ri, ci);
   let cstyle = {};
   if (cell.style !== undefined) {
-    cstyle = helper.cloneDeep(styles[cell.style]);
+    cstyle = cloneDeep(styles[cell.style]);
   }
-  cstyle = helper.merge(cstyle, { border: bss });
+  cstyle = merge(cstyle, { border: bss });
   cell.style = this.addStyle(cstyle);
 }
 
@@ -188,7 +186,7 @@ function setStyleBorders({ mode, style, color }) {
     selector.range.each((ri, ci) => {
       const cell = rows.getCell(ri, ci);
       if (cell && cell.style !== undefined) {
-        const ns = helper.cloneDeep(styles[cell.style]);
+        const ns = cloneDeep(styles[cell.style]);
         delete ns.border;
         // ['bottom', 'top', 'left', 'right'].forEach((prop) => {
         //   if (ns[prop]) delete ns[prop];
@@ -316,7 +314,7 @@ function getCellColByX(x, scrollOffsetx) {
   const fsw = this.freezeTotalWidth();
   let inits = cols.indexWidth;
   if (fsw + cols.indexWidth < x) inits -= scrollOffsetx;
-  const [ci, left, width] = helper.rangeReduceIf(
+  const [ci, left, width] = rangeReduceIf(
     0,
     cols.len,
     inits,
@@ -332,7 +330,7 @@ function getCellColByX(x, scrollOffsetx) {
 
 export default class DataProxy {
   constructor(name, settings) {
-    this.settings = helper.merge(defaultSettings, settings || {});
+    this.settings = merge(defaultSettings, settings || {});
     // save data begin
     this.name = name || 'sheet';
     this.freeze = [0, 0];
@@ -605,7 +603,7 @@ export default class DataProxy {
           const cell = rows.getCellOrNew(ri, ci);
           let cstyle = {};
           if (cell.style !== undefined) {
-            cstyle = helper.cloneDeep(styles[cell.style]);
+            cstyle = cloneDeep(styles[cell.style]);
           }
           if (property === 'format') {
             cstyle.format = value;
@@ -940,13 +938,8 @@ export default class DataProxy {
   scrollx(x, cb) {
     const { scroll, freeze, cols } = this;
     const [, fci] = freeze;
-    const [ci, left, width] = helper.rangeReduceIf(
-      fci,
-      cols.len,
-      0,
-      0,
-      x,
-      (i) => cols.getWidth(i),
+    const [ci, left, width] = rangeReduceIf(fci, cols.len, 0, 0, x, (i) =>
+      cols.getWidth(i),
     );
     // console.log('fci:', fci, ', ci:', ci);
     let x1 = left;
@@ -961,13 +954,8 @@ export default class DataProxy {
   scrolly(y, cb) {
     const { scroll, freeze, rows } = this;
     const [fri] = freeze;
-    const [ri, top, height] = helper.rangeReduceIf(
-      fri,
-      rows.len,
-      0,
-      0,
-      y,
-      (i) => rows.getHeight(i),
+    const [ri, top, height] = rangeReduceIf(fri, rows.len, 0, 0, y, (i) =>
+      rows.getHeight(i),
     );
     let y1 = top;
     if (y > 0) y1 += height;
@@ -1034,7 +1022,7 @@ export default class DataProxy {
     const cell = rows.getCell(ri, ci);
     const cellStyle =
       cell && cell.style !== undefined ? styles[cell.style] : {};
-    return helper.merge(this.defaultStyle(), cellStyle);
+    return merge(this.defaultStyle(), cellStyle);
   }
 
   getSelectedCellStyle() {
@@ -1235,7 +1223,7 @@ export default class DataProxy {
     // console.log('old.styles:', styles, nstyle);
     for (let i = 0; i < styles.length; i += 1) {
       const style = styles[i];
-      if (helper.equals(style, nstyle)) return i;
+      if (equals(style, nstyle)) return i;
     }
     styles.push(nstyle);
     return styles.length - 1;

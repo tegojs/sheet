@@ -1,4 +1,4 @@
-import helper from './helper';
+import { rangeSum, cloneDeep } from './helper';
 import { expr2expr } from './alphabet';
 
 class Rows {
@@ -50,7 +50,7 @@ class Rows {
   }
 
   sumHeight(min, max, exceptSet) {
-    return helper.rangeSum(min, max, (i) => {
+    return rangeSum(min, max, (i) => {
       if (exceptSet && exceptSet.has(i)) return 0;
       return this.getHeight(i);
     });
@@ -138,7 +138,7 @@ class Rows {
               for (let jj = dsci; jj <= deci; jj += cn) {
                 const nri = ii + (i - sri);
                 const nci = jj + (j - sci);
-                const ncell = helper.cloneDeep(this._[i].cells[j]);
+                const ncell = cloneDeep(this._[i].cells[j]);
                 // ncell.text
                 if (autofill && ncell && ncell.text && ncell.text.length > 0) {
                   const { text } = ncell;

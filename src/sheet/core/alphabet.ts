@@ -1,4 +1,13 @@
-import './_.prototypes';
+/**
+ * Excel-like tag, e.g. "A1", "BC23"
+ * 字母 + 数字 组合
+ */
+export type TagA1 = `${Uppercase<string>}${number}`;
+
+/**
+ * XY 坐标对，例如 [0, 0]
+ */
+export type TagXY = [x: number, y: number];
 
 const alphabets = [
   'A',
@@ -36,17 +45,17 @@ const alphabets = [
  * @param {number} index
  * @returns {string}
  */
-export function stringAt(index) {
+export function stringAt(index: number): Uppercase<string> {
   let str = '';
   let cindex = index;
   while (cindex >= alphabets.length) {
     cindex /= alphabets.length;
     cindex -= 1;
-    str += alphabets[parseInt(cindex, 10) % alphabets.length];
+    str += alphabets[cindex % alphabets.length];
   }
   const last = index % alphabets.length;
   str += alphabets[last];
-  return str;
+  return str as Uppercase<string>;
 }
 
 /** translate letter in A1-tag to number
@@ -55,7 +64,7 @@ export function stringAt(index) {
  * @param {string} str "AA" in A1-tag "AA1"
  * @returns {number}
  */
-export function indexAt(str) {
+export function indexAt(str: string): number {
   let ret = 0;
   for (let i = 0; i !== str.length; ++i)
     ret = 26 * ret + str.charCodeAt(i) - 64;
@@ -69,7 +78,7 @@ export function indexAt(str) {
  * @param {tagA1} src
  * @returns {tagXY}
  */
-export function expr2xy(src) {
+export function expr2xy(src: TagA1): TagXY {
   let x = '';
   let y = '';
   for (let i = 0; i < src.length; i += 1) {
@@ -79,7 +88,7 @@ export function expr2xy(src) {
       x += src.charAt(i);
     }
   }
-  return [indexAt(x), parseInt(y, 10) - 1];
+  return [indexAt(x), Number.parseInt(y, 10) - 1];
 }
 
 /** translate XY-tag to A1-tag
@@ -90,7 +99,7 @@ export function expr2xy(src) {
  * @param {number} y
  * @returns {tagA1}
  */
-export function xy2expr(x, y) {
+export function xy2expr(x: number, y: number): TagA1 {
   return `${stringAt(x)}${y + 1}`;
 }
 
@@ -102,7 +111,12 @@ export function xy2expr(x, y) {
  * @param {number} yn
  * @returns {tagA1}
  */
-export function expr2expr(src, xn, yn, condition = () => true) {
+export function expr2expr(
+  src: TagA1,
+  xn: number,
+  yn: number,
+  condition: (x: number, y: number) => boolean = () => true,
+): TagA1 {
   if (xn === 0 && yn === 0) return src;
   const [x, y] = expr2xy(src);
   if (!condition(x, y)) return src;

@@ -1,5 +1,4 @@
-import helper from './helper';
-
+import { rangeSum } from './helper';
 class Cols {
   constructor({ len, width, indexWidth, minWidth }) {
     this._ = {};
@@ -68,7 +67,7 @@ class Cols {
   }
 
   sumWidth(min, max) {
-    return helper.rangeSum(min, max, (i) => this.getWidth(i));
+    return rangeSum(min, max, (i) => this.getWidth(i));
   }
 
   totalWidth() {

@@ -17,12 +17,3 @@
  * @property {fontsizePX} px
  */
 
-// alphabet.js
-/**
- * @typedef {string} tagA1 A1 tag for XY-tag (0, 0)
- * @example "A1"
- */
-/**
- * @typedef {[number, number]} tagXY
- * @example [0, 0]
- */
