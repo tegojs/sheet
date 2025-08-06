@@ -3,11 +3,11 @@ function dpr() {
   return window.devicePixelRatio || 1;
 }
 
-function thinLineWidth() {
+export function thinLineWidth() {
   return dpr() - 0.5;
 }
 
-function npx(px) {
+export function npx(px) {
   return parseInt(px * dpr(), 10);
 }
 
@@ -16,7 +16,7 @@ function npxLine(px) {
   return n > 0 ? n - 0.5 : 0.5;
 }
 
-class DrawBox {
+export class DrawBox {
   constructor(x, y, w, h, padding = 0) {
     this.x = x;
     this.y = y;
@@ -134,7 +134,7 @@ function drawFontLine(type, tx, ty, align, valign, blheight, blwidth) {
   );
 }
 
-class Draw {
+export class Draw {
   constructor(el, width, height) {
     this.el = el;
     this.ctx = el.getContext('2d');
@@ -407,6 +407,3 @@ class Draw {
     ctx.restore();
   }
 }
-
-export default {};
-export { Draw, DrawBox, thinLineWidth, npx };
