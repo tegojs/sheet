@@ -1,20 +1,13 @@
-/**
-  formula:
-    key
-    title
-    render
-*/
-/**
- * @typedef {object} Formula
- * @property {string} key
- * @property {function} title
- * @property {function} render
- */
 import { tf } from '../locale/locale';
 import { numberCalc } from './helper';
 
-/** @type {Formula[]} */
-const baseFormulas = [
+export interface Formula {
+  key: string;
+  title: () => string;
+  render: (ary: (string | number | boolean)[]) => number | string | boolean;
+}
+
+export const baseFormulas: Formula[] = [
   {
     key: 'SUM',
     title: tf('formula.sum'),
@@ -24,7 +17,7 @@ const baseFormulas = [
     key: 'AVERAGE',
     title: tf('formula.average'),
     render: (ary) =>
-      ary.reduce((a, b) => Number(a) + Number(b), 0) / ary.length,
+      (ary.reduce((a, b) => Number(a) + Number(b), 0) as number) / ary.length,
   },
   {
     key: 'MAX',
@@ -75,20 +68,9 @@ const baseFormulas = [
   */
 ];
 
-const formulas = baseFormulas;
+export const formulas = baseFormulas;
 
-// const formulas = (formulaAry = []) => {
-//   const formulaMap = {};
-//   baseFormulas.concat(formulaAry).forEach((f) => {
-//     formulaMap[f.key] = f;
-//   });
-//   return formulaMap;
-// };
-const formulam = {};
-baseFormulas.forEach((f) => {
+export const formulam: Record<string, Formula> = {};
+for (const f of baseFormulas) {
   formulam[f.key] = f;
-});
-
-export default {};
-
-export { formulam, formulas, baseFormulas };
+}

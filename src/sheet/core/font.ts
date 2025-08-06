@@ -1,10 +1,21 @@
-// docs
-import './_.prototypes';
+export type FontsizePX = number;
+
+export type FontsizePT = number;
+
+export interface BaseFont {
+  key: string;
+  title: string;
+}
+
+export interface FontSize {
+  pt: FontsizePT;
+  px: FontsizePX;
+}
 
 /** default font list
  * @type {BaseFont[]}
  */
-const baseFonts = [
+export const baseFonts: BaseFont[] = [
   { key: 'Arial', title: 'Arial' },
   { key: 'Helvetica', title: 'Helvetica' },
   { key: 'Source Sans Pro', title: 'Source Sans Pro' },
@@ -17,7 +28,7 @@ const baseFonts = [
 /** default fontSize list
  * @type {FontSize[]}
  */
-const fontSizes = [
+export const fontSizes: FontSize[] = [
   { pt: 7.5, px: 10 },
   { pt: 8, px: 11 },
   { pt: 9, px: 12 },
@@ -41,10 +52,10 @@ const fontSizes = [
 
 /** map pt to px
  * @date 2019-10-10
- * @param {fontsizePT} pt
- * @returns {fontsizePX}
+ * @param {FontsizePT} pt
+ * @returns {FontsizePX}
  */
-function getFontSizePxByPt(pt) {
+export function getFontSizePxByPt(pt: FontsizePT): FontsizePX {
   for (let i = 0; i < fontSizes.length; i += 1) {
     const fontSize = fontSizes[i];
     if (fontSize.pt === pt) {
@@ -59,13 +70,10 @@ function getFontSizePxByPt(pt) {
  * @param {BaseFont[]} [ary=[]]
  * @returns {object}
  */
-function fonts(ary = []) {
-  const map = {};
-  baseFonts.concat(ary).forEach((f) => {
+export function fonts(ary: BaseFont[] = []): Record<string, BaseFont> {
+  const map: Record<string, BaseFont> = {};
+  for (const f of baseFonts.concat(ary)) {
     map[f.key] = f;
-  });
+  }
   return map;
 }
-
-export default {};
-export { fontSizes, fonts, baseFonts, getFontSizePxByPt };

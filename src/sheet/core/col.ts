@@ -1,30 +1,40 @@
 import { rangeSum } from './helper';
-class Cols {
-  constructor({ len, width, indexWidth, minWidth }) {
-    this._ = {};
+export class Cols {
+  _?: Cols;
+  len?: number;
+  width?: number;
+  indexWidth?: number;
+  minWidth?: number;
+  constructor({
+    len,
+    width,
+    indexWidth,
+    minWidth,
+  }: { len: number; width: number; indexWidth: number; minWidth: number }) {
+    this._ = {} as Cols;
     this.len = len;
     this.width = width;
     this.indexWidth = indexWidth;
     this.minWidth = minWidth;
   }
 
-  setData(d) {
+  setData(d: Cols) {
     if (d.len) {
       this.len = d.len;
+      // biome-ignore lint/performance/noDelete: <explanation>
       delete d.len;
     }
     this._ = d;
   }
 
   getData() {
-    const { len } = this;
-    return Object.assign({ len }, this._);
+    return Object.assign({ len: this.len }, this._);
   }
 
   getWidth(i) {
     if (this.isHide(i)) return 0;
-    const col = this._[i];
-    if (col && col.width) {
+    const col = this._?.[i as keyof Cols] as Cols;
+    if (col?.width) {
       return col.width;
     }
     return this.width;
@@ -66,7 +76,7 @@ class Cols {
     col.style = style;
   }
 
-  sumWidth(min, max) {
+  sumWidth(min: number, max: number) {
     return rangeSum(min, max, (i) => this.getWidth(i));
   }
 
@@ -76,4 +86,3 @@ class Cols {
 }
 
 export default {};
-export { Cols };

@@ -1,6 +1,5 @@
-import assert from 'assert';
-import { describe, it } from 'mocha';
-import helper from '../src/core/helper';
+import { assert, describe, it } from 'vitest';
+import * as helper from '../../src/sheet/core/helper';
 
 describe('helper', () => {
   describe('.cloneDeep()', () => {

@@ -57,10 +57,10 @@ function t(key: string) {
   if (!v && window?.x_spreadsheet?.$messages) {
     v = translate(key, window.x_spreadsheet.$messages);
   }
-  return v || '';
+  return (v || '') as string;
 }
 
-function tf(key: string) {
+function tf(key: string): () => string {
   return () => t(key);
 }
 

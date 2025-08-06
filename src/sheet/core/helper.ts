@@ -141,7 +141,7 @@ function digits(a: number) {
   return ret;
 }
 
-export function numberCalc(type: string, a1: unknown, a2: unknown) {
+export function numberCalc(type: string, a1: unknown, a2: unknown): string {
   if (Number.isNaN(a1) || Number.isNaN(a2)) {
     return a1 + type + a2;
   }
@@ -159,7 +159,8 @@ export function numberCalc(type: string, a1: unknown, a2: unknown) {
   } else if (type === '/') {
     ret = num1 / num2;
     if (digits(ret) > 5) return ret.toFixed(2);
-    return ret;
+    // TODO
+    return ret.toFixed(2);
   }
   return ret.toFixed(Math.max(al1, al2));
 }

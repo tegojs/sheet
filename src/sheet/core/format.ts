@@ -1,8 +1,10 @@
 import { tf } from '../locale/locale';
 
-const formatStringRender = (v) => v;
+const formatStringRender = ((v: string) => v) as (
+  v: string | number | Date,
+) => string;
 
-const formatNumberRender = (v) => {
+const formatNumberRender = (v: string) => {
   // match "-12.1" or "12" or "12.1"
   if (/^(-?\d*.?\d*)$/.test(v)) {
     const v1 = Number(v).toFixed(2).toString();
@@ -12,7 +14,15 @@ const formatNumberRender = (v) => {
   return v;
 };
 
-const baseFormats = [
+export interface Format {
+  key: string;
+  title: () => string;
+  type: 'string' | 'number' | 'date';
+  render: (v: string) => string;
+  label?: string;
+}
+
+export const baseFormats: Format[] = [
   {
     key: 'normal',
     title: tf('format.normal'),
@@ -30,7 +40,7 @@ const baseFormats = [
     title: tf('format.number'),
     type: 'number',
     label: '1,000.12',
-    render: formatNumberRender,
+    render: formatNumberRender as (v: string) => string,
   },
   {
     key: 'percent',
@@ -90,17 +100,8 @@ const baseFormats = [
   },
 ];
 
-// const formats = (ary = []) => {
-//   const map = {};
-//   baseFormats.concat(ary).forEach((f) => {
-//     map[f.key] = f;
-//   });
-//   return map;
-// };
-const formatm = {};
-baseFormats.forEach((f) => {
-  formatm[f.key] = f;
-});
+export const formatm: Record<string, Format> = {};
 
-export default {};
-export { formatm, baseFormats };
+for (const f of baseFormats) {
+  formatm[f.key] = f;
+}

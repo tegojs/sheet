@@ -1,12 +1,5 @@
-import assert from 'assert';
-import { describe, it } from 'mocha';
-import { locale, t, tf } from '../../src/locale/locale';
-
-// Add window global if it doesn't exist
-// Some tests depend on this global variable's existence
-if (typeof window === 'undefined') {
-  global.window = {};
-}
+import { assert, describe, it } from 'vitest';
+import { locale, t, tf } from '../../src/sheet/locale/locale';
 
 // Override messages that exist in the fallback locale
 const localeTest1 = 'TEST_1';

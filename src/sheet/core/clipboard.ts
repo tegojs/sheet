@@ -1,16 +1,21 @@
+import type { CellRange } from './cell_range';
+
 export default class Clipboard {
-  constructor() {
+  constructor(
+    public range: CellRange | null = null,
+    public state: 'clear' | 'copy' | 'cut' = 'clear',
+  ) {
     this.range = null; // CellRange
     this.state = 'clear';
   }
 
-  copy(cellRange) {
+  copy(cellRange: CellRange) {
     this.range = cellRange;
     this.state = 'copy';
     return this;
   }
 
-  cut(cellRange) {
+  cut(cellRange: CellRange) {
     this.range = cellRange;
     this.state = 'cut';
     return this;

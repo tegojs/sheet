@@ -1,6 +1,5 @@
-import assert from 'assert';
-import { describe, it } from 'mocha';
-import { formatm, baseFormats } from '../../src/core/format';
+import { assert, describe, it } from 'vitest';
+import { formatm, baseFormats } from '../../src/sheet/core/format';
 
 const gformats = formatm;
 describe('formatm', () => {
