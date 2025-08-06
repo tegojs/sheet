@@ -1,6 +1,6 @@
 import { CellRange } from './cell_range';
 
-class Merges {
+export class Merges {
   constructor(d = []) {
     this._ = d;
   }
@@ -23,11 +23,11 @@ class Merges {
     return null;
   }
 
-  filterIntersects(cellRange) {
+  filterIntersects(cellRange: CellRange) {
     return new Merges(this._.filter((it) => it.intersects(cellRange)));
   }
 
-  intersects(cellRange) {
+  intersects(cellRange: CellRange) {
     for (let i = 0; i < this._.length; i += 1) {
       const it = this._[i];
       if (it.intersects(cellRange)) {
@@ -38,7 +38,7 @@ class Merges {
     return false;
   }
 
-  union(cellRange) {
+  union(cellRange: CellRange) {
     let cr = cellRange;
     this._.forEach((it) => {
       if (it.intersects(cr)) {
@@ -78,7 +78,7 @@ class Merges {
     });
   }
 
-  move(cellRange, rn, cn) {
+  move(cellRange: CellRange, rn, cn) {
     this._.forEach((it1) => {
       const it = it1;
       if (it.within(cellRange)) {
@@ -99,6 +99,3 @@ class Merges {
     return this._.map((merge) => merge.toString());
   }
 }
-
-export default {};
-export { Merges };

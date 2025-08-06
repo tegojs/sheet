@@ -1,6 +1,6 @@
 import { stringAt } from '../core/alphabet';
 import { getFontSizePxByPt } from '../core/font';
-import _cell from '../core/cell';
+import { cellRender } from '../core/cell';
 import { formulam } from '../core/formula';
 import { formatm } from '../core/format';
 
@@ -72,7 +72,7 @@ export function renderCell(draw, data, rindex, cindex, yoffset = 0) {
     // render text
     let cellText = '';
     if (!data.settings.evalPaused) {
-      cellText = _cell.render(cell.text || '', formulam, (y, x) =>
+      cellText = cellRender(cell.text || '', formulam, (y, x) =>
         data.getCellTextOrDefault(x, y),
       );
     } else {

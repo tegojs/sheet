@@ -1,7 +1,7 @@
 import { rangeSum, cloneDeep } from './helper';
 import { expr2expr } from './alphabet';
 
-class Rows {
+export class Rows {
   constructor({ len, height }) {
     this._ = {};
     this.len = len;
@@ -361,6 +361,3 @@ class Rows {
     return Object.assign({ len }, this._);
   }
 }
-
-export default {};
-export { Rows };

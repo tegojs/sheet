@@ -7,7 +7,7 @@ import { Merges } from './merge';
 import { cloneDeep, merge, rangeReduceIf, equals } from './helper';
 import { Rows } from './row';
 import { Cols } from './col';
-import { Validations } from './validation';
+import { Validations } from './validations';
 import { CellRange } from './cell_range';
 import { expr2xy, xy2expr } from './alphabet';
 import { t } from '../locale/locale';

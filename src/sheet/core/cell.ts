@@ -4,7 +4,7 @@ import { numberCalc } from './helper';
 // Converting infix expression to a suffix expression
 // src: AVERAGE(SUM(A1,A2), B1) + 50 + B20
 // return: [A1, A2], SUM[, B1],AVERAGE,50,+,B20,+
-const infixExprToSuffixExpr = (src) => {
+export const infixExprToSuffixExpr = (src) => {
   const operatorStack = [];
   const stack = [];
   let subStrs = []; // SUM, A1, B2, 50 ...
@@ -208,7 +208,7 @@ const evalSuffixExpr = (srcStack, formulaMap, cellRender, cellList) => {
   return stack[0];
 };
 
-const cellRender = (src, formulaMap, getCellText, cellList = []) => {
+export const cellRender = (src, formulaMap, getCellText, cellList = []) => {
   if (src[0] === '=') {
     const stack = infixExprToSuffixExpr(src.substring(1));
     if (stack.length <= 0) return src;
@@ -222,8 +222,3 @@ const cellRender = (src, formulaMap, getCellText, cellList = []) => {
   }
   return src;
 };
-
-export default {
-  render: cellRender,
-};
-export { infixExprToSuffixExpr };

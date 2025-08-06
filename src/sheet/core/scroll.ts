@@ -1,4 +1,8 @@
 export default class Scroll {
+  x: number;
+  y: number;
+  ri: number;
+  ci: number;
   constructor() {
     this.x = 0; // left
     this.y = 0; // top

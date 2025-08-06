@@ -23,7 +23,7 @@ export class CellRange {
 
   // cell-index: ri, ci
   // cell-ref: A10
-  includes(...args: string[] | number[]) {
+  includes(...args: (string | number)[]) {
     let [ri, ci] = [0, 0];
     if (args.length === 1) {
       [ci, ri] = expr2xy(args[0] as TagA1);
