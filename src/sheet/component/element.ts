@@ -1,22 +1,12 @@
-/* global document */
-/* global window */
-class Element {
-  constructor(tag, className = '') {
+export class Element {
+  el: Node;
+  constructor(tag: string | Node, className = '') {
     if (typeof tag === 'string') {
       this.el = document.createElement(tag);
       this.el.className = className;
     } else {
       this.el = tag;
     }
-    this.data = {};
-  }
-
-  data(key, value) {
-    if (value !== undefined) {
-      this.data[key] = value;
-      return this;
-    }
-    return this.data[key];
   }
 
   on(eventNames, handler) {
@@ -48,9 +38,9 @@ class Element {
 
   offset(value) {
     if (value !== undefined) {
-      Object.keys(value).forEach((k) => {
+      for (const k in value) {
         this.css(k, `${value[k]}px`);
-      });
+      }
       return this;
     }
     const { offsetTop, offsetLeft, offsetHeight, offsetWidth } = this.el;
@@ -63,16 +53,15 @@ class Element {
   }
 
   scroll(v) {
-    const { el } = this;
     if (v !== undefined) {
       if (v.left !== undefined) {
-        el.scrollLeft = v.left;
+        this.el.scrollLeft = v.left;
       }
       if (v.top !== undefined) {
-        el.scrollTop = v.top;
+        this.el.scrollTop = v.top;
       }
     }
-    return { left: el.scrollLeft, top: el.scrollTop };
+    return { left: this.el.scrollLeft, top: this.el.scrollTop };
   }
 
   box() {
@@ -80,14 +69,16 @@ class Element {
   }
 
   parent() {
-    return new Element(this.el.parentNode);
+    return new Element(this.el.parentNode as HTMLElement);
   }
 
-  children(...eles) {
-    if (arguments.length === 0) {
+  children(...eles: (string | HTMLElement)[]) {
+    if (eles.length === 0) {
       return this.el.childNodes;
     }
-    eles.forEach((ele) => this.child(ele));
+    for (const ele of eles) {
+      this.child(ele);
+    }
     return this;
   }
 
@@ -95,39 +86,7 @@ class Element {
     this.el.removeChild(el);
   }
 
-  /*
-  first() {
-    return this.el.firstChild;
-  }
-
-  last() {
-    return this.el.lastChild;
-  }
-
-  remove(ele) {
-    return this.el.removeChild(ele);
-  }
-
-  prepend(ele) {
-    const { el } = this;
-    if (el.children.length > 0) {
-      el.insertBefore(ele, el.firstChild);
-    } else {
-      el.appendChild(ele);
-    }
-    return this;
-  }
-
-  prev() {
-    return this.el.previousSibling;
-  }
-
-  next() {
-    return this.el.nextSibling;
-  }
-  */
-
-  child(arg) {
+  child(arg: string | HTMLElement) {
     let ele = arg;
     if (typeof arg === 'string') {
       ele = document.createTextNode(arg);
@@ -268,6 +227,5 @@ class Element {
   }
 }
 
-const h = (tag, className = '') => new Element(tag, className);
-
-export { Element, h };
+export const h = (tag: string | Node, className = '') =>
+  new Element(tag, className);
