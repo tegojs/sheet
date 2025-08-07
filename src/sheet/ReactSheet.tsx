@@ -18,7 +18,7 @@ const ReactSheet = () => {
       }
     }
   }, []);
-  return <div ref={ref} />;
+  return <div style={{ width: 800 }} ref={ref} />;
 };
 
 export default ReactSheet;
