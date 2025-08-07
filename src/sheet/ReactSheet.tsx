@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import Sheet from '.';
 import './sheet.less';
-import config from './config';
+import config from './configs';
 import svg from './assets/sprite.svg';
 
 const ReactSheet = () => {
@@ -12,9 +12,10 @@ const ReactSheet = () => {
       const elements = document.querySelectorAll(
         `.${config.cssPrefix}-icon-img`,
       );
-      elements.forEach((element) => {
+      // @ts-expect-error NodeListOf<Element> should treat as array
+      for (const element of elements) {
         (element as HTMLElement).style.backgroundImage = `url('${svg}')`;
-      });
+      }
     }
   }, []);
   return <div ref={ref} />;

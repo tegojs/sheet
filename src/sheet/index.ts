@@ -3,7 +3,7 @@ import { h } from './component/element';
 import DataProxy from './core/data_proxy';
 import Sheet from './component/sheet';
 import Bottombar from './component/bottombar';
-import { cssPrefix } from './config';
+import { cssPrefix } from './configs';
 import { locale } from './locale/locale';
 
 export interface ExtendToolbarOption {
