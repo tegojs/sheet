@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Bottombar } from './components/BottomBar/Bottombar';
 import { CanvasTable } from './components/CanvasTable';
 import { ContextMenu } from './components/ContextMenu/ContextMenu';
@@ -26,6 +26,10 @@ const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
   const initializdRef = useRef(false);
   const { addChangeListener, removeChangeListener, getActiveSheet } =
     useSheetStore();
+  const [sheetDimensions, setSheetDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
 
   // 启用键盘快捷键
   useKeyboardShortcuts();
@@ -89,6 +93,30 @@ const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
     }
   }, [onChange, addChangeListener, removeChangeListener]);
 
+  // 更新 sheet 容器尺寸
+  useEffect(() => {
+    const data = getActiveSheet();
+    if (data) {
+      setSheetDimensions({
+        width: data.viewWidth(),
+        height: data.viewHeight(),
+      });
+    }
+
+    // 订阅 store 变化以更新尺寸
+    const unsubscribe = useSheetStore.subscribe(() => {
+      const data = getActiveSheet();
+      if (data) {
+        setSheetDimensions({
+          width: data.viewWidth(),
+          height: data.viewHeight(),
+        });
+      }
+    });
+
+    return unsubscribe;
+  }, [getActiveSheet]);
+
   // 处理滚动
   const handleVerticalScroll = (distance: number) => {
     const data = getActiveSheet();
@@ -122,7 +150,14 @@ const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
     >
       {showToolbar && <Toolbar />}
 
-      <div className={`${cssPrefix}-sheet`}>
+      <div
+        className={`${cssPrefix}-sheet`}
+        style={{
+          width: sheetDimensions.width > 0 ? sheetDimensions.width : undefined,
+          height:
+            sheetDimensions.height > 0 ? sheetDimensions.height : undefined,
+        }}
+      >
         <CanvasTable />
 
         <OverlayerInteraction>
