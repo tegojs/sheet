@@ -68,14 +68,6 @@ function App() {
 />
 ```
 
-## Backward Compatibility
-
-For backward compatibility, `ReactSheet` is also exported as an alias:
-
-```tsx
-import { ReactSheet } from '@tego/sheet';  // Same as TegoSheet
-```
-
 ## Documentation
 
 See [docs](./docs) for full API documentation.

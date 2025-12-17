@@ -268,5 +268,5 @@ export {
   useSelection,
   useSheetStore,
 } from './store/useSheetStore';
-// Export TegoSheet React component (ReactSheet alias for backward compatibility)
-export { default as TegoSheet, ReactSheet } from './TegoSheet';
+// Export TegoSheet React component
+export { default as TegoSheet } from './TegoSheet';

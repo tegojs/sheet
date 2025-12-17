@@ -198,9 +198,6 @@ const TegoSheet: React.FC<TegoSheetProps> = ({ options = {}, onChange }) => {
 
 export default TegoSheet;
 
-// Alias for backward compatibility
-export { TegoSheet as ReactSheet };
-
 // 导出 API 方法供外部使用
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const createSheet = (_container: HTMLElement, _options?: Options) => {
