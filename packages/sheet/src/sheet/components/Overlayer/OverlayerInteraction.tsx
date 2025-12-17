@@ -151,32 +151,34 @@ export const OverlayerInteraction: React.FC<OverlayerInteractionProps> = ({
     [data, openContextMenu],
   );
 
-  const handleWheel = useCallback(
-    (event: React.WheelEvent<HTMLDivElement>) => {
-      event.preventDefault();
+  // 使用原生事件监听器处理滚轮，设置 { passive: false } 以支持 preventDefault
+  useEffect(() => {
+    const element = overlayerRef.current;
+    if (!element || !data) return;
 
-      if (!data) return;
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
 
       const { deltaY, deltaX } = event;
 
-      // 滚动
       if (Math.abs(deltaY) > Math.abs(deltaX)) {
-        // 垂直滚动
-        const scroll = data.scroll;
-        scroll.y += deltaY > 0 ? 1 : -1;
-        if (scroll.y < 0) scroll.y = 0;
+        // 垂直滚动 - 使用像素值
+        const newY = data.scroll.y + deltaY;
+        data.scrolly(Math.max(0, newY), () => {
+          useSheetStore.getState().triggerChange();
+        });
       } else {
-        // 水平滚动
-        const scroll = data.scroll;
-        scroll.x += deltaX > 0 ? 1 : -1;
-        if (scroll.x < 0) scroll.x = 0;
+        // 水平滚动 - 使用像素值
+        const newX = data.scroll.x + deltaX;
+        data.scrollx(Math.max(0, newX), () => {
+          useSheetStore.getState().triggerChange();
+        });
       }
+    };
 
-      // 触发重新渲染
-      useSheetStore.getState().triggerChange();
-    },
-    [data],
-  );
+    element.addEventListener('wheel', handleWheel, { passive: false });
+    return () => element.removeEventListener('wheel', handleWheel);
+  }, [data]);
 
   if (!data) return null;
 
@@ -190,7 +192,6 @@ export const OverlayerInteraction: React.FC<OverlayerInteractionProps> = ({
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onContextMenu={handleContextMenu}
-      onWheel={handleWheel}
       style={{
         position: 'absolute',
         left: 0,

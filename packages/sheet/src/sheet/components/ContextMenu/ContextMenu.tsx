@@ -40,15 +40,15 @@ const menuItems: MenuItem[] = [
     title: tf('contextmenu.pasteFormat'),
     label: 'Ctrl+Alt+V',
   },
-  { key: 'divider', title: () => '' },
+  { key: 'divider-1', title: () => '' },
   { key: 'insert-row', title: tf('contextmenu.insertRow') },
   { key: 'insert-column', title: tf('contextmenu.insertColumn') },
-  { key: 'divider', title: () => '' },
+  { key: 'divider-2', title: () => '' },
   { key: 'delete-row', title: tf('contextmenu.deleteRow') },
   { key: 'delete-column', title: tf('contextmenu.deleteColumn') },
   { key: 'delete-cell-text', title: tf('contextmenu.deleteCellText') },
   { key: 'hide', title: tf('contextmenu.hide') },
-  { key: 'divider', title: () => '' },
+  { key: 'divider-3', title: () => '' },
   { key: 'validation', title: tf('contextmenu.validation') },
 ];
 
@@ -151,7 +151,7 @@ export const ContextMenu: React.FC = () => {
       }}
     >
       {menuItems.map((item) => {
-        if (item.key === 'divider') {
+        if (item.key.startsWith('divider')) {
           return (
             <div
               key={item.key}

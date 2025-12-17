@@ -81,8 +81,8 @@ const defaultOptions: Partial<Options> = {
   showContextmenu: true,
   showBottomBar: true,
   view: {
-    height: () => 600,
-    width: () => 800,
+    height: () => document.documentElement.clientHeight,
+    width: () => document.documentElement.clientWidth,
   },
   style: {
     bgcolor: '#ffffff',

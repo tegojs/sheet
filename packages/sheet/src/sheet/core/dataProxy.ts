@@ -107,7 +107,7 @@ const defaultSettings = {
 };
 
 const toolbarHeight = 41;
-const bottombarHeight = 41;
+const bottombarHeight = 26;
 
 // src: cellRange
 // dst: cellRange

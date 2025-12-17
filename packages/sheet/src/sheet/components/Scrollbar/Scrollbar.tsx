@@ -1,7 +1,7 @@
 import type React from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { cssPrefix } from '../../configs';
-import { useActiveSheet, useSheetStore } from '../../store/useSheetStore';
+import { useActiveSheet, useUpdateCount } from '../../store/useSheetStore';
 
 interface ScrollbarProps {
   vertical?: boolean;
@@ -13,58 +13,46 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
   onScroll,
 }) => {
   const data = useActiveSheet();
+  const updateCount = useUpdateCount(); // 触发重新渲染
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const isScrollingRef = useRef(false);
-  const [dimensions, setDimensions] = useState({
-    scrollbarSize: 0,
-    contentSize: 0,
-    visible: false,
-  });
 
-  // 计算滚动条尺寸
-  useEffect(() => {
-    if (!data) return;
+  // 计算滚动条尺寸 - 使用 useMemo 在每次渲染时重新计算
+  // biome-ignore lint/correctness/useExhaustiveDependencies: updateCount triggers recalculation on data changes
+  const dimensions = useMemo(() => {
+    if (!data) {
+      return { scrollbarSize: 0, contentSize: 0, visible: false };
+    }
 
-    const updateDimensions = () => {
-      const { rows, cols } = data;
-      const viewWidth = data.viewWidth();
-      const viewHeight = data.viewHeight();
+    const { rows, cols } = data;
+    const viewWidth = data.viewWidth();
+    const viewHeight = data.viewHeight();
 
-      if (vertical) {
-        const height = viewHeight - 1;
-        const exceptRowTotalHeight = data.exceptRowTotalHeight(0, -1);
-        const contentDistance = rows.totalHeight() - exceptRowTotalHeight;
+    if (vertical) {
+      const height = viewHeight - 1;
+      const exceptRowTotalHeight = data.exceptRowTotalHeight(0, -1);
+      const contentDistance = rows.totalHeight() - exceptRowTotalHeight;
 
-        setDimensions({
-          scrollbarSize: height - 15,
-          contentSize: contentDistance,
-          visible: contentDistance > height,
-        });
-      } else {
-        const width = viewWidth - 1;
-        const contentDistance = cols.totalWidth();
+      return {
+        scrollbarSize: height - 15,
+        contentSize: contentDistance,
+        visible: contentDistance > height,
+      };
+    }
 
-        setDimensions({
-          scrollbarSize: width - 15,
-          contentSize: contentDistance,
-          visible: contentDistance > width,
-        });
-      }
+    const width = viewWidth - 1;
+    const contentDistance = cols.totalWidth();
+
+    return {
+      scrollbarSize: width - 15,
+      contentSize: contentDistance,
+      visible: contentDistance > width,
     };
+  }, [data, vertical, updateCount]);
 
-    // 初始计算
-    updateDimensions();
-
-    // 订阅 store 变化
-    const unsubscribe = useSheetStore.subscribe(() => {
-      updateDimensions();
-    });
-
-    return unsubscribe;
-  }, [data, vertical]);
-
-  // 同步滚动位置
+  // 同步滚动位置 - 当 updateCount 变化时同步
+  // biome-ignore lint/correctness/useExhaustiveDependencies: updateCount triggers sync on data changes
   useEffect(() => {
     if (!data || !scrollRef.current || !dimensions.visible) return;
 
@@ -76,7 +64,7 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
         scrollRef.current.scrollLeft = scroll.x;
       }
     }
-  }, [data, vertical, dimensions.visible]);
+  }, [data, vertical, dimensions.visible, updateCount]);
 
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
@@ -95,7 +83,7 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
     [vertical, onScroll],
   );
 
-  if (!data || !dimensions.visible) return null;
+  if (!data) return null;
 
   return (
     <div
@@ -112,8 +100,8 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
         overflowX: vertical ? 'hidden' : 'scroll',
         overflowY: vertical ? 'scroll' : 'hidden',
         ...(vertical
-          ? { height: dimensions.scrollbarSize }
-          : { width: dimensions.scrollbarSize }),
+          ? { width: 15, height: dimensions.scrollbarSize }
+          : { height: 15, width: dimensions.scrollbarSize }),
       }}
     >
       <div

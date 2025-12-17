@@ -32,10 +32,10 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = ({
     <button
       type="button"
       className={`${cssPrefix}-toolbar-btn ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}`}
+      style={{ position: 'relative' }}
       onClick={handleClick}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
-      data-tooltip={tooltip}
       disabled={disabled}
     >
       {icon && <Icon name={icon} />}
@@ -44,11 +44,10 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = ({
         <div
           className={`${cssPrefix}-tooltip`}
           style={{
-            position: 'absolute',
-            bottom: '100%',
+            top: '100%',
             left: '50%',
             transform: 'translateX(-50%)',
-            marginBottom: '5px',
+            marginTop: '5px',
             whiteSpace: 'nowrap',
           }}
         >

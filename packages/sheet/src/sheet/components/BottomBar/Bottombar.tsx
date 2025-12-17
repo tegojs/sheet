@@ -61,11 +61,12 @@ export const Bottombar: React.FC = () => {
     <div
       className={`${cssPrefix}-bottombar`}
       style={{
-        height: 40,
-        padding: '0 30px',
+        height: 26,
+        padding: '0 10px',
         textAlign: 'left',
         background: '#f5f6f7',
         display: 'flex',
+        alignItems: 'center',
         borderTop: '1px solid #e0e2e4',
         position: 'relative',
       }}
@@ -93,12 +94,11 @@ export const Bottombar: React.FC = () => {
             onDoubleClick={() => handleSheetDoubleClick(index)}
             style={{
               float: 'left',
-              lineHeight: '40px',
-              height: 40,
-              paddingTop: 0,
-              paddingBottom: 0,
-              padding: '0 1em',
+              lineHeight: '26px',
+              height: 26,
+              padding: '0 10px',
               margin: 0,
+              fontSize: '12px',
               verticalAlign: 'middle',
               textAlign: 'left',
               fontWeight: 'bold',
@@ -153,8 +153,9 @@ export const Bottombar: React.FC = () => {
         <li
           style={{
             float: 'left',
-            lineHeight: '1.25em',
-            padding: '0.785em 1em',
+            lineHeight: '26px',
+            height: 26,
+            padding: '0 10px',
             margin: 0,
             verticalAlign: 'middle',
             textAlign: 'left',
@@ -164,6 +165,8 @@ export const Bottombar: React.FC = () => {
             transition: 'all 0.3s',
             fontWeight: 'bold',
             borderRight: '1px solid #e8eaed',
+            display: 'flex',
+            alignItems: 'center',
           }}
         >
           <Icon name="add" onClick={handleAddSheet} />

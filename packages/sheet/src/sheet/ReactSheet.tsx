@@ -44,6 +44,8 @@ const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
       if (data && options) {
         // 更新 settings
         Object.assign(data.settings, options);
+        // 触发 store 更新，让订阅者（如 Scrollbar）重新计算
+        useSheetStore.getState().triggerChange();
       }
     }
   }, [options, getActiveSheet]);
