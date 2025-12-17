@@ -17,7 +17,9 @@ class MockCanvasRenderingContext2D {
   strokeRect() {}
   fillText() {}
   strokeText() {}
-  measureText() { return { width: 50 } as TextMetrics; }
+  measureText() {
+    return { width: 50 } as TextMetrics;
+  }
   beginPath() {}
   moveTo() {}
   lineTo() {}
@@ -30,15 +32,19 @@ class MockCanvasRenderingContext2D {
   rect() {}
   clip() {}
   closePath() {}
-  createLinearGradient() { return { addColorStop: () => {} } as unknown as CanvasGradient; }
+  createLinearGradient() {
+    return { addColorStop: () => {} } as unknown as CanvasGradient;
+  }
   drawImage() {}
-  getImageData() { return { data: new Uint8ClampedArray() } as ImageData; }
+  getImageData() {
+    return { data: new Uint8ClampedArray() } as ImageData;
+  }
   putImageData() {}
 }
 
-HTMLCanvasElement.prototype.getContext = function(contextId: string) {
+HTMLCanvasElement.prototype.getContext = ((contextId: string) => {
   if (contextId === '2d') {
     return new MockCanvasRenderingContext2D() as unknown as CanvasRenderingContext2D;
   }
   return null;
-} as typeof HTMLCanvasElement.prototype.getContext;
+}) as typeof HTMLCanvasElement.prototype.getContext;

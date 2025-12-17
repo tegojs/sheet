@@ -12,6 +12,5 @@
     "useDefineForClassFields": true,
     "downlevelIteration": true
   },
-  "references": [{ "path": "./packages/sheet" }, { "path": "./packages/demo" }],
-  "include": []
+  "include": ["src", "tests"]
 }
