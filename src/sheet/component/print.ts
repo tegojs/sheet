@@ -1,10 +1,10 @@
+import { Draw } from '../canvas/draw';
+import { cssPrefix } from '../configs';
+import { t } from '../locale/locale';
+import Button from './button';
 /* global window document */
 import { h } from './element';
-import { cssPrefix } from '../configs';
-import Button from './button';
-import { Draw } from '../canvas/draw';
 import { renderCell } from './table';
-import { t } from '../locale/locale';
 
 // resolution: 72 => 595 x 842
 // 150 => 1240 x 1754
@@ -34,7 +34,7 @@ const PAGER_MODEL = [
 const PAGER_ISPRINT = ['1', 'none', '1 of total'];
 
 function inches2px(inc) {
-  return parseInt(96 * inc, 10);
+  return Number.parseInt(96 * inc, 10);
 }
 
 function btnClick(type) {
@@ -46,7 +46,7 @@ function btnClick(type) {
 }
 function showPageNum(evt) {
   const { value } = evt.target;
-  switch (parseInt(value)) {
+  switch (Number.parseInt(value)) {
     case 0:
       this.showPageNum = 1;
       break;
@@ -81,7 +81,7 @@ function pagerOrientationChange(evt) {
 //无打印缩放
 function pagerModelChange(evt) {
   const { value } = evt.target;
-  switch (parseInt(value)) {
+  switch (Number.parseInt(value)) {
     case 2:
       this.previewNoScale(); //无打印缩放
       break;
@@ -192,7 +192,7 @@ export default class Print {
   // 所有列打印到一页
   previewScaleCols() {
     const { data, paper } = this;
-    let { width, height, padding } = paper;
+    const { width, height, padding } = paper;
     const iwidth = width - padding * 2;
     const iheight = height - padding * 2;
     const cr = data.contentRange();
@@ -202,7 +202,7 @@ export default class Print {
     let ri = 0;
     let ci = 0;
     let yoffset = 0;
-    let xoffset = 0;
+    const xoffset = 0;
     if (scale > 1) {
       scale = 1;
     }
@@ -214,9 +214,9 @@ export default class Print {
       eri: 0,
       eci: 0,
     };
-    let pageDraws = [];
-    let pageRowIndexs = [];
-    let pageyoffsets = [];
+    const pageDraws = [];
+    const pageRowIndexs = [];
+    const pageyoffsets = [];
 
     let th = 0;
     const firstwrap = h('div', `${cssPrefix}-canvas-card-wraper`);
@@ -233,7 +233,7 @@ export default class Print {
     if (scale < 1) firstdraw.scale(scale, scale);
     pageDraws.push(firstdraw);
     this.contentEl.child(firstwrap.child(firstwrapCard.child(firstcanvas)));
-    let page = 0;
+    const page = 0;
     let publicDraw = pageDraws[page];
 
     for (; ri <= cr.eri; ri += 1) {
@@ -343,7 +343,7 @@ export default class Print {
   // 所有行打印到一页
   previewScaleRows() {
     const { data, paper } = this;
-    let { width, height, padding } = paper;
+    const { width, height, padding } = paper;
     const iwidth = width - padding * 2;
     const iheight = height - padding * 2;
     const cr = data.contentRange();
@@ -353,7 +353,7 @@ export default class Print {
     let tw = 0;
     let ri = 0;
     let ci = 0;
-    let yoffset = 0;
+    const yoffset = 0;
     let xoffset = 0;
     if (scale > 1) {
       scale = 1;
@@ -365,9 +365,9 @@ export default class Print {
       eri: 0,
       eci: 0,
     };
-    let pageDraws = [];
-    let pageColIndexs = [];
-    let pagexoffsets = [];
+    const pageDraws = [];
+    const pageColIndexs = [];
+    const pagexoffsets = [];
     const firstwrap = h('div', `${cssPrefix}-canvas-card-wraper`);
     const firstwrapCard = h('div', `${cssPrefix}-canvas-card`);
     firstwrap.css('width', iwidth + 50 * 2 + 20 * 2 + 'px'); //内边距50 ，外边距20
@@ -469,7 +469,7 @@ export default class Print {
   // 行列缩放
   previewScaleSheet() {
     const { data, paper } = this;
-    let { width, height, padding } = paper;
+    const { width, height, padding } = paper;
     const iwidth = width - padding * 2;
     const iheight = height - padding * 2;
     const cr = data.contentRange();
@@ -513,7 +513,7 @@ export default class Print {
   // 无打印缩放
   previewNoScale() {
     const { data, paper } = this;
-    let { width, height, padding } = paper;
+    const { width, height, padding } = paper;
     const iwidth = width - padding * 2;
     const iheight = height - padding * 2;
     const cr = data.contentRange();
@@ -521,7 +521,7 @@ export default class Print {
     let ci = 0;
     let th = 0;
     let tw = 0;
-    let page = 0;
+    const page = 0;
     action = 2;
     let yoffset = 0;
     let xoffset = 0;
@@ -533,11 +533,11 @@ export default class Print {
       eri: 0,
       eci: 0,
     };
-    let pageDraws = [];
-    let pageRowIndexs = [];
-    let pageColIndexs = [];
-    let pageyoffsets = [];
-    let pagexoffsets = [];
+    const pageDraws = [];
+    const pageRowIndexs = [];
+    const pageColIndexs = [];
+    const pageyoffsets = [];
+    const pagexoffsets = [];
 
     this.canvases = [];
 
@@ -738,15 +738,15 @@ export default class Print {
   }
 
   printFooter(draw, positionX, positionY, showPageType, pagenum) {
-    let isEn = t('print.numbertype') == '1' ? true : false;
+    const isEn = t('print.numbertype') == '1' ? true : false;
     //中文页码格式
-    let ctx = draw.ctx;
+    const ctx = draw.ctx;
     ctx.font = '12px "微软雅黑"';
     ctx.fillStyle = 'black';
     ctx.textBaseline = 'bottom';
     let title = '';
-    let totalPage = this.canvases.length;
-    switch (parseInt(showPageType)) {
+    const totalPage = this.canvases.length;
+    switch (Number.parseInt(showPageType)) {
       case 0:
         title = '';
         break;

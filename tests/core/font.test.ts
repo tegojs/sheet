@@ -1,10 +1,10 @@
 import { assert, describe, it } from 'vitest';
 import {
+  type BaseFont,
+  baseFonts,
   fontSizes,
   fonts,
-  baseFonts,
   getFontSizePxByPt,
-  type BaseFont,
 } from '../../src/sheet/core/font';
 
 describe('font.test.ts', () => {

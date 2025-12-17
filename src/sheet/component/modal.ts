@@ -1,9 +1,9 @@
+import { cssPrefix } from '../configs';
 /* global document */
 /* global window */
 import { h } from './element';
-import Icon from './icon';
-import { cssPrefix } from '../configs';
 import { bind, unbind } from './event';
+import Icon from './icon';
 
 export default class Modal {
   constructor(title, content, width = '600px') {

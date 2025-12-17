@@ -1,5 +1,5 @@
 import { assert, describe, it } from 'vitest';
-import { formatm, baseFormats } from '../../src/sheet/core/format';
+import { baseFormats, formatm } from '../../src/sheet/core/format';
 
 const gformats = formatm;
 describe('formatm', () => {

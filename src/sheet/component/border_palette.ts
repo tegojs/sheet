@@ -1,8 +1,8 @@
-import { h } from './element';
-import Icon from './icon';
+import { cssPrefix } from '../configs';
 import DropdownColor from './dropdown_color';
 import DropdownLineType from './dropdown_linetype';
-import { cssPrefix } from '../configs';
+import { h } from './element';
+import Icon from './icon';
 
 function buildTable(...trs) {
   return h('table', '').child(h('tbody', '').children(...trs));

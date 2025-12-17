@@ -1,19 +1,19 @@
+import { cssPrefix } from '../configs';
+import { formulas } from '../core/formula';
+import ContextMenu from './contextmenu';
+import Editor from './editor';
 /* global window */
 import { h } from './element';
-import { bind, mouseMoveUp, bindTouch, createEventEmitter } from './event';
+import { bind, bindTouch, createEventEmitter, mouseMoveUp } from './event';
+import { xtoast } from './message';
+import ModalValidation from './modal_validation';
+import Print from './print';
 import Resizer from './resizer';
 import Scrollbar from './scrollbar';
 import Selector from './selector';
-import Editor from './editor';
-import Print from './print';
-import ContextMenu from './contextmenu';
+import SortFilter from './sort_filter';
 import Table from './table';
 import Toolbar from './toolbar/index';
-import ModalValidation from './modal_validation';
-import SortFilter from './sort_filter';
-import { xtoast } from './message';
-import { cssPrefix } from '../configs';
-import { formulas } from '../core/formula';
 
 /**
  * @desc throttle fn

@@ -1,18 +1,18 @@
-/* global window */
-import { h } from './element';
-import { bind } from './event';
-import tooltip from './tooltip';
+import { cssPrefix } from '../configs';
+import { t } from '../locale/locale';
+import Dropdown from './dropdown';
+import DropdownAlign from './dropdown_align';
+import DropdownBorder from './dropdown_border';
+import DropdownColor from './dropdown_color';
 import DropdownFont from './dropdown_font';
 import DropdownFontSize from './dropdown_fontsize';
 import DropdownFormat from './dropdown_format';
 import DropdownFormula from './dropdown_formula';
-import DropdownColor from './dropdown_color';
-import DropdownAlign from './dropdown_align';
-import DropdownBorder from './dropdown_border';
-import Dropdown from './dropdown';
+/* global window */
+import { h } from './element';
+import { bind } from './event';
 import Icon from './icon';
-import { cssPrefix } from '../configs';
-import { t } from '../locale/locale';
+import tooltip from './tooltip';
 
 function buildIcon(name) {
   return new Icon(name);
@@ -78,7 +78,9 @@ function initBtns2() {
     const { marginLeft, marginRight } = it.computedStyle();
     return [
       it,
-      rect.width + parseInt(marginLeft, 10) + parseInt(marginRight, 10),
+      rect.width +
+        Number.parseInt(marginLeft, 10) +
+        Number.parseInt(marginRight, 10),
     ];
   });
 }

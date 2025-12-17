@@ -1,9 +1,9 @@
+import Bottombar from './component/bottombar';
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import { h } from './component/element';
-import DataProxy from './core/data_proxy';
 import Sheet from './component/sheet';
-import Bottombar from './component/bottombar';
 import { cssPrefix } from './configs';
+import DataProxy from './core/data_proxy';
 import { locale } from './locale/locale';
 
 export interface ExtendToolbarOption {
@@ -139,17 +139,17 @@ export interface CellStyle {
     left?: string[];
   };
 }
-export interface Editor {}
-export interface Element {}
+export type Editor = {};
+export type Element = {};
 
-export interface Row {}
-export interface Table {}
-export interface Cell {}
-export interface Sheet {}
+export type Row = {};
+export type Table = {};
+export type Cell = {};
+export type Sheet = {};
 
 export default class Spreadsheet {
   #options: Options;
-  #sheetIndex: number = 1;
+  #sheetIndex = 1;
   #datas: any;
   #data: any;
   #sheet: any;
@@ -218,7 +218,7 @@ export default class Spreadsheet {
    * @param colIndex {number} column index
    * @param sheetIndex {number} sheet iindex
    */
-  cell(rowIndex: number, colIndex: number, sheetIndex: number = 0): Cell {
+  cell(rowIndex: number, colIndex: number, sheetIndex = 0): Cell {
     return this.#datas[sheetIndex].getCell(rowIndex, colIndex);
   }
   /**
@@ -227,11 +227,7 @@ export default class Spreadsheet {
    * @param colIndex
    * @param sheetIndex
    */
-  cellStyle(
-    rowIndex: number,
-    colIndex: number,
-    sheetIndex: number = 0,
-  ): CellStyle {
+  cellStyle(rowIndex: number, colIndex: number, sheetIndex = 0): CellStyle {
     return this.#datas[sheetIndex].getCellStyle(rowIndex, colIndex);
   }
   /**
@@ -245,7 +241,7 @@ export default class Spreadsheet {
     rowIndex: number,
     colIndex: number,
     text: string,
-    sheetIndex: number = 0,
+    sheetIndex = 0,
   ): this {
     this.#datas[sheetIndex].setCellText(rowIndex, colIndex, text, 'finished');
     return this;

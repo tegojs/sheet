@@ -1,9 +1,9 @@
 import { assert, describe, it } from 'vitest';
 import {
+  expr2expr,
+  expr2xy,
   indexAt,
   stringAt,
-  expr2xy,
-  expr2expr,
 } from '../../src/sheet/core/alphabet';
 
 describe('alphabet', () => {

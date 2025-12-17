@@ -8,7 +8,7 @@ export function thinLineWidth() {
 }
 
 export function npx(px) {
-  return parseInt(px * dpr(), 10);
+  return Number.parseInt(px * dpr(), 10);
 }
 
 function npxLine(px) {

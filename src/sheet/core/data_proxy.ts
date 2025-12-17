@@ -1,16 +1,16 @@
-import Selector from './selector';
-import Scroll from './scroll';
-import History from './history';
-import Clipboard from './clipboard';
-import AutoFilter from './auto_filter';
-import { Merges } from './merge';
-import { cloneDeep, merge, rangeReduceIf, equals } from './helper';
-import { Rows } from './row';
-import { Cols } from './col';
-import { Validations } from './validations';
-import { CellRange } from './cell_range';
-import { expr2xy, xy2expr } from './alphabet';
 import { t } from '../locale/locale';
+import { expr2xy, xy2expr } from './alphabet';
+import AutoFilter from './auto_filter';
+import { CellRange } from './cell_range';
+import Clipboard from './clipboard';
+import { Cols } from './col';
+import { cloneDeep, equals, merge, rangeReduceIf } from './helper';
+import History from './history';
+import { Merges } from './merge';
+import { Rows } from './row';
+import Scroll from './scroll';
+import Selector from './selector';
+import { Validations } from './validations';
 
 // private methods
 /*
@@ -883,7 +883,7 @@ export default class DataProxy {
         Object.keys(cols._)
           .reverse()
           .forEach((colIndex) => {
-            const col = parseInt(colIndex, 10);
+            const col = Number.parseInt(colIndex, 10);
             if (col >= sci) {
               cols._[col + n] = cols._[col];
               delete cols._[col];
@@ -915,7 +915,7 @@ export default class DataProxy {
         size = csize;
         cols.len -= eci - sci + 1;
         Object.keys(cols._).forEach((colIndex) => {
-          const col = parseInt(colIndex, 10);
+          const col = Number.parseInt(colIndex, 10);
           if (col >= sci) {
             if (col > eci) cols._[col - (eci - sci + 1)] = cols._[col];
             delete cols._[col];

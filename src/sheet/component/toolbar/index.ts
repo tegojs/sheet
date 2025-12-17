@@ -1,32 +1,32 @@
 /* global window */
 
 import Align from './align';
-import Valign from './valign';
 import Autofilter from './autofilter';
 import Bold from './bold';
-import Italic from './italic';
-import Strike from './strike';
-import Underline from './underline';
 import Border from './border';
 import Clearformat from './clearformat';
-import Paintformat from './paintformat';
-import TextColor from './text_color';
 import FillColor from './fill_color';
-import FontSize from './font_size';
 import Font from './font';
+import FontSize from './font_size';
 import Format from './format';
 import Formula from './formula';
 import Freeze from './freeze';
-import Merge from './merge';
-import Redo from './redo';
-import Undo from './undo';
-import Print from './print';
-import Textwrap from './textwrap';
-import More from './more';
+import Italic from './italic';
 import Item from './item';
+import Merge from './merge';
+import More from './more';
+import Paintformat from './paintformat';
+import Print from './print';
+import Redo from './redo';
+import Strike from './strike';
+import TextColor from './text_color';
+import Textwrap from './textwrap';
+import Underline from './underline';
+import Undo from './undo';
+import Valign from './valign';
 
-import { h } from '../element';
 import { cssPrefix } from '../../configs';
+import { h } from '../element';
 import { bind } from '../event';
 
 function buildDivider() {
@@ -42,7 +42,9 @@ function initBtns2() {
         const { marginLeft, marginRight } = el.computedStyle();
         this.btns2.push([
           el,
-          rect.width + parseInt(marginLeft, 10) + parseInt(marginRight, 10),
+          rect.width +
+            Number.parseInt(marginLeft, 10) +
+            Number.parseInt(marginRight, 10),
         ]);
       });
     } else {
@@ -50,7 +52,9 @@ function initBtns2() {
       const { marginLeft, marginRight } = it.computedStyle();
       this.btns2.push([
         it,
-        rect.width + parseInt(marginLeft, 10) + parseInt(marginRight, 10),
+        rect.width +
+          Number.parseInt(marginLeft, 10) +
+          Number.parseInt(marginRight, 10),
       ]);
     }
   });

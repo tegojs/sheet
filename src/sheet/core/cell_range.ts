@@ -1,4 +1,4 @@
-import { xy2expr, expr2xy, type TagA1 } from './alphabet';
+import { type TagA1, expr2xy, xy2expr } from './alphabet';
 
 export class CellRange {
   constructor(

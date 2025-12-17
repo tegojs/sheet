@@ -1,5 +1,5 @@
-import { rangeSum, cloneDeep } from './helper';
 import { expr2expr } from './alphabet';
+import { cloneDeep, rangeSum } from './helper';
 
 export class Rows {
   constructor({ len, height }) {
@@ -185,8 +185,8 @@ export class Rows {
     const ncellmm = {};
     this.each((ri) => {
       this.eachCells(ri, (ci) => {
-        let nri = parseInt(ri, 10);
-        let nci = parseInt(ci, 10);
+        let nri = Number.parseInt(ri, 10);
+        let nci = Number.parseInt(ci, 10);
         if (srcCellRange.includes(ri, ci)) {
           nri = dstCellRange.sri + (nri - srcCellRange.sri);
           nci = dstCellRange.sci + (nci - srcCellRange.sci);
@@ -214,7 +214,7 @@ export class Rows {
   insert(sri, n = 1) {
     const ndata = {};
     this.each((ri, row) => {
-      let nri = parseInt(ri, 10);
+      let nri = Number.parseInt(ri, 10);
       if (nri >= sri) {
         nri += n;
         this.eachCells(ri, (ci, cell) => {
@@ -235,7 +235,7 @@ export class Rows {
     const n = eri - sri + 1;
     const ndata = {};
     this.each((ri, row) => {
-      const nri = parseInt(ri, 10);
+      const nri = Number.parseInt(ri, 10);
       if (nri < sri) {
         ndata[nri] = row;
       } else if (ri > eri) {
@@ -257,7 +257,7 @@ export class Rows {
     this.each((ri, row) => {
       const rndata = {};
       this.eachCells(ri, (ci, cell) => {
-        let nci = parseInt(ci, 10);
+        let nci = Number.parseInt(ci, 10);
         if (nci >= sci) {
           nci += n;
           if (cell.text && cell.text[0] === '=') {
@@ -277,7 +277,7 @@ export class Rows {
     this.each((ri, row) => {
       const rndata = {};
       this.eachCells(ri, (ci, cell) => {
-        const nci = parseInt(ci, 10);
+        const nci = Number.parseInt(ci, 10);
         if (nci < sci) {
           rndata[nci] = cell;
         } else if (nci > eci) {
@@ -329,7 +329,7 @@ export class Rows {
       const { cells } = col;
       const ks = Object.keys(cells);
       const ci = ks[ks.length - 1];
-      return [parseInt(ri, 10), parseInt(ci, 10)];
+      return [Number.parseInt(ri, 10), Number.parseInt(ci, 10)];
     }
     return [0, 0];
   }

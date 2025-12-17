@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import Sheet from '.';
 import './sheet.less';
-import config from './configs';
 import svg from './assets/sprite.svg';
+import config from './configs';
 
 const ReactSheet = () => {
   const ref = useRef(null);

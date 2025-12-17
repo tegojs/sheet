@@ -1,6 +1,6 @@
+import { cssPrefix } from '../configs';
 import Calendar from './calendar';
 import { h } from './element';
-import { cssPrefix } from '../configs';
 
 export default class Datepicker {
   constructor() {
@@ -16,7 +16,7 @@ export default class Datepicker {
     if (typeof date === 'string') {
       // console.log(/^\d{4}-\d{1,2}-\d{1,2}$/.test(date));
       if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(date)) {
-        calendar.setValue(new Date(date.replace(new RegExp('-', 'g'), '/')));
+        calendar.setValue(new Date(date.replace(/-/g, '/')));
       }
     } else if (date instanceof Date) {
       calendar.setValue(date);

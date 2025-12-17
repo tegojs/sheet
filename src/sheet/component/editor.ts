@@ -1,8 +1,8 @@
+import { cssPrefix } from '../configs';
+import Datepicker from './datepicker';
 //* global window */
 import { h } from './element';
 import Suggest from './suggest';
-import Datepicker from './datepicker';
-import { cssPrefix } from '../configs';
 // import { mouseMoveUp } from '../event';
 
 function resetTextareaSize() {
@@ -20,7 +20,7 @@ function resetTextareaSize() {
       let twidth = tlineWidth;
       if (tlineWidth > maxWidth) {
         twidth = maxWidth;
-        h1 += parseInt(tlineWidth / maxWidth, 10);
+        h1 += Number.parseInt(tlineWidth / maxWidth, 10);
         h1 += tlineWidth % maxWidth > 0 ? 1 : 0;
       }
       textEl.css('width', `${twidth}px`);

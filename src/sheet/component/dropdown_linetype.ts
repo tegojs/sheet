@@ -1,7 +1,7 @@
+import { cssPrefix } from '../configs';
 import Dropdown from './dropdown';
 import { h } from './element';
 import Icon from './icon';
-import { cssPrefix } from '../configs';
 
 const lineTypes = [
   [
