@@ -95,7 +95,7 @@ export const CellEditor: React.FC<CellEditorProps> = ({ onFinish }) => {
         if (textarea) {
           const start = textarea.selectionStart;
           const end = textarea.selectionEnd;
-          const newText = text.substring(0, start) + '\n' + text.substring(end);
+          const newText = `${text.substring(0, start)}\n${text.substring(end)}`;
           setText(newText);
 
           setTimeout(() => {

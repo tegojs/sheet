@@ -81,7 +81,7 @@ export const Bottombar: React.FC = () => {
       >
         {sheets.map((sheet, index) => (
           <li
-            key={index}
+            key={sheet.name || index}
             className={activeSheetIndex === index ? 'active' : ''}
             onClick={() => handleSheetClick(index)}
             onKeyDown={(e) => {
@@ -162,7 +162,6 @@ export const Bottombar: React.FC = () => {
             margin: 0,
             verticalAlign: 'middle',
             textAlign: 'left',
-            fontWeight: 400,
             color: '#80868b',
             whiteSpace: 'nowrap',
             cursor: 'pointer',
