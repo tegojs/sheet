@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
-import { renderCell } from '../../src/sheet/canvas/cell_renderer';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { renderCell } from '../../src/sheet/canvas/cellRenderer';
 import { Draw } from '../../src/sheet/canvas/draw';
 
 describe('Cell Renderer', () => {

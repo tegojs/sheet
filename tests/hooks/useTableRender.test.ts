@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import DataProxy from '../../src/sheet/core/data_proxy';
+import DataProxy from '../../src/sheet/core/dataProxy';
 import { useTableRender } from '../../src/sheet/hooks/useTableRender';
 
 describe('useTableRender', () => {

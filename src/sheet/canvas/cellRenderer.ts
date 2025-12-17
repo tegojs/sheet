@@ -4,7 +4,7 @@
  */
 
 import { cellRender } from '../core/cell';
-import type DataProxy from '../core/data_proxy';
+import type DataProxy from '../core/dataProxy';
 import { getFontSizePxByPt } from '../core/font';
 import { formatm } from '../core/format';
 import { formulam } from '../core/formula';

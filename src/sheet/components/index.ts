@@ -6,9 +6,9 @@ export { CellEditor } from './Editor/CellEditor';
 export { SelectionOverlay } from './Selection/SelectionOverlay';
 export { Scrollbar } from './Scrollbar/Scrollbar';
 export { ContextMenu } from './ContextMenu/ContextMenu';
-export { Bottombar } from './Bottombar/Bottombar';
+export { Bottombar } from './BottomBar/Bottombar';
 export { OverlayerInteraction } from './Overlayer/OverlayerInteraction';
 
 // 导出通用组件
-export { Icon } from './common/Icon';
-export { Dropdown } from './common/Dropdown';
+export { Icon } from './Common/Icon';
+export { Dropdown } from './Common/Dropdown';

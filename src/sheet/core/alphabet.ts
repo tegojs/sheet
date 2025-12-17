@@ -49,9 +49,9 @@ export function stringAt(index: number): Uppercase<string> {
   let str = '';
   let cindex = index;
   while (cindex >= alphabets.length) {
-    cindex /= alphabets.length;
+    cindex = Math.floor(cindex / alphabets.length);
     cindex -= 1;
-    str += alphabets[cindex % alphabets.length];
+    str += alphabets[Math.floor(cindex % alphabets.length)];
   }
   const last = index % alphabets.length;
   str += alphabets[last];

@@ -1,4 +1,4 @@
-import { CellRange } from './cell_range';
+import { CellRange } from './cellRange';
 
 export default class Selector {
   range: CellRange;

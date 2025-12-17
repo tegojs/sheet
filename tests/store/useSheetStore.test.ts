@@ -10,7 +10,7 @@ describe('useSheetStore', () => {
     expect(state.sheets).toHaveLength(1);
     expect(state.activeSheetIndex).toBe(0);
     expect(state.isEditing).toBe(false);
-    expect(state.contextMenu).toBeNull();
+    expect(state.contextMenuPosition).toBe(null);
   });
 
   it('应该能够添加新表格', () => {
@@ -37,12 +37,21 @@ describe('useSheetStore', () => {
   it('应该能够删除表格', () => {
     const { result } = renderHook(() => useSheetStore());
 
+    const initialLength = result.current.sheets.length;
+
+    // 添加一个新表格
     act(() => {
       result.current.addSheet();
-      result.current.deleteSheet(1);
     });
 
-    expect(result.current.sheets).toHaveLength(1);
+    expect(result.current.sheets).toHaveLength(initialLength + 1);
+
+    // 删除最后一个表格
+    act(() => {
+      result.current.deleteSheet(initialLength);
+    });
+
+    expect(result.current.sheets).toHaveLength(initialLength);
   });
 
   it('应该能够重命名表格', () => {
@@ -103,13 +112,13 @@ describe('useSheetStore', () => {
       result.current.openContextMenu(100, 200);
     });
 
-    expect(result.current.contextMenu).toEqual({ x: 100, y: 200 });
+    expect(result.current.contextMenuPosition).toEqual({ x: 100, y: 200 });
 
     act(() => {
       result.current.closeContextMenu();
     });
 
-    expect(result.current.contextMenu).toBeNull();
+    expect(result.current.contextMenuPosition).toBe(null);
   });
 
   it('应该能够撤销和重做', () => {

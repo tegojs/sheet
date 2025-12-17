@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import type DataProxy from '../core/data_proxy';
+import type DataProxy from '../core/dataProxy';
 import { useSheetStore } from '../store/useSheetStore';
 
 interface MouseInteractionOptions {

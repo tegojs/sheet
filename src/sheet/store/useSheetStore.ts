@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import type { CellRange } from '../core/cell_range';
-import DataProxy from '../core/data_proxy';
+import type { CellRange } from '../core/cellRange';
+import DataProxy from '../core/dataProxy';
 import type { Options } from '../index';
 import type { ChangeListener, SheetDataInput, StyleValue } from '../types';
 

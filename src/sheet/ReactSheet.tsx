@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useEffect, useRef } from 'react';
-import { Bottombar } from './components/Bottombar/Bottombar';
+import { Bottombar } from './components/BottomBar/Bottombar';
 import { CanvasTable } from './components/CanvasTable';
 import { ContextMenu } from './components/ContextMenu/ContextMenu';
 import { CellEditor } from './components/Editor/CellEditor';

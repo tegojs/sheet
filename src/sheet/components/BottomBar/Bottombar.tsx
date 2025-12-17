@@ -2,7 +2,7 @@ import type React from 'react';
 import { useState } from 'react';
 import { cssPrefix } from '../../configs';
 import { useSheetStore } from '../../store/useSheetStore';
-import { Icon } from '../common/Icon';
+import { Icon } from '../Common/Icon';
 
 export const Bottombar: React.FC = () => {
   const {

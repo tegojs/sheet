@@ -5,7 +5,7 @@ import { SelectionOverlay } from '../../src/sheet/components/Selection/Selection
 import { useSheetStore } from '../../src/sheet/store/useSheetStore';
 
 // Mock useSheetStore
-vi.mock('../../src/sheet/store/useSheetStore', () => ({
+vi.mock('/home/zhanglin/sheet/src/sheet/store/useSheetStore', () => ({
   useActiveSheet: vi.fn(),
   useSelection: vi.fn(),
 }));
@@ -22,7 +22,7 @@ describe('SelectionOverlay', () => {
     const {
       useActiveSheet,
       useSelection,
-    } = require('../../src/sheet/store/useSheetStore');
+    } = require('/home/zhanglin/sheet/src/sheet/store/useSheetStore');
     vi.mocked(useActiveSheet).mockReturnValue(mockData);
     vi.mocked(useSelection).mockReturnValue({ sri: 0, sci: 0, eri: 0, eci: 0 });
 
@@ -36,7 +36,7 @@ describe('SelectionOverlay', () => {
     const {
       useActiveSheet,
       useSelection,
-    } = require('../../src/sheet/store/useSheetStore');
+    } = require('/home/zhanglin/sheet/src/sheet/store/useSheetStore');
     vi.mocked(useActiveSheet).mockReturnValue(null);
     vi.mocked(useSelection).mockReturnValue(null);
 

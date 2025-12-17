@@ -3,7 +3,8 @@ import { useMemo } from 'react';
 import { cssPrefix } from '../../configs';
 import { t } from '../../locale/locale';
 import { useActiveSheet, useSheetStore } from '../../store/useSheetStore';
-import { Dropdown } from '../common/Dropdown';
+import { Dropdown } from '../Common/Dropdown';
+import { Icon } from '../Common/Icon';
 import { ToolbarButton } from './ToolbarButton';
 
 // 辅助函数：为可点击元素添加键盘事件

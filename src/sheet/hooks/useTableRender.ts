@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { renderCell } from '../canvas/cell_renderer';
+import { renderCell } from '../canvas/cellRenderer';
 import { Draw } from '../canvas/draw';
 import { npx, thinLineWidth } from '../canvas/draw';
 import { stringAt } from '../core/alphabet';
-import type DataProxy from '../core/data_proxy';
+import type DataProxy from '../core/dataProxy';
 import type { MergeInfo, ViewRange } from '../types';
 
 const tableFixedHeaderCleanStyle = { fillStyle: '#f4f5f8' };

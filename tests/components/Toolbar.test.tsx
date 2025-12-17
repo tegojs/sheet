@@ -5,7 +5,7 @@ import { Toolbar } from '../../src/sheet/components/Toolbar/Toolbar';
 import { useSheetStore } from '../../src/sheet/store/useSheetStore';
 
 // Mock useSheetStore
-vi.mock('../../src/sheet/store/useSheetStore', () => ({
+vi.mock('/home/zhanglin/sheet/src/sheet/store/useSheetStore', () => ({
   useSheetStore: vi.fn(),
   useActiveSheet: vi.fn(),
 }));
@@ -23,7 +23,9 @@ describe('Toolbar', () => {
       setCellStyle: vi.fn(),
     } as ReturnType<typeof useSheetStore>);
 
-    const { useActiveSheet } = require('../../src/sheet/store/useSheetStore');
+    const {
+      useActiveSheet,
+    } = require('/home/zhanglin/sheet/src/sheet/store/useSheetStore');
     vi.mocked(useActiveSheet).mockReturnValue(mockData);
 
     const { container } = render(<Toolbar />);
@@ -44,7 +46,9 @@ describe('Toolbar', () => {
       setCellStyle: vi.fn(),
     } as ReturnType<typeof useSheetStore>);
 
-    const { useActiveSheet } = require('../../src/sheet/store/useSheetStore');
+    const {
+      useActiveSheet,
+    } = require('/home/zhanglin/sheet/src/sheet/store/useSheetStore');
     vi.mocked(useActiveSheet).mockReturnValue(mockData);
 
     const { container } = render(<Toolbar />);

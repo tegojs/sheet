@@ -5,7 +5,7 @@ import { CanvasTable } from '../../src/sheet/components/CanvasTable';
 import { useSheetStore } from '../../src/sheet/store/useSheetStore';
 
 // Mock useSheetStore
-vi.mock('../../src/sheet/store/useSheetStore', () => ({
+vi.mock('/home/zhanglin/sheet/src/sheet/store/useSheetStore', () => ({
   useSheetStore: vi.fn(),
   useActiveSheet: vi.fn(),
 }));
@@ -23,7 +23,9 @@ describe('CanvasTable', () => {
       subscribe: vi.fn(() => vi.fn()),
     } as ReturnType<typeof useSheetStore>);
 
-    const { useActiveSheet } = require('../../src/sheet/store/useSheetStore');
+    const {
+      useActiveSheet,
+    } = require('/home/zhanglin/sheet/src/sheet/store/useSheetStore');
     vi.mocked(useActiveSheet).mockReturnValue(mockData);
 
     const { container } = render(<CanvasTable />);
@@ -34,7 +36,9 @@ describe('CanvasTable', () => {
   });
 
   it('当没有数据时应该显示加载状态', () => {
-    const { useActiveSheet } = require('../../src/sheet/store/useSheetStore');
+    const {
+      useActiveSheet,
+    } = require('/home/zhanglin/sheet/src/sheet/store/useSheetStore');
     vi.mocked(useActiveSheet).mockReturnValue(null);
 
     const { container } = render(<CanvasTable />);

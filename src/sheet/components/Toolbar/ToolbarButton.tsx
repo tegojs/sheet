@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useState } from 'react';
 import { cssPrefix } from '../../configs';
-import { Icon } from '../common/Icon';
+import { Icon } from '../Common/Icon';
 
 interface ToolbarButtonProps {
   icon?: string;

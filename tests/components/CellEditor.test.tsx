@@ -5,7 +5,7 @@ import { CellEditor } from '../../src/sheet/components/Editor/CellEditor';
 import { useSheetStore } from '../../src/sheet/store/useSheetStore';
 
 // Mock useSheetStore
-vi.mock('../../src/sheet/store/useSheetStore', () => ({
+vi.mock('/home/zhanglin/sheet/src/sheet/store/useSheetStore', () => ({
   useSheetStore: vi.fn(),
   useActiveSheet: vi.fn(),
   useIsEditing: vi.fn(),
@@ -29,7 +29,7 @@ describe('CellEditor', () => {
     const {
       useActiveSheet,
       useIsEditing,
-    } = require('../../src/sheet/store/useSheetStore');
+    } = require('/home/zhanglin/sheet/src/sheet/store/useSheetStore');
     vi.mocked(useActiveSheet).mockReturnValue(mockData);
     vi.mocked(useIsEditing).mockReturnValue(false);
 
@@ -55,7 +55,7 @@ describe('CellEditor', () => {
     const {
       useActiveSheet,
       useIsEditing,
-    } = require('../../src/sheet/store/useSheetStore');
+    } = require('/home/zhanglin/sheet/src/sheet/store/useSheetStore');
     vi.mocked(useActiveSheet).mockReturnValue(mockData);
     vi.mocked(useIsEditing).mockReturnValue(true);
 

@@ -3,7 +3,7 @@ import type {
   ValidationOperator,
   ValidationType,
 } from '../types';
-import type { CellRange } from './cell_range';
+import type { CellRange } from './cellRange';
 import { Validation } from './validation';
 import { Validator } from './validator';
 

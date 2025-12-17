@@ -1,7 +1,7 @@
 import { t } from '../locale/locale';
 import { expr2xy, xy2expr } from './alphabet';
-import AutoFilter from './auto_filter';
-import { CellRange } from './cell_range';
+import AutoFilter from './autoFilter';
+import { CellRange } from './cellRange';
 import Clipboard from './clipboard';
 import { Cols } from './col';
 import { cloneDeep, equals, merge, rangeReduceIf } from './helper';

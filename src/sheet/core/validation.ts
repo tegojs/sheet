@@ -1,4 +1,4 @@
-import { CellRange } from './cell_range';
+import { CellRange } from './cellRange';
 import Validator from './validator';
 
 export class Validation {

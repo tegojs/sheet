@@ -1,4 +1,4 @@
-import type { CellRange } from './cell_range';
+import type { CellRange } from './cellRange';
 
 export default class Clipboard {
   constructor(
