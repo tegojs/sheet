@@ -45,7 +45,7 @@ describe('useTableRender', () => {
 
     mockCanvas.getContext = vi.fn(
       () => mockContext as unknown as CanvasRenderingContext2D,
-    );
+    ) as unknown as typeof mockCanvas.getContext;
     Object.defineProperty(result.current.canvasRef, 'current', {
       writable: true,
       value: mockCanvas,

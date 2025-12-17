@@ -271,6 +271,9 @@ export class VerticalBordersStrategy implements BorderStyleStrategy {
  * Remove all borders
  */
 export class NoneBordersStrategy implements BorderStyleStrategy {
+  private styles: unknown[];
+  private addStyle: (style: unknown) => number;
+
   constructor(styles: unknown[], addStyle: (style: unknown) => number) {
     this.styles = styles;
     this.addStyle = addStyle;

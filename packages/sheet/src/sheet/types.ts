@@ -287,7 +287,9 @@ export type EventListener<T = unknown> = (event: T) => void;
  */
 export interface FormulaMap {
   [key: string]: {
-    render: (params: unknown[]) => unknown;
+    render: (
+      params: (string | number | boolean)[],
+    ) => string | number | boolean;
   };
 }
 

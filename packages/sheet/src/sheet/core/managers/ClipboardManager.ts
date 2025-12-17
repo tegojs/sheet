@@ -18,6 +18,7 @@ import type Selector from '../selector';
 export class ClipboardManager {
   private clipboard: Clipboard;
   private rows: Rows;
+  private merges: Merges;
   private selector: Selector;
   private getCell: (ri: number, ci: number) => Cell | null;
   private setCellText: (

@@ -22,7 +22,10 @@ describe('helper', () => {
     });
     it("should return { a: { a1: 'a2' }, b: 'b' } where the value is {a: {a1: 'a1'}, b: 'b'}, {a: {a1: 'b'}}", () => {
       const obj = { a: { a1: 'a1' }, b: 'b' };
-      const merge = helper.merge(obj, { a: { a1: 'a2' } });
+      const merge = helper.merge(obj, { a: { a1: 'a2' } }) as {
+        a: { a1: string };
+        b: string;
+      };
       assert.equal(obj.a.a1, 'a1');
       assert.equal(merge.a.a1, 'a2');
       assert.equal(merge.b, 'b');

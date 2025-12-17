@@ -7,6 +7,7 @@
     "build": "pnpm -r build",
     "dev": "pnpm -C packages/demo dev",
     "test": "pnpm -C packages/sheet test",
+    "type-check": "tsc --noEmit",
     "format": "biome check --write .",
     "check": "biome check .",
     "doc:build": "rspress build",

@@ -19,7 +19,9 @@ import type Selector from '../selector';
 export class SelectionManager {
   private rows: Rows;
   private cols: Cols;
+  private merges: Merges;
   private selector: Selector;
+  private scroll: Scroll;
   private exceptRowSet: Set<number>;
   private unsortedRowMap: Map<number, number>;
   private freezeTotalWidth: () => number;

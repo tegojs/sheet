@@ -74,7 +74,7 @@ describe('Canvas Draw Utils', () => {
 
     it('应该能够绘制矩形', () => {
       const draw = new Draw(canvas, 100, 100);
-      draw.rect({ x: 0, y: 0, width: 100, height: 50 }, () => {});
+      draw.rect(new DrawBox(0, 0, 100, 50), () => {});
 
       // If no exception is thrown, the test passes
       expect(draw).toBeInstanceOf(Draw);
@@ -99,10 +99,7 @@ describe('Canvas Draw Utils', () => {
     it('应该能够绘制线条', () => {
       const draw = new Draw(canvas, 100, 100);
 
-      draw.line([
-        [0, 0],
-        [100, 100],
-      ]);
+      draw.line([0, 0], [100, 100]);
 
       // If no exception is thrown, the test passes
       expect(draw).toBeInstanceOf(Draw);

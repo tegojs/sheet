@@ -93,7 +93,7 @@ describe('useSheetStore', () => {
     const { result } = renderHook(() => useSheetStore());
 
     act(() => {
-      result.current.startEditing(0, 0);
+      result.current.startEditing();
     });
 
     expect(result.current.isEditing).toBe(true);

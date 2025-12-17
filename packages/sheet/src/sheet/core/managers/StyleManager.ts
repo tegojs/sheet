@@ -16,8 +16,10 @@ import type Selector from '../selector';
 export class StyleManager {
   private styles: CellStyle[];
   private rows: Rows;
+  private merges: Merges;
   private selector: Selector;
   private defaultStyleGetter: () => CellStyle;
+  private onStyleChange: () => void;
 
   constructor(
     styles: CellStyle[],

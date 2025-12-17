@@ -225,9 +225,9 @@ const evalSuffixExpr = (
       stack.push(ret);
     } else if (Array.isArray(expr)) {
       const [formula, len] = expr;
-      const params = [];
+      const params: (string | number | boolean)[] = [];
       for (let j = 0; j < len; j += 1) {
-        params.push(stack.pop());
+        params.push(stack.pop() as string | number | boolean);
       }
       stack.push(formulaMap[formula].render(params.reverse()));
     } else {
