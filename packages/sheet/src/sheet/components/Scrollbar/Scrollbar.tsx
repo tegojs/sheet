@@ -1,7 +1,7 @@
 import type React from 'react';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { cssPrefix } from '../../configs';
-import { useActiveSheet } from '../../store/useSheetStore';
+import { useActiveSheet, useSheetStore } from '../../store/useSheetStore';
 
 interface ScrollbarProps {
   vertical?: boolean;
@@ -16,50 +16,67 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const isScrollingRef = useRef(false);
+  const [dimensions, setDimensions] = useState({
+    scrollbarSize: 0,
+    contentSize: 0,
+    visible: false,
+  });
 
-  // 设置滚动条尺寸和位置
+  // 计算滚动条尺寸
   useEffect(() => {
-    if (!data || !scrollRef.current || !contentRef.current) return;
+    if (!data) return;
 
-    const { rows, cols, scroll } = data;
-    const viewWidth = data.viewWidth();
-    const viewHeight = data.viewHeight();
+    const updateDimensions = () => {
+      const { rows, cols } = data;
+      const viewWidth = data.viewWidth();
+      const viewHeight = data.viewHeight();
 
-    if (vertical) {
-      const height = viewHeight - 1;
-      const exceptRowTotalHeight = data.exceptRowTotalHeight(0, -1);
-      const contentDistance = rows.totalHeight() - exceptRowTotalHeight;
+      if (vertical) {
+        const height = viewHeight - 1;
+        const exceptRowTotalHeight = data.exceptRowTotalHeight(0, -1);
+        const contentDistance = rows.totalHeight() - exceptRowTotalHeight;
 
-      if (contentDistance > height) {
-        scrollRef.current.style.height = `${height - 15}px`;
-        scrollRef.current.style.display = 'block';
-        contentRef.current.style.width = '1px';
-        contentRef.current.style.height = `${contentDistance}px`;
-        // 同步滚动位置
-        if (!isScrollingRef.current) {
-          scrollRef.current.scrollTop = scroll.y;
-        }
+        setDimensions({
+          scrollbarSize: height - 15,
+          contentSize: contentDistance,
+          visible: contentDistance > height,
+        });
       } else {
-        scrollRef.current.style.display = 'none';
+        const width = viewWidth - 1;
+        const contentDistance = cols.totalWidth();
+
+        setDimensions({
+          scrollbarSize: width - 15,
+          contentSize: contentDistance,
+          visible: contentDistance > width,
+        });
       }
-    } else {
-      const width = viewWidth - 1;
-      const contentDistance = cols.totalWidth();
+    };
 
-      if (contentDistance > width) {
-        scrollRef.current.style.width = `${width - 15}px`;
-        scrollRef.current.style.display = 'block';
-        contentRef.current.style.height = '1px';
-        contentRef.current.style.width = `${contentDistance}px`;
-        // 同步滚动位置
-        if (!isScrollingRef.current) {
-          scrollRef.current.scrollLeft = scroll.x;
-        }
+    // 初始计算
+    updateDimensions();
+
+    // 订阅 store 变化
+    const unsubscribe = useSheetStore.subscribe(() => {
+      updateDimensions();
+    });
+
+    return unsubscribe;
+  }, [data, vertical]);
+
+  // 同步滚动位置
+  useEffect(() => {
+    if (!data || !scrollRef.current || !dimensions.visible) return;
+
+    const { scroll } = data;
+    if (!isScrollingRef.current) {
+      if (vertical) {
+        scrollRef.current.scrollTop = scroll.y;
       } else {
-        scrollRef.current.style.display = 'none';
+        scrollRef.current.scrollLeft = scroll.x;
       }
     }
-  }, [data, vertical]);
+  }, [data, vertical, dimensions.visible]);
 
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
@@ -78,7 +95,7 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
     [vertical, onScroll],
   );
 
-  if (!data) return null;
+  if (!data || !dimensions.visible) return null;
 
   return (
     <div
@@ -94,9 +111,20 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
         zIndex: 12,
         overflowX: vertical ? 'hidden' : 'scroll',
         overflowY: vertical ? 'scroll' : 'hidden',
+        ...(vertical
+          ? { height: dimensions.scrollbarSize }
+          : { width: dimensions.scrollbarSize }),
       }}
     >
-      <div ref={contentRef} style={{ background: '#ddd' }} />
+      <div
+        ref={contentRef}
+        style={{
+          background: '#ddd',
+          ...(vertical
+            ? { width: 1, height: dimensions.contentSize }
+            : { height: 1, width: dimensions.contentSize }),
+        }}
+      />
     </div>
   );
 };
