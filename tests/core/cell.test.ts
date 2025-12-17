@@ -94,11 +94,7 @@ describe('infixExprToSuffixExpr', () => {
 describe('cellRender', () => {
   it('should return 0 + 2 + 2 + 6 + 49 + 20 when the value is =SUM(A1,B2, C1, C5) + 50 + B20', () => {
     assert.equal(
-      cellRender(
-        '=SUM(A1,B2, C1, C5) + 50 + B20',
-        formulam,
-        (x, y) => x + y,
-      ),
+      cellRender('=SUM(A1,B2, C1, C5) + 50 + B20', formulam, (x, y) => x + y),
       0 + 2 + 2 + 6 + 50 + 20,
     );
   });

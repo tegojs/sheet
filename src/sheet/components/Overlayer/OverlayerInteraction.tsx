@@ -11,8 +11,14 @@ export const OverlayerInteraction: React.FC<OverlayerInteractionProps> = ({
   children,
 }) => {
   const data = useActiveSheet();
-  const { setSelection, setSelectionEnd, startEditing, openContextMenu } =
-    useSheetStore();
+  const {
+    setSelection,
+    setSelectionEnd,
+    startEditing,
+    stopEditing,
+    isEditing,
+    openContextMenu,
+  } = useSheetStore();
   const overlayerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({
     width: 0,
@@ -79,6 +85,11 @@ export const OverlayerInteraction: React.FC<OverlayerInteractionProps> = ({
         return;
       }
 
+      // 如果正在编辑，先停止编辑
+      if (isEditing) {
+        stopEditing();
+      }
+
       // 设置选区
       if (shiftKey) {
         // Shift+点击 - 扩展选区
@@ -88,7 +99,7 @@ export const OverlayerInteraction: React.FC<OverlayerInteractionProps> = ({
         setSelection(ri, ci, false);
       }
     },
-    [data, setSelection, setSelectionEnd, startEditing],
+    [data, setSelection, setSelectionEnd, startEditing, stopEditing, isEditing],
   );
 
   const handleMouseMove = useCallback(

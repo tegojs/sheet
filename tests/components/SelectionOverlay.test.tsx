@@ -1,6 +1,5 @@
 import { render } from '@testing-library/react';
-import React from 'react';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SelectionOverlay } from '../../src/sheet/components/Selection/SelectionOverlay';
 
 // Mock useSheetStore
@@ -11,7 +10,7 @@ vi.mock('../../src/sheet/store/useSheetStore', () => ({
   useActiveSheet: () => mockUseActiveSheet(),
   useSelection: () => mockUseSelection(),
   useSheetStore: {
-    subscribe: (callback: () => void) => {
+    subscribe: (_callback: () => void) => {
       // Return unsubscribe function
       return () => {};
     },

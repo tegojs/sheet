@@ -4,6 +4,8 @@ import type {
   CanvasRenderingOptions,
   DrawTextCallback,
 } from '../types';
+import { DrawConfig } from './drawConfig';
+import { calculateDecorationOffset } from './textRenderer';
 
 function dpr() {
   return window.devicePixelRatio || 1;
@@ -40,7 +42,7 @@ export class DrawBox {
     this.width = w;
     this.height = h;
     this.padding = padding;
-    this.bgcolor = '#ffffff';
+    this.bgcolor = DrawConfig.colors.defaultBackground;
     // border: [style, color, width]
     this.borderTop = null;
     this.borderRight = null;
@@ -134,7 +136,7 @@ export class DrawBox {
 
 function drawFontLine(
   this: Draw,
-  type: string,
+  type: 'strike' | 'underline',
   tx: number,
   ty: number,
   align: string,
@@ -142,28 +144,13 @@ function drawFontLine(
   blheight: number,
   blwidth: number,
 ) {
-  const floffset = { x: 0, y: 0 };
-  if (type === 'underline') {
-    if (valign === 'bottom') {
-      floffset.y = 0;
-    } else if (valign === 'top') {
-      floffset.y = -(blheight + 2);
-    } else {
-      floffset.y = -blheight / 2;
-    }
-  } else if (type === 'strike') {
-    if (valign === 'bottom') {
-      floffset.y = blheight / 2;
-    } else if (valign === 'top') {
-      floffset.y = -(blheight / 2 + 2);
-    }
-  }
-
-  if (align === 'center') {
-    floffset.x = blwidth / 2;
-  } else if (align === 'right') {
-    floffset.x = blwidth;
-  }
+  const floffset = calculateDecorationOffset(
+    type,
+    align,
+    valign,
+    blheight,
+    blwidth,
+  );
   this.line(
     [tx - floffset.x, ty - floffset.y],
     [tx - floffset.x + blwidth, ty - floffset.y],
@@ -214,6 +201,20 @@ export class Draw {
   restore() {
     this.ctx.restore();
     return this;
+  }
+
+  /**
+   * Context Guard pattern: Execute a function within a saved context
+   * Automatically handles save/restore to prevent state leaks
+   */
+  withContext<T>(fn: () => T): T {
+    this.ctx.save();
+    this.ctx.beginPath();
+    try {
+      return fn();
+    } finally {
+      this.ctx.restore();
+    }
   }
 
   beginPath() {
@@ -352,20 +353,24 @@ export class Draw {
 
   border(style: string, color: string) {
     const { ctx } = this;
+    const { borders } = DrawConfig;
     ctx.lineWidth = thinLineWidth();
     ctx.strokeStyle = color;
     // Reset lineDash first to avoid state pollution from previous calls
     ctx.setLineDash([]);
     if (style === 'medium') {
-      ctx.lineWidth = npx(2) - 0.5;
+      ctx.lineWidth = npx(borders.mediumWidth) - 0.5;
     } else if (style === 'thick') {
-      ctx.lineWidth = npx(3);
+      ctx.lineWidth = npx(borders.thickWidth);
     } else if (style === 'dashed') {
-      ctx.setLineDash([npx(3), npx(2)]);
+      ctx.setLineDash(borders.dashedPattern.map(npx));
     } else if (style === 'dotted') {
-      ctx.setLineDash([npx(1), npx(1)]);
+      ctx.setLineDash(borders.dottedPattern.map(npx));
     } else if (style === 'double') {
-      ctx.setLineDash([npx(2), 0]);
+      ctx.setLineDash([
+        npx(borders.doublePattern[0]),
+        borders.doublePattern[1],
+      ]);
     }
     return this;
   }
@@ -414,50 +419,84 @@ export class Draw {
     ctx.restore();
   }
 
-  dropdown(box: DrawBox) {
+  /**
+   * Draw a triangle indicator at a specified position
+   * Template method for dropdown, error, and frozen indicators
+   */
+  private drawTriangleIndicator(
+    box: DrawBox,
+    position: 'bottom-right' | 'top-right',
+    color: string,
+    size: number,
+    height: number,
+  ) {
     const { ctx } = this;
-    const { x, y, width, height } = box;
-    const sx = x + width - 15;
-    const sy = y + height - 15;
+    const { x, y, width, height: boxHeight } = box;
+    const { offset } = DrawConfig.indicators;
+
+    let points: [number, number][];
+
+    if (position === 'bottom-right') {
+      // Dropdown indicator (pointing down)
+      const sx = x + width - offset;
+      const sy = y + boxHeight - offset;
+      points = [
+        [sx, sy],
+        [sx + size, sy],
+        [sx + size / 2, sy + height],
+      ];
+    } else {
+      // Corner indicator (top-right corner triangle)
+      const sx = x + width - 1;
+      points = [
+        [sx - size, y - 1],
+        [sx, y - 1],
+        [sx, y + height],
+      ];
+    }
+
     ctx.save();
     ctx.beginPath();
-    ctx.moveTo(npx(sx), npx(sy));
-    ctx.lineTo(npx(sx + 8), npx(sy));
-    ctx.lineTo(npx(sx + 4), npx(sy + 6));
+    ctx.moveTo(npx(points[0][0]), npx(points[0][1]));
+    ctx.lineTo(npx(points[1][0]), npx(points[1][1]));
+    ctx.lineTo(npx(points[2][0]), npx(points[2][1]));
     ctx.closePath();
-    ctx.fillStyle = 'rgba(0, 0, 0, .45)';
+    ctx.fillStyle = color;
     ctx.fill();
     ctx.restore();
+  }
+
+  dropdown(box: DrawBox) {
+    const { indicators, colors } = DrawConfig;
+    this.drawTriangleIndicator(
+      box,
+      'bottom-right',
+      colors.dropdownIndicator,
+      indicators.triangleSize,
+      indicators.triangleHeight,
+    );
   }
 
   error(box: DrawBox) {
-    const { ctx } = this;
-    const { x, y, width } = box;
-    const sx = x + width - 1;
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(npx(sx - 8), npx(y - 1));
-    ctx.lineTo(npx(sx), npx(y - 1));
-    ctx.lineTo(npx(sx), npx(y + 8));
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(255, 0, 0, .65)';
-    ctx.fill();
-    ctx.restore();
+    const { indicators, colors } = DrawConfig;
+    this.drawTriangleIndicator(
+      box,
+      'top-right',
+      colors.errorIndicator,
+      indicators.triangleSize,
+      indicators.cornerHeight,
+    );
   }
 
   frozen(box: DrawBox) {
-    const { ctx } = this;
-    const { x, y, width } = box;
-    const sx = x + width - 1;
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(npx(sx - 8), npx(y - 1));
-    ctx.lineTo(npx(sx), npx(y - 1));
-    ctx.lineTo(npx(sx), npx(y + 8));
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(0, 255, 0, .85)';
-    ctx.fill();
-    ctx.restore();
+    const { indicators, colors } = DrawConfig;
+    this.drawTriangleIndicator(
+      box,
+      'top-right',
+      colors.frozenIndicator,
+      indicators.triangleSize,
+      indicators.cornerHeight,
+    );
   }
 
   rect(box: DrawBox, dtextcb: DrawTextCallback) {

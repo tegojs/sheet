@@ -1,6 +1,5 @@
 import { render } from '@testing-library/react';
-import React from 'react';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CellEditor } from '../../src/sheet/components/Editor/CellEditor';
 
 // Mock useSheetStore
@@ -20,6 +19,9 @@ describe('CellEditor', () => {
     mockUseSheetStore.mockReturnValue({
       setCellText: vi.fn(),
       stopEditing: vi.fn(),
+      editingInitialChar: null,
+      editingText: 'Test',
+      setEditingText: vi.fn(),
     });
   });
 

@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import {
   BetweenStrategy,
-  NotBetweenStrategy,
   EqualStrategy,
-  NotEqualStrategy,
-  LessThanStrategy,
-  LessThanOrEqualStrategy,
-  GreaterThanStrategy,
   GreaterThanOrEqualStrategy,
+  GreaterThanStrategy,
+  LessThanOrEqualStrategy,
+  LessThanStrategy,
+  NotBetweenStrategy,
+  NotEqualStrategy,
   ValidationStrategyFactory,
 } from '../../../src/sheet/core/strategies/ValidationStrategy';
 

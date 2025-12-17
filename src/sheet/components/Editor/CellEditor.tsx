@@ -14,7 +14,8 @@ interface CellEditorProps {
 export const CellEditor: React.FC<CellEditorProps> = ({ onFinish }) => {
   const data = useActiveSheet();
   const isEditing = useIsEditing();
-  const { setCellText, stopEditing } = useSheetStore();
+  const { setCellText, stopEditing, editingText, setEditingText } =
+    useSheetStore();
 
   const [text, setText] = useState('');
   const [position, setPosition] = useState<{
@@ -28,9 +29,17 @@ export const CellEditor: React.FC<CellEditorProps> = ({ onFinish }) => {
   const editingCellRef = useRef<{ ri: number; ci: number } | null>(null);
   // 记录 blur 超时，用于在开始新编辑时取消
   const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // 记录上一次的 isEditing 状态，用于检测编辑开始
+  const wasEditingRef = useRef(false);
+  // 使用 ref 记录初始编辑文本，避免 editingText 变化导致 effect 重新运行
+  const initialEditingTextRef = useRef<string>('');
 
   // 当开始编辑时，获取单元格内容和位置
   useEffect(() => {
+    // 只在从非编辑状态进入编辑状态时初始化
+    const justStartedEditing = isEditing && !wasEditingRef.current;
+    wasEditingRef.current = isEditing;
+
     if (isEditing && data) {
       // 取消任何待处理的 blur 超时，防止 Chrome 中的竞态条件
       if (blurTimeoutRef.current) {
@@ -42,9 +51,23 @@ export const CellEditor: React.FC<CellEditorProps> = ({ onFinish }) => {
       // 保存正在编辑的单元格坐标
       editingCellRef.current = { ri, ci };
 
-      const cell = data.getSelectedCell();
-      const cellText = cell?.text || '';
-      setText(cellText);
+      // 只在刚开始编辑时设置初始文本
+      if (justStartedEditing) {
+        // 捕获当前的 editingText 到 ref，后续 editingText 变化不会重置文本
+        initialEditingTextRef.current = editingText;
+        setText(editingText);
+
+        // 聚焦到 textarea - 必须同步执行以确保后续按键能被 textarea 捕获
+        // 使用 setTimeout(0) 等待 React 完成 DOM 更新
+        setTimeout(() => {
+          if (textareaRef.current) {
+            textareaRef.current.focus();
+            // 光标放在末尾
+            const cursorPos = textareaRef.current.value.length;
+            textareaRef.current.setSelectionRange(cursorPos, cursorPos);
+          }
+        }, 0);
+      }
 
       // 获取选中单元格的位置
       const rect = data.getSelectedRect();
@@ -58,17 +81,6 @@ export const CellEditor: React.FC<CellEditorProps> = ({ onFinish }) => {
         width: rect.width ?? 0,
         height: rect.height ?? 0,
       });
-
-      // 聚焦到 textarea
-      setTimeout(() => {
-        if (textareaRef.current) {
-          textareaRef.current.focus();
-          textareaRef.current.setSelectionRange(
-            cellText.length,
-            cellText.length,
-          );
-        }
-      }, 0);
     } else {
       setPosition(null);
       editingCellRef.current = null;
@@ -81,33 +93,32 @@ export const CellEditor: React.FC<CellEditorProps> = ({ onFinish }) => {
         blurTimeoutRef.current = null;
       }
     };
-  }, [isEditing, data]);
+    // editingText 在 deps 中是为了在开始编辑时获取初始值
+    // 但 justStartedEditing 保证了只有在首次编辑时才会 setText
+  }, [isEditing, data, editingText]);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const newText = e.target.value;
       setText(newText);
+      setEditingText(newText);
 
-      // 使用保存的编辑单元格坐标
+      // 使用保存的编辑单元格坐标，实时更新单元格内容（用于预览）
       if (editingCellRef.current) {
         const { ri, ci } = editingCellRef.current;
         setCellText(ri, ci, newText, 'input');
       }
     },
-    [setCellText],
+    [setCellText, setEditingText],
   );
 
   const handleFinish = useCallback(() => {
-    // 使用保存的编辑单元格坐标，而不是当前选区
-    if (editingCellRef.current) {
-      const { ri, ci } = editingCellRef.current;
-      setCellText(ri, ci, text, 'finished');
-    }
+    setEditingText(text);
     stopEditing();
     if (onFinish) {
       onFinish();
     }
-  }, [text, setCellText, stopEditing, onFinish]);
+  }, [text, setEditingText, stopEditing, onFinish]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -122,6 +133,7 @@ export const CellEditor: React.FC<CellEditorProps> = ({ onFinish }) => {
           const end = textarea.selectionEnd;
           const newText = `${text.substring(0, start)}\n${text.substring(end)}`;
           setText(newText);
+          setEditingText(newText);
 
           setTimeout(() => {
             textarea.setSelectionRange(start + 1, start + 1);
@@ -135,7 +147,7 @@ export const CellEditor: React.FC<CellEditorProps> = ({ onFinish }) => {
         // TODO: 移动到下一个单元格
       }
     },
-    [text, handleFinish, stopEditing],
+    [text, handleFinish, stopEditing, setEditingText],
   );
 
   const handleBlur = useCallback(() => {

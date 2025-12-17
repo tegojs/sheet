@@ -271,6 +271,11 @@ export class VerticalBordersStrategy implements BorderStyleStrategy {
  * Remove all borders
  */
 export class NoneBordersStrategy implements BorderStyleStrategy {
+  constructor(styles: unknown[], addStyle: (style: unknown) => number) {
+    this.styles = styles;
+    this.addStyle = addStyle;
+  }
+
   apply(
     range: CellRange,
     _style: string,

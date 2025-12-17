@@ -11,6 +11,9 @@ interface SheetState {
 
   // UI 状态
   isEditing: boolean;
+  editingInitialChar: string | null; // 直接输入时的初始字符
+  editingCell: { ri: number; ci: number } | null; // 正在编辑的单元格
+  editingText: string; // 当前编辑的文本
   contextMenuPosition: { x: number; y: number } | null;
   showContextMenu: boolean;
 
@@ -41,8 +44,9 @@ interface SheetState {
   setCellStyle: (property: string, value: StyleValue) => void;
 
   // Actions - 编辑状态
-  startEditing: () => void;
+  startEditing: (initialChar?: string) => void;
   stopEditing: () => void;
+  setEditingText: (text: string) => void;
 
   // Actions - 右键菜单
   openContextMenu: (x: number, y: number) => void;
@@ -128,6 +132,9 @@ export const useSheetStore = create<SheetState>((set, get) => {
     sheets: [initialSheet],
     activeSheetIndex: 0,
     isEditing: false,
+    editingInitialChar: null,
+    editingCell: null,
+    editingText: '',
     contextMenuPosition: null,
     showContextMenu: false,
     updateCount: 0,
@@ -234,8 +241,39 @@ export const useSheetStore = create<SheetState>((set, get) => {
     },
 
     // 编辑状态
-    startEditing: () => set({ isEditing: true }),
-    stopEditing: () => set({ isEditing: false }),
+    startEditing: (initialChar?: string) => {
+      const sheet = get().getActiveSheet();
+      const { ri, ci } = sheet.selector;
+      const cell = sheet.getSelectedCell();
+      const initialText =
+        initialChar !== null && initialChar !== undefined
+          ? initialChar
+          : cell?.text || '';
+
+      set({
+        isEditing: true,
+        editingInitialChar: initialChar || null,
+        editingCell: { ri, ci },
+        editingText: initialText,
+      });
+    },
+    stopEditing: () => {
+      const state = get();
+      // 保存编辑内容到单元格
+      if (state.editingCell && state.isEditing) {
+        const { ri, ci } = state.editingCell;
+        const sheet = state.getActiveSheet();
+        sheet.setCellText(ri, ci, state.editingText, 'finished');
+        state.triggerChange();
+      }
+      set({
+        isEditing: false,
+        editingInitialChar: null,
+        editingCell: null,
+        editingText: '',
+      });
+    },
+    setEditingText: (text: string) => set({ editingText: text }),
 
     // 右键菜单
     openContextMenu: (x: number, y: number) => {

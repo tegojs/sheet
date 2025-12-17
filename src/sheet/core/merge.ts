@@ -7,6 +7,10 @@ export class Merges {
     this._ = d;
   }
 
+  [Symbol.iterator](): Iterator<CellRange> {
+    return this._[Symbol.iterator]();
+  }
+
   forEach(cb: (cellRange: CellRange, index: number) => void): void {
     this._.forEach(cb);
   }

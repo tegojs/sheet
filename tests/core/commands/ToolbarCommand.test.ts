@@ -1,12 +1,12 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  UndoCommand,
-  RedoCommand,
-  BoldCommand,
-  ItalicCommand,
   AlignCommand,
-  MergeCommand,
+  BoldCommand,
   CommandInvoker,
+  ItalicCommand,
+  MergeCommand,
+  RedoCommand,
+  UndoCommand,
 } from '../../../src/sheet/core/commands/ToolbarCommand';
 
 // Mock DataProxy
@@ -88,7 +88,10 @@ describe('ToolbarCommand', () => {
 
       command.execute();
 
-      expect(mockData.setSelectedCellAttr).toHaveBeenCalledWith('font-bold', true);
+      expect(mockData.setSelectedCellAttr).toHaveBeenCalledWith(
+        'font-bold',
+        true,
+      );
     });
 
     it('should execute bold with false', () => {
@@ -97,7 +100,10 @@ describe('ToolbarCommand', () => {
 
       command.execute();
 
-      expect(mockData.setSelectedCellAttr).toHaveBeenCalledWith('font-bold', false);
+      expect(mockData.setSelectedCellAttr).toHaveBeenCalledWith(
+        'font-bold',
+        false,
+      );
     });
 
     it('should return correct name', () => {
@@ -114,7 +120,10 @@ describe('ToolbarCommand', () => {
 
       command.execute();
 
-      expect(mockData.setSelectedCellAttr).toHaveBeenCalledWith('font-italic', true);
+      expect(mockData.setSelectedCellAttr).toHaveBeenCalledWith(
+        'font-italic',
+        true,
+      );
     });
 
     it('should return correct name', () => {
@@ -131,7 +140,10 @@ describe('ToolbarCommand', () => {
 
       command.execute();
 
-      expect(mockData.setSelectedCellAttr).toHaveBeenCalledWith('align', 'left');
+      expect(mockData.setSelectedCellAttr).toHaveBeenCalledWith(
+        'align',
+        'left',
+      );
     });
 
     it('should execute center align', () => {
@@ -140,7 +152,10 @@ describe('ToolbarCommand', () => {
 
       command.execute();
 
-      expect(mockData.setSelectedCellAttr).toHaveBeenCalledWith('align', 'center');
+      expect(mockData.setSelectedCellAttr).toHaveBeenCalledWith(
+        'align',
+        'center',
+      );
     });
 
     it('should execute right align', () => {
@@ -149,7 +164,10 @@ describe('ToolbarCommand', () => {
 
       command.execute();
 
-      expect(mockData.setSelectedCellAttr).toHaveBeenCalledWith('align', 'right');
+      expect(mockData.setSelectedCellAttr).toHaveBeenCalledWith(
+        'align',
+        'right',
+      );
     });
 
     it('should return correct name', () => {

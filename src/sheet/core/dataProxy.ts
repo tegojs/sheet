@@ -1290,9 +1290,7 @@ export default class DataProxy {
   }
 
   eachMergesInView(viewRange: CellRange, cb: (merge: CellRange) => void): void {
-    for (const it of this.merges.filterIntersects(viewRange)) {
-      cb(it);
-    }
+    this.merges.filterIntersects(viewRange).forEach(cb);
   }
 
   hideRowsOrCols() {

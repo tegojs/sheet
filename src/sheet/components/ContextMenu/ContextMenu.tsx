@@ -10,6 +10,22 @@ interface MenuItem {
   label?: string;
 }
 
+// 检测是否是 Mac 系统
+const isMac =
+  typeof navigator !== 'undefined' &&
+  /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+
+// 格式化快捷键标签，Mac 上用 ⌘ 替换 Ctrl，用 ⌥ 替换 Alt
+function formatShortcut(shortcut: string): string {
+  if (isMac) {
+    return shortcut
+      .replace(/Ctrl\+/g, '⌘')
+      .replace(/Alt\+/g, '⌥')
+      .replace(/Shift\+/g, '⇧');
+  }
+  return shortcut;
+}
+
 const menuItems: MenuItem[] = [
   { key: 'copy', title: tf('contextmenu.copy'), label: 'Ctrl+C' },
   { key: 'cut', title: tf('contextmenu.cut'), label: 'Ctrl+X' },
@@ -45,6 +61,7 @@ export const ContextMenu: React.FC = () => {
     copy,
     cut,
     paste,
+    triggerChange,
   } = useSheetStore();
   const menuRef = useRef<HTMLDivElement>(null);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
@@ -71,9 +88,11 @@ export const ContextMenu: React.FC = () => {
     switch (key) {
       case 'copy':
         copy();
+        triggerChange(); // 触发更新以显示复制指示器
         break;
       case 'cut':
         cut();
+        triggerChange(); // 触发更新以显示剪切指示器
         break;
       case 'paste':
         paste('all');
@@ -191,7 +210,7 @@ export const ContextMenu: React.FC = () => {
                   fontSize: '1em',
                 }}
               >
-                {item.label}
+                {formatShortcut(item.label)}
               </div>
             )}
           </div>

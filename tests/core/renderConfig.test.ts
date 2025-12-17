@@ -1,19 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import {
-  SELECTION_COLOR,
-  SELECTION_BG,
-  SELECTION_HIGHLIGHT,
-  SELECTION_FREEZE_LINE,
-  GRID_LINE_COLOR,
-  GRID_BG_COLOR,
-  HEADER_BG_COLOR,
-  HEADER_TEXT_COLOR,
-  HEADER_HIDDEN_LINE_COLOR,
   DEFAULT_FONT_FAMILY,
   DEFAULT_FONT_SIZE,
   DEFAULT_FONT_WEIGHT,
+  GRID_BG_COLOR,
+  GRID_LINE_COLOR,
   getHeaderFont,
+  HEADER_BG_COLOR,
+  HEADER_HIDDEN_LINE_COLOR,
+  HEADER_TEXT_COLOR,
   RenderConfig,
+  SELECTION_BG,
+  SELECTION_COLOR,
+  SELECTION_FREEZE_LINE,
+  SELECTION_HIGHLIGHT,
 } from '../../src/sheet/core/renderConfig';
 
 describe('RenderConfig', () => {
@@ -102,7 +102,9 @@ describe('RenderConfig', () => {
     it('should have header colors', () => {
       expect(RenderConfig.header.backgroundColor).toBe(HEADER_BG_COLOR);
       expect(RenderConfig.header.textColor).toBe(HEADER_TEXT_COLOR);
-      expect(RenderConfig.header.hiddenLineColor).toBe(HEADER_HIDDEN_LINE_COLOR);
+      expect(RenderConfig.header.hiddenLineColor).toBe(
+        HEADER_HIDDEN_LINE_COLOR,
+      );
     });
 
     it('should have font config', () => {

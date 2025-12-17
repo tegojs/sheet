@@ -5,11 +5,14 @@ export function useKeyboardShortcuts() {
   const {
     undo,
     redo,
+    copy,
     cut,
+    paste,
     startEditing,
     stopEditing,
     setCellStyle,
     getActiveSheet,
+    triggerChange,
   } = useSheetStore();
 
   useEffect(() => {
@@ -33,15 +36,63 @@ export function useKeyboardShortcuts() {
             e.preventDefault();
             redo();
             break;
-          case 67: // Ctrl+C - 复制
-            // 让浏览器处理复制
+          case 67: {
+            // Ctrl+C - 复制
+            e.preventDefault();
+            copy();
+            // 复制到系统剪贴板
+            const sheet = getActiveSheet();
+            if (sheet) {
+              const { sri, eri, sci, eci } = sheet.selector.range;
+              const copyRows: string[][] = [];
+              for (let ri = sri; ri <= eri; ri += 1) {
+                const row: string[] = [];
+                for (let ci = sci; ci <= eci; ci += 1) {
+                  const cell = sheet.getCell(ri, ci);
+                  row.push(cell?.text || '');
+                }
+                copyRows.push(row);
+              }
+              const copyText = copyRows.map((row) => row.join('\t')).join('\n');
+              navigator.clipboard?.writeText(copyText).catch(() => {
+                // 忽略剪贴板错误（可能在 HTTP 下不可用）
+              });
+            }
+            triggerChange(); // 触发更新以显示复制指示器
             break;
-          case 88: // Ctrl+X - 剪切
+          }
+          case 88: {
+            // Ctrl+X - 剪切
             e.preventDefault();
             cut();
+            // 剪切也复制到系统剪贴板
+            const cutSheet = getActiveSheet();
+            if (cutSheet) {
+              const { sri, eri, sci, eci } = cutSheet.selector.range;
+              const cutRows: string[][] = [];
+              for (let ri = sri; ri <= eri; ri += 1) {
+                const row: string[] = [];
+                for (let ci = sci; ci <= eci; ci += 1) {
+                  const cell = cutSheet.getCell(ri, ci);
+                  row.push(cell?.text || '');
+                }
+                cutRows.push(row);
+              }
+              const cutText = cutRows.map((row) => row.join('\t')).join('\n');
+              navigator.clipboard?.writeText(cutText).catch(() => {
+                // 忽略剪贴板错误
+              });
+            }
+            triggerChange(); // 触发更新以显示剪切指示器
             break;
+          }
           case 86: // Ctrl+V - 粘贴
-            // 让浏览器处理粘贴
+            e.preventDefault();
+            if (shiftKey) {
+              paste('text'); // Ctrl+Shift+V - 仅粘贴值
+            } else {
+              paste('all'); // Ctrl+V - 粘贴全部
+            }
             break;
           case 66: // Ctrl+B - 加粗
             e.preventDefault();
@@ -131,14 +182,19 @@ export function useKeyboardShortcuts() {
             // TODO: 实现方向键移动
             break;
           default:
-            // 字母数字键 - 开始编辑
+            // 字母数字键 - 开始编辑并输入字符
             if (
               (keyCode >= 65 && keyCode <= 90) || // A-Z
               (keyCode >= 48 && keyCode <= 57) || // 0-9
               (keyCode >= 96 && keyCode <= 105) || // 数字键盘 0-9
-              key === '='
+              key === '=' ||
+              key === '-' ||
+              key === '+' ||
+              key === '.' ||
+              key === ','
             ) {
-              startEditing();
+              e.preventDefault();
+              startEditing(key);
             }
             break;
         }
@@ -153,10 +209,13 @@ export function useKeyboardShortcuts() {
   }, [
     undo,
     redo,
+    copy,
     cut,
+    paste,
     startEditing,
     stopEditing,
     setCellStyle,
     getActiveSheet,
+    triggerChange,
   ]);
 }

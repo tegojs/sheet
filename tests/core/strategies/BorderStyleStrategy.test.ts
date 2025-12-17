@@ -1,17 +1,17 @@
 import { describe, expect, it, vi } from 'vitest';
+import { CellRange } from '../../../src/sheet/core/cellRange';
 import {
   AllBordersStrategy,
-  InsideBordersStrategy,
-  OutsideBordersStrategy,
-  HorizontalBordersStrategy,
-  VerticalBordersStrategy,
-  TopBorderStrategy,
-  BottomBorderStrategy,
-  LeftBorderStrategy,
-  RightBorderStrategy,
   BorderStrategyFactory,
+  BottomBorderStrategy,
+  HorizontalBordersStrategy,
+  InsideBordersStrategy,
+  LeftBorderStrategy,
+  OutsideBordersStrategy,
+  RightBorderStrategy,
+  TopBorderStrategy,
+  VerticalBordersStrategy,
 } from '../../../src/sheet/core/strategies/BorderStyleStrategy';
-import { CellRange } from '../../../src/sheet/core/cellRange';
 
 // Mock Rows
 const createMockRows = () => ({
@@ -171,12 +171,22 @@ describe('BorderStyleStrategy', () => {
       const factory = new BorderStrategyFactory();
 
       expect(factory.getStrategy('all')).toBeInstanceOf(AllBordersStrategy);
-      expect(factory.getStrategy('inside')).toBeInstanceOf(InsideBordersStrategy);
-      expect(factory.getStrategy('outside')).toBeInstanceOf(OutsideBordersStrategy);
-      expect(factory.getStrategy('horizontal')).toBeInstanceOf(HorizontalBordersStrategy);
-      expect(factory.getStrategy('vertical')).toBeInstanceOf(VerticalBordersStrategy);
+      expect(factory.getStrategy('inside')).toBeInstanceOf(
+        InsideBordersStrategy,
+      );
+      expect(factory.getStrategy('outside')).toBeInstanceOf(
+        OutsideBordersStrategy,
+      );
+      expect(factory.getStrategy('horizontal')).toBeInstanceOf(
+        HorizontalBordersStrategy,
+      );
+      expect(factory.getStrategy('vertical')).toBeInstanceOf(
+        VerticalBordersStrategy,
+      );
       expect(factory.getStrategy('top')).toBeInstanceOf(TopBorderStrategy);
-      expect(factory.getStrategy('bottom')).toBeInstanceOf(BottomBorderStrategy);
+      expect(factory.getStrategy('bottom')).toBeInstanceOf(
+        BottomBorderStrategy,
+      );
       expect(factory.getStrategy('left')).toBeInstanceOf(LeftBorderStrategy);
       expect(factory.getStrategy('right')).toBeInstanceOf(RightBorderStrategy);
     });
