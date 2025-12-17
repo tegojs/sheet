@@ -1,16 +1,15 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { renderCell } from '../canvas/cell_renderer';
 import { Draw } from '../canvas/draw';
 import { npx, thinLineWidth } from '../canvas/draw';
-import { renderCell } from '../component/table';
 import { stringAt } from '../core/alphabet';
 import type DataProxy from '../core/data_proxy';
-import { getFontSizePxByPt } from '../core/font';
+import type { MergeInfo, ViewRange } from '../types';
 
-const cellPaddingWidth = 5;
 const tableFixedHeaderCleanStyle = { fillStyle: '#f4f5f8' };
 const tableGridStyle = {
   fillStyle: '#fff',
-  lineWidth: thinLineWidth,
+  lineWidth: thinLineWidth(),
   strokeStyle: '#e6e6e6',
 };
 
@@ -48,7 +47,7 @@ export function useTableRender(data: DataProxy | null) {
   const renderFixedHeaders = useCallback(
     (
       type: 'all' | 'left' | 'top',
-      viewRange: any,
+      viewRange: ViewRange,
       w: number,
       h: number,
       tx: number,
@@ -144,7 +143,7 @@ export function useTableRender(data: DataProxy | null) {
 
   // 渲染内容区域
   const renderContent = useCallback(
-    (viewRange: any, fw: number, fh: number, tx: number, ty: number) => {
+    (viewRange: ViewRange, fw: number, fh: number, tx: number, ty: number) => {
       if (!drawRef.current || !data) return;
 
       const draw = drawRef.current;
@@ -181,7 +180,7 @@ export function useTableRender(data: DataProxy | null) {
       const rset = new Set();
       draw.save();
       draw.translate(0, -exceptRowTotalHeight);
-      data.eachMergesInView(viewRange, ({ sri, sci, eri }: any) => {
+      data.eachMergesInView(viewRange, ({ sri, sci, eri }: MergeInfo) => {
         if (!exceptRowSet.has(sri)) {
           renderCell(draw, data, sri, sci);
         } else if (!rset.has(sri)) {
@@ -212,7 +211,7 @@ export function useTableRender(data: DataProxy | null) {
 
   // 渲染网格线
   const renderContentGrid = useCallback(
-    (viewRange: any, fw: number, fh: number, tx: number, ty: number) => {
+    (viewRange: ViewRange, fw: number, fh: number, tx: number, ty: number) => {
       if (!drawRef.current || !data) return;
 
       const draw = drawRef.current;

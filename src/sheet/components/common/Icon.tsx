@@ -18,7 +18,19 @@ export const Icon: React.FC<IconProps> = ({
     <div
       className={`${cssPrefix}-icon ${className}`}
       onClick={onClick}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
       style={style}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
     >
       <div className={`${cssPrefix}-icon-img ${name}`} />
     </div>

@@ -136,9 +136,8 @@ export default class AutoFilter {
           if (!filter.includes(ctext)) {
             rset.add(ri);
             break;
-          } else {
-            fset.add(ri);
           }
+          fset.add(ri);
         }
       }
     }

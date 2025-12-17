@@ -25,11 +25,13 @@ export const SelectionOverlay: React.FC = () => {
 
     // 获取选区矩形
     const rect = data.getSelectedRect();
-    const { rows, cols } = data;
 
+    // 注意：不需要添加 cols.indexWidth 和 rows.height 偏移
+    // 因为 SelectionOverlay 已经在 overlayer-content 内部，
+    // overlayer-content 已经有偏移了
     setSelectionRect({
-      left: rect.left + cols.indexWidth,
-      top: rect.top + rows.height,
+      left: rect.left,
+      top: rect.top,
       width: rect.width,
       height: rect.height,
     });
@@ -38,15 +40,15 @@ export const SelectionOverlay: React.FC = () => {
     const clipRect = data.getClipboardRect();
     if (clipRect.left >= 0 && clipRect.top >= 0) {
       setClipboardRect({
-        left: clipRect.left + cols.indexWidth,
-        top: clipRect.top + rows.height,
+        left: clipRect.left,
+        top: clipRect.top,
         width: clipRect.width,
         height: clipRect.height,
       });
     } else {
       setClipboardRect(null);
     }
-  }, [data, selection]);
+  }, [data]);
 
   if (!selectionRect) {
     return null;

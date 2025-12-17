@@ -6,9 +6,22 @@ import { useActiveSheet, useSheetStore } from '../../store/useSheetStore';
 import { Dropdown } from '../common/Dropdown';
 import { ToolbarButton } from './ToolbarButton';
 
+// 辅助函数：为可点击元素添加键盘事件
+const makeClickable = (onClick: () => void) => ({
+  onClick,
+  onKeyDown: (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick();
+    }
+  },
+  role: 'button' as const,
+  tabIndex: 0,
+});
+
 export const Toolbar: React.FC = () => {
   const data = useActiveSheet();
-  const { undo, redo, copy, cut, paste, setCellStyle } = useSheetStore();
+  const { undo, redo, setCellStyle } = useSheetStore();
 
   // 获取当前选中单元格的样式
   const cellStyle = useMemo(() => {
@@ -19,7 +32,7 @@ export const Toolbar: React.FC = () => {
   const canUndo = data?.canUndo() || false;
   const canRedo = data?.canRedo() || false;
   const canUnmerge = data?.canUnmerge() || false;
-  const canAutofilter = data?.canAutofilter() || true;
+  const canAutofilter = data?.canAutofilter() || false;
 
   const handleUndo = () => {
     undo();
@@ -27,18 +40,6 @@ export const Toolbar: React.FC = () => {
 
   const handleRedo = () => {
     redo();
-  };
-
-  const handleCopy = () => {
-    copy();
-  };
-
-  const handleCut = () => {
-    cut();
-  };
-
-  const handlePaste = () => {
-    paste('all');
   };
 
   const handleBold = () => {
@@ -134,19 +135,21 @@ export const Toolbar: React.FC = () => {
         <Dropdown title={t('toolbar.font')} width={120}>
           <div
             className={`${cssPrefix}-item`}
-            onClick={() => setCellStyle('font-name', 'Arial')}
+            {...makeClickable(() => setCellStyle('font-name', 'Arial'))}
           >
             Arial
           </div>
           <div
             className={`${cssPrefix}-item`}
-            onClick={() => setCellStyle('font-name', 'Helvetica')}
+            {...makeClickable(() => setCellStyle('font-name', 'Helvetica'))}
           >
             Helvetica
           </div>
           <div
             className={`${cssPrefix}-item`}
-            onClick={() => setCellStyle('font-name', 'Times New Roman')}
+            {...makeClickable(() =>
+              setCellStyle('font-name', 'Times New Roman'),
+            )}
           >
             Times New Roman
           </div>
@@ -157,7 +160,7 @@ export const Toolbar: React.FC = () => {
             <div
               key={size}
               className={`${cssPrefix}-item`}
-              onClick={() => setCellStyle('font-size', size)}
+              {...makeClickable(() => setCellStyle('font-size', size))}
             >
               {size}
             </div>
@@ -289,7 +292,7 @@ export const Toolbar: React.FC = () => {
         <ToolbarButton
           icon="autofilter"
           tooltip={t('toolbar.autofilter')}
-          active={!canAutofilter}
+          active={canAutofilter}
           onClick={handleAutofilter}
         />
       </div>

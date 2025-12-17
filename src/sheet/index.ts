@@ -1,10 +1,7 @@
-import Bottombar from './component/bottombar';
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-import { h } from './component/element';
-import Sheet from './component/sheet';
-import { cssPrefix } from './configs';
-import DataProxy from './core/data_proxy';
 import { locale } from './locale/locale';
+import { useSheetStore } from './store/useSheetStore';
+import type { ChangeListener, SheetDataInput } from './types';
 
 export interface ExtendToolbarOption {
   tip?: string;
@@ -12,6 +9,7 @@ export interface ExtendToolbarOption {
   icon?: string;
   onClick?: (data: object, sheet: object) => void;
 }
+
 export interface Options {
   mode?: 'edit' | 'read';
   showToolbar?: boolean;
@@ -90,6 +88,7 @@ export interface CellData {
   style?: number;
   merge?: CellMerge;
 }
+
 /**
  * Data for representing a row
  */
@@ -139,24 +138,20 @@ export interface CellStyle {
     left?: string[];
   };
 }
-export type Editor = {};
-export type Element = {};
 
-export type Row = {};
-export type Table = {};
-export type Cell = {};
-export type Sheet = {};
+export type Editor = Record<string, unknown>;
+export type Element = Record<string, unknown>;
+export type Row = Record<string, unknown>;
+export type Table = Record<string, unknown>;
+export type Cell = Record<string, unknown>;
+export type Sheet = Record<string, unknown>;
 
+/**
+ * React-based Spreadsheet API
+ * 兼容旧版 API，但使用新的 React + Zustand 架构
+ */
 export default class Spreadsheet {
-  #options: Options;
-  #sheetIndex = 1;
-  #datas: any;
-  #data: any;
-  #sheet: any;
-
   static targets = new WeakMap<HTMLElement, Spreadsheet>();
-
-  #bottomBar;
 
   static makeSheet(el: HTMLElement, options: Options = {}) {
     // 防止同一个 DOM 上面挂载多次
@@ -168,74 +163,45 @@ export default class Spreadsheet {
     }
     const sheet = new Spreadsheet(el, options);
     Spreadsheet.targets.set(el, sheet);
+    return sheet;
   }
 
-  private constructor(targetEl: HTMLElement, options: Options = {}) {
-    this.#options = { showBottomBar: true, ...options };
-    this.#datas = [];
-    this.#bottomBar = this.#options.showBottomBar
-      ? new Bottombar(
-          () => {
-            if (this.#options.mode === 'read') return;
-            const d = this.addSheet();
-            this.#sheet.resetData(d);
-          },
-          (index: number) => {
-            const d = this.#datas[index];
-            this.#sheet.resetData(d);
-          },
-          () => {
-            this.deleteSheet();
-          },
-          (index: number, value: string) => {
-            this.#datas[index].name = value;
-            this.#sheet.trigger('change');
-          },
-        )
-      : null;
-    this.#data = this.addSheet();
-    const rootEl = h('div', `${cssPrefix}`).on('contextmenu', (evt: Event) =>
-      evt.preventDefault(),
-    );
-    // create canvas element
-    targetEl.appendChild(rootEl.el);
-    this.#sheet = new Sheet(rootEl, this.#data);
-    if (this.#bottomBar !== null) {
-      rootEl.child(this.#bottomBar.el);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private constructor(_targetEl: HTMLElement, _options: Options = {}) {
+    // TODO: 使用 ReactDOM 渲染 ReactSheet 组件到 targetEl
+    // 这需要在实际使用时通过 ReactDOM.render 或 createRoot 来实现
+  }
+
+  on(eventName: string, func: ChangeListener): this {
+    if (eventName === 'change') {
+      useSheetStore.getState().addChangeListener(func);
     }
-  }
-  on(eventName: string, func: Function) {
-    this.#sheet.on(eventName, func);
     return this;
   }
+
   reRender() {
-    this.#sheet.table.render();
+    // React 会自动重新渲染
     return this;
   }
+
   /**
    * retrieve cell
-   * @param rowIndex {number} row index
-   * @param colIndex {number} column index
-   * @param sheetIndex {number} sheet iindex
    */
   cell(rowIndex: number, colIndex: number, sheetIndex = 0): Cell {
-    return this.#datas[sheetIndex].getCell(rowIndex, colIndex);
+    const sheets = useSheetStore.getState().sheets;
+    return sheets[sheetIndex]?.getCell(rowIndex, colIndex);
   }
+
   /**
    * retrieve cell style
-   * @param rowIndex
-   * @param colIndex
-   * @param sheetIndex
    */
   cellStyle(rowIndex: number, colIndex: number, sheetIndex = 0): CellStyle {
-    return this.#datas[sheetIndex].getCellStyle(rowIndex, colIndex);
+    const sheets = useSheetStore.getState().sheets;
+    return sheets[sheetIndex]?.getCellStyle(rowIndex, colIndex);
   }
+
   /**
    * get/set cell text
-   * @param rowIndex
-   * @param colIndex
-   * @param text
-   * @param sheetIndex
    */
   cellText(
     rowIndex: number,
@@ -243,88 +209,69 @@ export default class Spreadsheet {
     text: string,
     sheetIndex = 0,
   ): this {
-    this.#datas[sheetIndex].setCellText(rowIndex, colIndex, text, 'finished');
+    const sheets = useSheetStore.getState().sheets;
+    sheets[sheetIndex]?.setCellText(rowIndex, colIndex, text, 'finished');
     return this;
   }
+
   /**
    * remove current sheet
    */
   deleteSheet(): void {
-    if (this.#bottomBar === null) return;
-
-    const [oldIndex, nindex] = this.#bottomBar.deleteItem();
-    if (oldIndex >= 0) {
-      this.#datas.splice(oldIndex, 1);
-      if (nindex >= 0) this.#sheet.resetData(this.#datas[nindex]);
-      this.#sheet.trigger('change');
-    }
+    const { activeSheetIndex, deleteSheet } = useSheetStore.getState();
+    deleteSheet(activeSheetIndex);
   }
 
-  /**s
+  /**
    * load data
-   * @param data
    */
-  loadData(data: Record<string, any>): this {
-    const ds = Array.isArray(data) ? data : [data];
-    if (this.#bottomBar !== null) {
-      this.#bottomBar.clear();
-    }
-    this.#datas = [];
-    if (ds.length > 0) {
-      for (let i = 0; i < ds.length; i += 1) {
-        const it = ds[i];
-        const nd = this.addSheet(it.name, i === 0);
-        nd.setData(it);
-        if (i === 0) {
-          this.#sheet.resetData(nd);
-        }
-      }
-    }
+  loadData(data: SheetDataInput | SheetDataInput[]): this {
+    useSheetStore.getState().loadData(data);
     return this;
   }
+
   /**
    * get data
    */
-  getData(): Record<string, any> {
-    return this.#datas.map((it) => it.getData());
+  getData(): SheetDataInput[] {
+    return useSheetStore.getState().getData();
   }
 
   validate() {
-    const { validations } = this.#data;
+    const data = useSheetStore.getState().getActiveSheet();
+    const { validations } = data;
     return validations.errors.size <= 0;
   }
 
   /**
-   * bind handler to change event, including data change and user actions
-   * @param callback
+   * bind handler to change event
    */
-  change(callback: (json: Record<string, any>) => void): this {
-    this.#sheet.on('change', callback);
+  change(callback: ChangeListener): this {
+    useSheetStore.getState().addChangeListener(callback);
     return this;
   }
+
   /**
    * set locale
-   * @param lang
-   * @param message
    */
   static locale(lang: string, message: object): void {
     locale(lang, message);
   }
 
   addSheet(name?: string, active = true) {
-    const n = name || `sheet${this.#sheetIndex}`;
-    const d = new DataProxy(n, this.#options);
-    d.change = (...args) => {
-      this.#sheet.trigger('change', ...args);
-    };
-    this.#datas.push(d);
-    // console.log('d:', n, d, this.datas);
-    if (this.#bottomBar !== null) {
-      this.#bottomBar.addItem(n, active, this.#options);
-    }
-    this.#sheetIndex += 1;
-    return d;
+    useSheetStore.getState().addSheet(name, active);
   }
 }
 
+// 导出新的 React 组件
 export { default as ReactSheet } from './ReactSheet';
+
+// 导出 store 和 hooks
+export {
+  useSheetStore,
+  useActiveSheet,
+  useSelection,
+  useIsEditing,
+} from './store/useSheetStore';
+export * from './hooks';
+export * from './components';

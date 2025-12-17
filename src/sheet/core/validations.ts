@@ -1,15 +1,27 @@
+import type {
+  ValidationData,
+  ValidationOperator,
+  ValidationType,
+} from '../types';
+import type { CellRange } from './cell_range';
+import { Validation } from './validation';
+import { Validator } from './validator';
+
 export class Validations {
+  _: Validation[];
+  errors: Map<string, string>;
+
   constructor() {
     this._ = [];
     // ri_ci: errMessage
     this.errors = new Map();
   }
 
-  getError(ri: any, ci: any) {
+  getError(ri: number, ci: number): string | undefined {
     return this.errors.get(`${ri}_${ci}`);
   }
 
-  validate(ri: any, ci: any, text: any) {
+  validate(ri: number, ci: number, text: string): boolean {
     const v = this.get(ri, ci);
     const key = `${ri}_${ci}`;
     const { errors } = this;
@@ -30,9 +42,19 @@ export class Validations {
   // validator: { required, value, operator }
   add(
     mode: 'read' | 'edit',
-    ref: any,
-    { type, required, value, operator }: any,
-  ) {
+    ref: string | CellRange,
+    {
+      type,
+      required,
+      value,
+      operator,
+    }: {
+      type: ValidationType;
+      required: boolean;
+      value: string | string[];
+      operator: ValidationOperator;
+    },
+  ): void {
     const validator = new Validator(type, required, value, operator);
     const v = this.getByValidator(validator);
     if (v !== null) {
@@ -42,7 +64,7 @@ export class Validations {
     }
   }
 
-  getByValidator(validator: Validator) {
+  getByValidator(validator: Validator): Validation | null {
     for (let i = 0; i < this._.length; i += 1) {
       const v = this._[i];
       if (v.validator.equals(validator)) {
@@ -52,7 +74,7 @@ export class Validations {
     return null;
   }
 
-  get(ri: any, ci: any) {
+  get(ri: number, ci: number): Validation | null {
     for (let i = 0; i < this._.length; i += 1) {
       const v = this._[i];
       if (v.includes(ri, ci)) return v;
@@ -60,32 +82,23 @@ export class Validations {
     return null;
   }
 
-  remove(cellRange: any) {
-    this.each((it: { remove: (arg0: any) => void }) => {
+  remove(cellRange: CellRange): void {
+    this.each((it: Validation) => {
       it.remove(cellRange);
     });
   }
 
-  each(cb: { (it: any): void; (arg0: any): any }) {
-    this._.forEach((it: any) => cb(it));
+  each(cb: (it: Validation) => void): void {
+    this._.forEach((it: Validation) => cb(it));
   }
 
-  getData() {
-    return this._.filter(
-      (it: { refs: string | any[] }) => it.refs.length > 0,
-    ).map((it: { getData: () => any }) => it.getData());
-  }
-
-  setData(d: any[]) {
-    this._ = d.map(
-      (it: {
-        refs: any;
-        mode: any;
-        type: any;
-        required: any;
-        operator: any;
-        value: any;
-      }) => Validation.valueOf(it),
+  getData(): ValidationData[] {
+    return this._.filter((it: Validation) => it.refs.length > 0).map(
+      (it: Validation) => it.getData(),
     );
+  }
+
+  setData(d: ValidationData[]): void {
+    this._ = d.map((it: ValidationData) => Validation.valueOf(it));
   }
 }

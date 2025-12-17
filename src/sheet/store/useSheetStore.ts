@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { CellRange } from '../core/cell_range';
 import DataProxy from '../core/data_proxy';
 import type { Options } from '../index';
+import type { ChangeListener, SheetDataInput, StyleValue } from '../types';
 
 interface SheetState {
   // 数据状态
@@ -34,7 +35,7 @@ interface SheetState {
   setSelectionEnd: (ri: number, ci: number) => void;
 
   // Actions - 样式操作
-  setCellStyle: (property: string, value: any) => void;
+  setCellStyle: (property: string, value: StyleValue) => void;
 
   // Actions - 编辑状态
   startEditing: () => void;
@@ -54,16 +55,16 @@ interface SheetState {
   paste: (what?: 'all' | 'text' | 'format') => void;
 
   // Actions - 数据加载
-  loadData: (data: any) => void;
-  getData: () => any;
+  loadData: (data: SheetDataInput | SheetDataInput[]) => void;
+  getData: () => SheetDataInput[];
 
   // Actions - 触发变更事件
   triggerChange: () => void;
 
   // 事件监听器
-  changeListeners: Array<(data: any) => void>;
-  addChangeListener: (listener: (data: any) => void) => void;
-  removeChangeListener: (listener: (data: any) => void) => void;
+  changeListeners: ChangeListener[];
+  addChangeListener: (listener: ChangeListener) => void;
+  removeChangeListener: (listener: ChangeListener) => void;
 }
 
 const defaultOptions: Options = {
@@ -176,6 +177,10 @@ export const useSheetStore = create<SheetState>((set, get) => {
       state: 'input' | 'finished' = 'finished',
     ) => {
       const sheet = get().getActiveSheet();
+      // 先设置选区到指定单元格
+      sheet.selector.setIndexes(ri, ci);
+      sheet.calSelectedRangeByStart(ri, ci);
+      // 然后设置文本
       sheet.setSelectedCellText(text, state);
       if (state === 'finished') {
         get().triggerChange();
@@ -190,16 +195,19 @@ export const useSheetStore = create<SheetState>((set, get) => {
         sheet.calSelectedRangeByStart(ri, ci);
         sheet.selector.setIndexes(ri, ci);
       }
-      // 不触发 change 事件，因为这只是选区变化
+      // 触发视图更新（不触发 change 事件）
+      set({}); // 强制 Zustand 通知订阅者
     },
 
     setSelectionEnd: (ri: number, ci: number) => {
       const sheet = get().getActiveSheet();
       sheet.calSelectedRangeByEnd(ri, ci);
+      // 触发视图更新
+      set({});
     },
 
     // 样式操作
-    setCellStyle: (property: string, value: any) => {
+    setCellStyle: (property: string, value: StyleValue) => {
       const sheet = get().getActiveSheet();
       sheet.setSelectedCellAttr(property, value);
       get().triggerChange();
@@ -255,7 +263,7 @@ export const useSheetStore = create<SheetState>((set, get) => {
     },
 
     // 数据加载
-    loadData: (data: any) => {
+    loadData: (data: SheetDataInput | SheetDataInput[]) => {
       const dataArray = Array.isArray(data) ? data : [data];
 
       set((state) => {
@@ -279,7 +287,7 @@ export const useSheetStore = create<SheetState>((set, get) => {
       get().triggerChange();
     },
 
-    getData: () => {
+    getData: (): SheetDataInput[] => {
       return get().sheets.map((sheet) => sheet.getData());
     },
 
@@ -296,13 +304,13 @@ export const useSheetStore = create<SheetState>((set, get) => {
       });
     },
 
-    addChangeListener: (listener: (data: any) => void) => {
+    addChangeListener: (listener: ChangeListener) => {
       set((state) => ({
         changeListeners: [...state.changeListeners, listener],
       }));
     },
 
-    removeChangeListener: (listener: (data: any) => void) => {
+    removeChangeListener: (listener: ChangeListener) => {
       set((state) => ({
         changeListeners: state.changeListeners.filter((l) => l !== listener),
       }));

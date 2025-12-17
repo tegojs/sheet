@@ -78,7 +78,6 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
         backgroundColor: '#f4f5f8',
         opacity: 0.9,
         zIndex: 12,
-        overflow: vertical ? 'scroll' : 'scroll',
         overflowX: vertical ? 'hidden' : 'scroll',
         overflowY: vertical ? 'scroll' : 'hidden',
       }}

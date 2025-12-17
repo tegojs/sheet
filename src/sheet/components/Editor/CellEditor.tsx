@@ -34,11 +34,13 @@ export const CellEditor: React.FC<CellEditorProps> = ({ onFinish }) => {
 
       // 获取选中单元格的位置
       const rect = data.getSelectedRect();
-      const { rows, cols } = data;
 
+      // 注意：不需要添加 cols.indexWidth 和 rows.height 偏移
+      // 因为 CellEditor 已经在 overlayer-content 内部，
+      // overlayer-content 已经有偏移了
       setPosition({
-        left: rect.left + cols.indexWidth,
-        top: rect.top + rows.height,
+        left: rect.left,
+        top: rect.top,
         width: rect.width,
         height: rect.height,
       });

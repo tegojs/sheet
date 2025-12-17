@@ -84,7 +84,15 @@ export const Bottombar: React.FC = () => {
             key={index}
             className={activeSheetIndex === index ? 'active' : ''}
             onClick={() => handleSheetClick(index)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleSheetClick(index);
+              }
+            }}
             onDoubleClick={() => handleSheetDoubleClick(index)}
+            role="tab"
+            tabIndex={0}
             style={{
               float: 'left',
               lineHeight: '40px',
@@ -112,7 +120,6 @@ export const Bottombar: React.FC = () => {
                 onChange={handleNameChange}
                 onBlur={handleNameBlur}
                 onKeyDown={handleNameKeyDown}
-                autoFocus
                 style={{
                   border: '1px solid #4b89ff',
                   padding: '2px 5px',
@@ -126,6 +133,14 @@ export const Bottombar: React.FC = () => {
                 {sheets.length > 1 && (
                   <span
                     onClick={(e) => handleDeleteSheet(index, e)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleDeleteSheet(index, e);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
                     style={{
                       marginLeft: '8px',
                       opacity: 0.6,

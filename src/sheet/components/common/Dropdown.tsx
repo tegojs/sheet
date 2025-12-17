@@ -56,7 +56,18 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
   return (
     <div ref={dropdownRef} className={`${cssPrefix}-dropdown ${placement}`}>
-      <div className={`${cssPrefix}-dropdown-header`} onClick={handleToggle}>
+      <div
+        className={`${cssPrefix}-dropdown-header`}
+        onClick={handleToggle}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleToggle();
+          }
+        }}
+        role="button"
+        tabIndex={0}
+      >
         {typeof title === 'string' ? (
           <div
             className={`${cssPrefix}-dropdown-title ${showArrow ? 'arrow-left' : ''}`}

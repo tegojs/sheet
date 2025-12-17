@@ -103,20 +103,24 @@ export function useKeyboardShortcuts() {
             e.preventDefault();
             stopEditing();
             break;
-          case 8: // Backspace - 删除单元格内容
+          case 8: {
+            // Backspace - 删除单元格内容
             e.preventDefault();
             const data = getActiveSheet();
             if (data) {
               data.deleteCell('text');
             }
             break;
-          case 46: // Delete - 删除单元格内容
+          }
+          case 46: {
+            // Delete - 删除单元格内容
             e.preventDefault();
             const activeData = getActiveSheet();
             if (activeData) {
               activeData.deleteCell('text');
             }
             break;
+          }
           case 113: // F2 - 开始编辑
             e.preventDefault();
             startEditing();
@@ -151,9 +155,7 @@ export function useKeyboardShortcuts() {
   }, [
     undo,
     redo,
-    copy,
     cut,
-    paste,
     startEditing,
     stopEditing,
     setCellStyle,

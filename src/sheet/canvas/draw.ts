@@ -1,4 +1,10 @@
 /* global window */
+import type {
+  BorderStyle,
+  CanvasRenderingOptions,
+  DrawTextCallback,
+} from '../types';
+
 function dpr() {
   return window.devicePixelRatio || 1;
 }
@@ -7,46 +13,67 @@ export function thinLineWidth() {
   return dpr() - 0.5;
 }
 
-export function npx(px) {
-  return Number.parseInt(px * dpr(), 10);
+export function npx(px: number): number {
+  return Math.floor(px * dpr());
 }
 
-function npxLine(px) {
+function npxLine(px: number): number {
   const n = npx(px);
   return n > 0 ? n - 0.5 : 0.5;
 }
 
 export class DrawBox {
-  constructor(x, y, w, h, padding = 0) {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  padding: number;
+  bgcolor: string;
+  borderTop: BorderStyle | null;
+  borderRight: BorderStyle | null;
+  borderBottom: BorderStyle | null;
+  borderLeft: BorderStyle | null;
+
+  constructor(x: number, y: number, w: number, h: number, padding = 0) {
     this.x = x;
     this.y = y;
     this.width = w;
     this.height = h;
     this.padding = padding;
     this.bgcolor = '#ffffff';
-    // border: [width, style, color]
+    // border: [style, color, width]
     this.borderTop = null;
     this.borderRight = null;
     this.borderBottom = null;
     this.borderLeft = null;
   }
 
-  setBorders({ top, bottom, left, right }) {
+  setBorders({
+    top,
+    bottom,
+    left,
+    right,
+  }: {
+    top?: BorderStyle;
+    bottom?: BorderStyle;
+    left?: BorderStyle;
+    right?: BorderStyle;
+  }) {
     if (top) this.borderTop = top;
     if (right) this.borderRight = right;
     if (bottom) this.borderBottom = bottom;
     if (left) this.borderLeft = left;
   }
 
-  innerWidth() {
+  innerWidth(): number {
     return this.width - this.padding * 2 - 2;
   }
 
-  innerHeight() {
+  innerHeight(): number {
     return this.height - this.padding * 2 - 2;
   }
 
-  textx(align) {
+  textx(align: string): number {
     const { width, padding } = this;
     let { x } = this;
     if (align === 'left') {
@@ -59,7 +86,7 @@ export class DrawBox {
     return x;
   }
 
-  texty(align, h) {
+  texty(align: string, h: number): number {
     const { height, padding } = this;
     let { y } = this;
     if (align === 'top') {
@@ -105,7 +132,16 @@ export class DrawBox {
   }
 }
 
-function drawFontLine(type, tx, ty, align, valign, blheight, blwidth) {
+function drawFontLine(
+  this: Draw,
+  type: string,
+  tx: number,
+  ty: number,
+  align: string,
+  valign: string,
+  blheight: number,
+  blwidth: number,
+) {
   const floffset = { x: 0, y: 0 };
   if (type === 'underline') {
     if (valign === 'bottom') {
@@ -135,14 +171,21 @@ function drawFontLine(type, tx, ty, align, valign, blheight, blwidth) {
 }
 
 export class Draw {
-  constructor(el, width, height) {
+  el: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+
+  constructor(el: HTMLCanvasElement, width: number, height: number) {
     this.el = el;
-    this.ctx = el.getContext('2d');
+    const context = el.getContext('2d');
+    if (!context) {
+      throw new Error('Failed to get 2D context from canvas element');
+    }
+    this.ctx = context;
     this.resize(width, height);
     this.ctx.scale(dpr(), dpr());
   }
 
-  resize(width, height) {
+  resize(width: number, height: number) {
     // console.log('dpr:', dpr);
     this.el.style.width = `${width}px`;
     this.el.style.height = `${height}px`;
@@ -156,7 +199,7 @@ export class Draw {
     return this;
   }
 
-  attr(options) {
+  attr(options: CanvasRenderingOptions) {
     Object.assign(this.ctx, options);
     return this;
   }
@@ -177,27 +220,27 @@ export class Draw {
     return this;
   }
 
-  translate(x, y) {
+  translate(x: number, y: number) {
     this.ctx.translate(npx(x), npx(y));
     return this;
   }
 
-  scale(x, y) {
+  scale(x: number, y: number) {
     this.ctx.scale(x, y);
     return this;
   }
 
-  clearRect(x, y, w, h) {
+  clearRect(x: number, y: number, w: number, h: number) {
     this.ctx.clearRect(x, y, w, h);
     return this;
   }
 
-  fillRect(x, y, w, h) {
+  fillRect(x: number, y: number, w: number, h: number) {
     this.ctx.fillRect(npx(x) - 0.5, npx(y) - 0.5, npx(w), npx(h));
     return this;
   }
 
-  fillText(text, x, y) {
+  fillText(text: string, x: number, y: number) {
     this.ctx.fillText(text, npx(x), npx(y));
     return this;
   }
@@ -219,7 +262,24 @@ export class Draw {
     }
     textWrap: text wrapping
   */
-  text(mtxt, box, attr = {}, textWrap = true) {
+  text(
+    mtxt: string,
+    box: DrawBox,
+    attr: {
+      align: string;
+      valign: string;
+      font: {
+        name: string;
+        size: number;
+        bold?: boolean;
+        italic?: boolean;
+      };
+      color: string;
+      strike?: boolean;
+      underline?: boolean;
+    },
+    textWrap = true,
+  ) {
     const { ctx } = this;
     const { align, valign, font, color, strike, underline } = attr;
     const tx = box.textx(align);
@@ -234,7 +294,7 @@ export class Draw {
     });
     const txts = `${mtxt}`.split('\n');
     const biw = box.innerWidth();
-    const ntxts = [];
+    const ntxts: string[] = [];
     txts.forEach((it) => {
       const txtWidth = ctx.measureText(it).width;
       if (textWrap && txtWidth > npx(biw)) {
@@ -289,7 +349,7 @@ export class Draw {
     return this;
   }
 
-  border(style, color) {
+  border(style: string, color: string) {
     const { ctx } = this;
     ctx.lineWidth = thinLineWidth;
     ctx.strokeStyle = color;
@@ -308,7 +368,7 @@ export class Draw {
     return this;
   }
 
-  line(...xys) {
+  line(...xys: [number, number][]) {
     const { ctx } = this;
     if (xys.length > 1) {
       ctx.beginPath();
@@ -323,32 +383,32 @@ export class Draw {
     return this;
   }
 
-  strokeBorders(box) {
+  strokeBorders(box: DrawBox) {
     const { ctx } = this;
     ctx.save();
     // border
     const { borderTop, borderRight, borderBottom, borderLeft } = box;
     if (borderTop) {
-      this.border(...borderTop);
+      this.border(borderTop[0], borderTop[1]);
       // console.log('box.topxys:', box.topxys());
       this.line(...box.topxys());
     }
     if (borderRight) {
-      this.border(...borderRight);
+      this.border(borderRight[0], borderRight[1]);
       this.line(...box.rightxys());
     }
     if (borderBottom) {
-      this.border(...borderBottom);
+      this.border(borderBottom[0], borderBottom[1]);
       this.line(...box.bottomxys());
     }
     if (borderLeft) {
-      this.border(...borderLeft);
+      this.border(borderLeft[0], borderLeft[1]);
       this.line(...box.leftxys());
     }
     ctx.restore();
   }
 
-  dropdown(box) {
+  dropdown(box: DrawBox) {
     const { ctx } = this;
     const { x, y, width, height } = box;
     const sx = x + width - 15;
@@ -364,7 +424,7 @@ export class Draw {
     ctx.restore();
   }
 
-  error(box) {
+  error(box: DrawBox) {
     const { ctx } = this;
     const { x, y, width } = box;
     const sx = x + width - 1;
@@ -379,7 +439,7 @@ export class Draw {
     ctx.restore();
   }
 
-  frozen(box) {
+  frozen(box: DrawBox) {
     const { ctx } = this;
     const { x, y, width } = box;
     const sx = x + width - 1;
@@ -394,7 +454,7 @@ export class Draw {
     ctx.restore();
   }
 
-  rect(box, dtextcb) {
+  rect(box: DrawBox, dtextcb: DrawTextCallback) {
     const { ctx } = this;
     const { x, y, width, height, bgcolor } = box;
     ctx.save();
@@ -403,7 +463,7 @@ export class Draw {
     ctx.rect(npxLine(x + 1), npxLine(y + 1), npx(width - 2), npx(height - 2));
     ctx.clip();
     ctx.fill();
-    dtextcb();
+    dtextcb('');
     ctx.restore();
   }
 }
