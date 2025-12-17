@@ -198,23 +198,46 @@ export const Toolbar: React.FC = () => {
         <div className={`${cssPrefix}-toolbar-divider`} />
 
         {/* 颜色 */}
-        <Dropdown title={t('toolbar.textColor')} width={200}>
+        <Dropdown
+          title={
+            <Icon
+              name="text-color"
+              style={{
+                borderBottom: `3px solid ${cellStyle?.color || '#000000'}`,
+              }}
+            />
+          }
+          width={200}
+          showArrow={false}
+        >
           <div style={{ padding: '10px' }}>
-            {/* TODO: 实现颜色选择器 */}
             <input
               type="color"
               value={cellStyle?.color || '#000000'}
               onChange={(e) => setCellStyle('color', e.target.value)}
+              style={{ width: '100%', height: '30px' }}
             />
           </div>
         </Dropdown>
 
-        <Dropdown title={t('toolbar.fillColor')} width={200}>
+        <Dropdown
+          title={
+            <Icon
+              name="fill-color"
+              style={{
+                borderBottom: `3px solid ${cellStyle?.bgcolor || '#ffffff'}`,
+              }}
+            />
+          }
+          width={200}
+          showArrow={false}
+        >
           <div style={{ padding: '10px' }}>
             <input
               type="color"
               value={cellStyle?.bgcolor || '#ffffff'}
               onChange={(e) => setCellStyle('bgcolor', e.target.value)}
+              style={{ width: '100%', height: '30px' }}
             />
           </div>
         </Dropdown>
@@ -222,45 +245,53 @@ export const Toolbar: React.FC = () => {
         <div className={`${cssPrefix}-toolbar-divider`} />
 
         {/* 对齐 */}
-        <Dropdown title={t('toolbar.align')} width={120}>
+        <Dropdown
+          title={<Icon name={`align-${cellStyle?.align || 'left'}`} />}
+          width={120}
+          showArrow={false}
+        >
           <div
             className={`${cssPrefix}-item`}
-            onClick={() => setCellStyle('align', 'left')}
+            {...makeClickable(() => setCellStyle('align', 'left'))}
           >
-            左对齐
+            <Icon name="align-left" />
           </div>
           <div
             className={`${cssPrefix}-item`}
-            onClick={() => setCellStyle('align', 'center')}
+            {...makeClickable(() => setCellStyle('align', 'center'))}
           >
-            居中
+            <Icon name="align-center" />
           </div>
           <div
             className={`${cssPrefix}-item`}
-            onClick={() => setCellStyle('align', 'right')}
+            {...makeClickable(() => setCellStyle('align', 'right'))}
           >
-            右对齐
+            <Icon name="align-right" />
           </div>
         </Dropdown>
 
-        <Dropdown title={t('toolbar.valign')} width={120}>
+        <Dropdown
+          title={<Icon name={`valign-${cellStyle?.valign || 'middle'}`} />}
+          width={120}
+          showArrow={false}
+        >
           <div
             className={`${cssPrefix}-item`}
-            onClick={() => setCellStyle('valign', 'top')}
+            {...makeClickable(() => setCellStyle('valign', 'top'))}
           >
-            顶部对齐
+            <Icon name="valign-top" />
           </div>
           <div
             className={`${cssPrefix}-item`}
-            onClick={() => setCellStyle('valign', 'middle')}
+            {...makeClickable(() => setCellStyle('valign', 'middle'))}
           >
-            居中对齐
+            <Icon name="valign-middle" />
           </div>
           <div
             className={`${cssPrefix}-item`}
-            onClick={() => setCellStyle('valign', 'bottom')}
+            {...makeClickable(() => setCellStyle('valign', 'bottom'))}
           >
-            底部对齐
+            <Icon name="valign-bottom" />
           </div>
         </Dropdown>
 

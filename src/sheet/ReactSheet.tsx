@@ -66,7 +66,8 @@ const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
     const data = getActiveSheet();
     if (data) {
       data.scrolly(distance, () => {
-        // 滚动后重新渲染
+        // 滚动后触发重新渲染
+        useSheetStore.getState().triggerChange();
       });
     }
   };
@@ -75,7 +76,8 @@ const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
     const data = getActiveSheet();
     if (data) {
       data.scrollx(distance, () => {
-        // 滚动后重新渲染
+        // 滚动后触发重新渲染
+        useSheetStore.getState().triggerChange();
       });
     }
   };

@@ -120,7 +120,7 @@ export const ContextMenu: React.FC = () => {
       ref={menuRef}
       className={`${cssPrefix}-contextmenu`}
       style={{
-        position: 'fixed',
+        position: 'absolute',
         left: contextMenuPosition.x,
         top: contextMenuPosition.y,
         zIndex: 100,

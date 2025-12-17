@@ -60,19 +60,6 @@ export const OverlayerInteraction: React.FC<OverlayerInteractionProps> = ({
       const cellRect = data.getCellRectByXY(offsetX, offsetY);
       const { ri, ci } = cellRect;
 
-      console.log('MouseDown:', {
-        clientX,
-        clientY,
-        rectLeft: rect.left,
-        rectTop: rect.top,
-        offsetX,
-        offsetY,
-        ri,
-        ci,
-        buttons,
-        detail,
-      });
-
       // 记录起始单元格
       startCellRef.current = { ri, ci };
       isDraggingRef.current = false;
@@ -146,15 +133,6 @@ export const OverlayerInteraction: React.FC<OverlayerInteractionProps> = ({
       const rect = overlayerRef.current.getBoundingClientRect();
       const offsetX = clientX - rect.left;
       const offsetY = clientY - rect.top;
-
-      console.log('ContextMenu:', {
-        clientX,
-        clientY,
-        rectLeft: rect.left,
-        rectTop: rect.top,
-        offsetX,
-        offsetY,
-      });
 
       // 打开右键菜单 - 使用相对于 overlayer 的坐标
       openContextMenu(offsetX, offsetY);
