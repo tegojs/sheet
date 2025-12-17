@@ -29,7 +29,14 @@ export const SelectionOverlay: React.FC = () => {
     // 注意：不需要添加 cols.indexWidth 和 rows.height 偏移
     // 因为 SelectionOverlay 已经在 overlayer-content 内部，
     // overlayer-content 已经有偏移了
-    if ('width' in rect && 'height' in rect) {
+    if (
+      'width' in rect &&
+      'height' in rect &&
+      rect.left !== undefined &&
+      rect.top !== undefined &&
+      rect.width !== undefined &&
+      rect.height !== undefined
+    ) {
       setSelectionRect({
         left: rect.left,
         top: rect.top,
@@ -43,6 +50,10 @@ export const SelectionOverlay: React.FC = () => {
     if (
       'width' in clipRect &&
       'height' in clipRect &&
+      clipRect.left !== undefined &&
+      clipRect.top !== undefined &&
+      clipRect.width !== undefined &&
+      clipRect.height !== undefined &&
       clipRect.left >= 0 &&
       clipRect.top >= 0
     ) {

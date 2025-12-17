@@ -120,7 +120,7 @@ export const Toolbar: React.FC = () => {
           icon="paintformat"
           tooltip={t('toolbar.paintformat')}
           onClick={() => {
-            copy();
+            // copy();
             // TODO: 实现格式刷逻辑
           }}
         />

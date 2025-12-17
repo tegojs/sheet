@@ -1,56 +1,63 @@
 import { rangeSum } from './helper';
-export class Cols {
-  _?: Cols;
-  len?: number;
+
+export interface Col {
   width?: number;
-  indexWidth?: number;
-  minWidth?: number;
+  hide?: boolean;
+  style?: number;
+}
+
+export class Cols {
+  _: { [key: number]: Col };
+  len: number;
+  width: number;
+  indexWidth: number;
+  minWidth: number;
+
   constructor({
     len,
     width,
     indexWidth,
     minWidth,
   }: { len: number; width: number; indexWidth: number; minWidth: number }) {
-    this._ = {} as Cols;
+    this._ = {};
     this.len = len;
     this.width = width;
     this.indexWidth = indexWidth;
     this.minWidth = minWidth;
   }
 
-  setData(d: Cols) {
+  setData(d: { len?: number; [key: number]: Col | number | undefined }): void {
     if (d.len) {
       this.len = d.len;
-      // biome-ignore lint/performance/noDelete: <explanation>
       delete d.len;
     }
-    this._ = d;
+    this._ = d as { [key: number]: Col };
   }
 
-  getData() {
+  getData(): { len: number; [key: number]: Col } {
     return Object.assign({ len: this.len }, this._);
   }
 
-  getWidth(i) {
+  getWidth(i: number): number {
     if (this.isHide(i)) return 0;
-    const col = this._?.[i as keyof Cols] as Cols;
+    const col = this._[i];
     if (col?.width) {
       return col.width;
     }
     return this.width;
   }
 
-  getOrNew(ci) {
+  getOrNew(ci: number): Col {
     this._[ci] = this._[ci] || {};
     return this._[ci];
   }
 
-  setWidth(ci, width) {
+  setWidth(ci: number, width: number): void {
     const col = this.getOrNew(ci);
     col.width = width;
   }
 
-  unhide(idx) {
+  unhide(idx: number): void {
     let index = idx;
     while (index > 0) {
       index -= 1;
@@ -60,27 +67,27 @@ export class Cols {
     }
   }
 
-  isHide(ci) {
+  isHide(ci: number): boolean {
     const col = this._[ci];
-    return col && col.hide;
+    return !!col?.hide;
   }
 
-  setHide(ci, v) {
+  setHide(ci: number, v: boolean): void {
     const col = this.getOrNew(ci);
     if (v === true) col.hide = true;
     else delete col.hide;
   }
 
-  setStyle(ci, style) {
+  setStyle(ci: number, style: number): void {
     const col = this.getOrNew(ci);
     col.style = style;
   }
 
-  sumWidth(min: number, max: number) {
-    return rangeSum(min, max, (i) => this.getWidth(i));
+  sumWidth(min: number, max: number): number {
+    return rangeSum(min, max, (i: number) => this.getWidth(i));
   }
 
-  totalWidth() {
+  totalWidth(): number {
     return this.sumWidth(0, this.len);
   }
 }

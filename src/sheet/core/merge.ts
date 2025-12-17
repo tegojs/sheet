@@ -1,19 +1,21 @@
 import { CellRange } from './cellRange';
 
 export class Merges {
-  constructor(d = []) {
+  _: CellRange[];
+
+  constructor(d: CellRange[] = []) {
     this._ = d;
   }
 
-  forEach(cb) {
+  forEach(cb: (cellRange: CellRange, index: number) => void): void {
     this._.forEach(cb);
   }
 
-  deleteWithin(cr) {
+  deleteWithin(cr: CellRange): void {
     this._ = this._.filter((it) => !it.within(cr));
   }
 
-  getFirstIncludes(ri, ci) {
+  getFirstIncludes(ri: number, ci: number): CellRange | null {
     for (let i = 0; i < this._.length; i += 1) {
       const it = this._[i];
       if (it.includes(ri, ci)) {
@@ -23,11 +25,11 @@ export class Merges {
     return null;
   }
 
-  filterIntersects(cellRange: CellRange) {
+  filterIntersects(cellRange: CellRange): Merges {
     return new Merges(this._.filter((it) => it.intersects(cellRange)));
   }
 
-  intersects(cellRange: CellRange) {
+  intersects(cellRange: CellRange): boolean {
     for (let i = 0; i < this._.length; i += 1) {
       const it = this._[i];
       if (it.intersects(cellRange)) {
@@ -38,7 +40,7 @@ export class Merges {
     return false;
   }
 
-  union(cellRange: CellRange) {
+  union(cellRange: CellRange): CellRange {
     let cr = cellRange;
     this._.forEach((it) => {
       if (it.intersects(cr)) {
@@ -48,13 +50,18 @@ export class Merges {
     return cr;
   }
 
-  add(cr) {
+  add(cr: CellRange): void {
     this.deleteWithin(cr);
     this._.push(cr);
   }
 
   // type: row | column
-  shift(type, index, n, cbWithin) {
+  shift(
+    type: string,
+    index: number,
+    n: number,
+    cbWithin: (sri: number, sci: number, rn: number, cn: number) => void,
+  ): void {
     this._.forEach((cellRange) => {
       const { sri, sci, eri, eci } = cellRange;
       const range = cellRange;
@@ -78,7 +85,7 @@ export class Merges {
     });
   }
 
-  move(cellRange: CellRange, rn, cn) {
+  move(cellRange: CellRange, rn: number, cn: number): void {
     this._.forEach((it1) => {
       const it = it1;
       if (it.within(cellRange)) {
@@ -90,12 +97,12 @@ export class Merges {
     });
   }
 
-  setData(merges) {
+  setData(merges: string[]): this {
     this._ = merges.map((merge) => CellRange.valueOf(merge));
     return this;
   }
 
-  getData() {
+  getData(): string[] {
     return this._.map((merge) => merge.toString());
   }
 }

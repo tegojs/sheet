@@ -1,15 +1,36 @@
 import { expr2expr } from './alphabet';
+import type { CellRange } from './cellRange';
 import { cloneDeep, rangeSum } from './helper';
 
+export interface Cell {
+  text?: string;
+  value?: unknown;
+  style?: number;
+  merge?: [number, number];
+  editable?: boolean;
+  [key: string]: unknown;
+}
+
+export interface Row {
+  height?: number;
+  hide?: boolean;
+  style?: number;
+  cells: { [key: number]: Cell };
+}
+
 export class Rows {
-  constructor({ len, height }) {
+  _: { [key: number]: Row };
+  len: number;
+  height: number;
+
+  constructor({ len, height }: { len: number; height: number }) {
     this._ = {};
     this.len = len;
     // default row height
     this.height = height;
   }
 
-  getHeight(ri) {
+  getHeight(ri: number): number {
     if (this.isHide(ri)) return 0;
     const row = this.get(ri);
     if (row && row.height) {
@@ -18,12 +39,12 @@ export class Rows {
     return this.height;
   }
 
-  setHeight(ri, v) {
+  setHeight(ri: number, v: number): void {
     const row = this.getOrNew(ri);
     row.height = v;
   }
 
-  unhide(idx) {
+  unhide(idx: number): void {
     let index = idx;
     while (index > 0) {
       index -= 1;
@@ -33,43 +54,43 @@ export class Rows {
     }
   }
 
-  isHide(ri) {
+  isHide(ri: number): boolean {
     const row = this.get(ri);
-    return row && row.hide;
+    return !!row?.hide;
   }
 
-  setHide(ri, v) {
+  setHide(ri: number, v: boolean): void {
     const row = this.getOrNew(ri);
     if (v === true) row.hide = true;
     else delete row.hide;
   }
 
-  setStyle(ri, style) {
+  setStyle(ri: number, style: number): void {
     const row = this.getOrNew(ri);
     row.style = style;
   }
 
-  sumHeight(min, max, exceptSet) {
-    return rangeSum(min, max, (i) => {
+  sumHeight(min: number, max: number, exceptSet?: Set<number>): number {
+    return rangeSum(min, max, (i: number) => {
       if (exceptSet && exceptSet.has(i)) return 0;
       return this.getHeight(i);
     });
   }
 
-  totalHeight() {
+  totalHeight(): number {
     return this.sumHeight(0, this.len);
   }
 
-  get(ri) {
+  get(ri: number): Row | undefined {
     return this._[ri];
   }
 
-  getOrNew(ri) {
+  getOrNew(ri: number): Row {
     this._[ri] = this._[ri] || { cells: {} };
     return this._[ri];
   }
 
-  getCell(ri, ci) {
+  getCell(ri: number, ci: number): Cell | null {
     const row = this.get(ri);
     if (
       row !== undefined &&
@@ -81,20 +102,20 @@ export class Rows {
     return null;
   }
 
-  getCellMerge(ri, ci) {
+  getCellMerge(ri: number, ci: number): [number, number] {
     const cell = this.getCell(ri, ci);
     if (cell && cell.merge) return cell.merge;
     return [0, 0];
   }
 
-  getCellOrNew(ri, ci) {
+  getCellOrNew(ri: number, ci: number): Cell {
     const row = this.getOrNew(ri);
     row.cells[ci] = row.cells[ci] || {};
     return row.cells[ci];
   }
 
   // what: all | text | format
-  setCell(ri, ci, cell, what = 'all') {
+  setCell(ri: number, ci: number, cell: Cell, what = 'all'): void {
     const row = this.getOrNew(ri);
     if (what === 'all') {
       row.cells[ci] = cell;
@@ -108,13 +129,19 @@ export class Rows {
     }
   }
 
-  setCellText(ri, ci, text) {
+  setCellText(ri: number, ci: number, text: string): void {
     const cell = this.getCellOrNew(ri, ci);
     if (cell.editable !== false) cell.text = text;
   }
 
   // what: all | format | text
-  copyPaste(srcCellRange, dstCellRange, what, autofill = false, cb = () => {}) {
+  copyPaste(
+    srcCellRange: CellRange,
+    dstCellRange: CellRange,
+    what: string,
+    autofill = false,
+    cb: (ri: number, ci: number, cell: Cell) => void = () => {},
+  ): void {
     const { sri, sci, eri, eci } = srcCellRange;
     const dsri = dstCellRange.sri;
     const dsci = dstCellRange.sci;
@@ -147,23 +174,30 @@ export class Rows {
                     n -= dn + 1;
                   }
                   if (text[0] === '=') {
-                    ncell.text = text.replace(/[a-zA-Z]{1,3}\d+/g, (word) => {
-                      let [xn, yn] = [0, 0];
-                      if (sri === dsri) {
-                        xn = n - 1;
-                        // if (isAdd) xn -= 1;
-                      } else {
-                        yn = n - 1;
-                      }
-                      if (/^\d+$/.test(word)) return word;
-                      return expr2expr(word, xn, yn);
-                    });
+                    ncell.text = text.replace(
+                      /[a-zA-Z]{1,3}\d+/g,
+                      (word: string) => {
+                        let [xn, yn] = [0, 0];
+                        if (sri === dsri) {
+                          xn = n - 1;
+                          // if (isAdd) xn -= 1;
+                        } else {
+                          yn = n - 1;
+                        }
+                        if (/^\d+$/.test(word)) return word;
+                        return expr2expr(
+                          word as `${Uppercase<string>}${number}`,
+                          xn,
+                          yn,
+                        );
+                      },
+                    );
                   } else if (
                     (rn <= 1 && cn > 1 && (dsri > eri || deri < sri)) ||
                     (cn <= 1 && rn > 1 && (dsci > eci || deci < sci)) ||
                     (rn <= 1 && cn <= 1)
                   ) {
-                    const result = /[\\.\d]+$/.exec(text);
+                    const result = /[\\.\\d]+$/.exec(text);
                     // console.log('result:', result);
                     if (result !== null) {
                       const index = Number(result[0]) + n - 1;
@@ -181,25 +215,26 @@ export class Rows {
     }
   }
 
-  cutPaste(srcCellRange, dstCellRange) {
-    const ncellmm = {};
-    this.each((ri) => {
-      this.eachCells(ri, (ci) => {
+  cutPaste(srcCellRange: CellRange, dstCellRange: CellRange): void {
+    const ncellmm: { [key: number]: Row } = {};
+    this.each((ri: string) => {
+      this.eachCells(ri, (ci: string) => {
         let nri = Number.parseInt(ri, 10);
         let nci = Number.parseInt(ci, 10);
-        if (srcCellRange.includes(ri, ci)) {
+        if (srcCellRange.includes(nri, nci)) {
           nri = dstCellRange.sri + (nri - srcCellRange.sri);
           nci = dstCellRange.sci + (nci - srcCellRange.sci);
         }
         ncellmm[nri] = ncellmm[nri] || { cells: {} };
-        ncellmm[nri].cells[nci] = this._[ri].cells[ci];
+        ncellmm[nri].cells[nci] =
+          this._[Number.parseInt(ri, 10)].cells[Number.parseInt(ci, 10)];
       });
     });
     this._ = ncellmm;
   }
 
   // src: Array<Array<String>>
-  paste(src, dstCellRange) {
+  paste(src: string[][], dstCellRange: CellRange): void {
     if (src.length <= 0) return;
     const { sri, sci } = dstCellRange;
     src.forEach((row, i) => {
@@ -211,16 +246,21 @@ export class Rows {
     });
   }
 
-  insert(sri, n = 1) {
-    const ndata = {};
-    this.each((ri, row) => {
+  insert(sri: number, n = 1): void {
+    const ndata: { [key: number]: Row } = {};
+    this.each((ri: string, row: Row) => {
       let nri = Number.parseInt(ri, 10);
       if (nri >= sri) {
         nri += n;
-        this.eachCells(ri, (ci, cell) => {
+        this.eachCells(ri, (ci: string, cell: Cell) => {
           if (cell.text && cell.text[0] === '=') {
-            cell.text = cell.text.replace(/[a-zA-Z]{1,3}\d+/g, (word) =>
-              expr2expr(word, 0, n, (x, y) => y >= sri),
+            cell.text = cell.text.replace(/[a-zA-Z]{1,3}\d+/g, (word: string) =>
+              expr2expr(
+                word as `${Uppercase<string>}${number}`,
+                0,
+                n,
+                (x: number, y: number) => y >= sri,
+              ),
             );
           }
         });
@@ -231,19 +271,24 @@ export class Rows {
     this.len += n;
   }
 
-  delete(sri, eri) {
+  delete(sri: number, eri: number): void {
     const n = eri - sri + 1;
-    const ndata = {};
-    this.each((ri, row) => {
+    const ndata: { [key: number]: Row } = {};
+    this.each((ri: string, row: Row) => {
       const nri = Number.parseInt(ri, 10);
       if (nri < sri) {
         ndata[nri] = row;
-      } else if (ri > eri) {
+      } else if (nri > eri) {
         ndata[nri - n] = row;
-        this.eachCells(ri, (ci, cell) => {
+        this.eachCells(ri, (ci: string, cell: Cell) => {
           if (cell.text && cell.text[0] === '=') {
-            cell.text = cell.text.replace(/[a-zA-Z]{1,3}\d+/g, (word) =>
-              expr2expr(word, 0, -n, (x, y) => y > eri),
+            cell.text = cell.text.replace(/[a-zA-Z]{1,3}\d+/g, (word: string) =>
+              expr2expr(
+                word as `${Uppercase<string>}${number}`,
+                0,
+                -n,
+                (x: number, y: number) => y > eri,
+              ),
             );
           }
         });
@@ -253,16 +298,21 @@ export class Rows {
     this.len -= n;
   }
 
-  insertColumn(sci, n = 1) {
-    this.each((ri, row) => {
-      const rndata = {};
-      this.eachCells(ri, (ci, cell) => {
+  insertColumn(sci: number, n = 1): void {
+    this.each((ri: string, row: Row) => {
+      const rndata: { [key: number]: Cell } = {};
+      this.eachCells(ri, (ci: string, cell: Cell) => {
         let nci = Number.parseInt(ci, 10);
         if (nci >= sci) {
           nci += n;
           if (cell.text && cell.text[0] === '=') {
-            cell.text = cell.text.replace(/[a-zA-Z]{1,3}\d+/g, (word) =>
-              expr2expr(word, n, 0, (x) => x >= sci),
+            cell.text = cell.text.replace(/[a-zA-Z]{1,3}\d+/g, (word: string) =>
+              expr2expr(
+                word as `${Uppercase<string>}${number}`,
+                n,
+                0,
+                (x: number) => x >= sci,
+              ),
             );
           }
         }
@@ -272,19 +322,24 @@ export class Rows {
     });
   }
 
-  deleteColumn(sci, eci) {
+  deleteColumn(sci: number, eci: number): void {
     const n = eci - sci + 1;
-    this.each((ri, row) => {
-      const rndata = {};
-      this.eachCells(ri, (ci, cell) => {
+    this.each((ri: string, row: Row) => {
+      const rndata: { [key: number]: Cell } = {};
+      this.eachCells(ri, (ci: string, cell: Cell) => {
         const nci = Number.parseInt(ci, 10);
         if (nci < sci) {
           rndata[nci] = cell;
         } else if (nci > eci) {
           rndata[nci - n] = cell;
           if (cell.text && cell.text[0] === '=') {
-            cell.text = cell.text.replace(/[a-zA-Z]{1,3}\d+/g, (word) =>
-              expr2expr(word, -n, 0, (x) => x > eci),
+            cell.text = cell.text.replace(/[a-zA-Z]{1,3}\d+/g, (word: string) =>
+              expr2expr(
+                word as `${Uppercase<string>}${number}`,
+                -n,
+                0,
+                (x: number) => x > eci,
+              ),
             );
           }
         }
@@ -294,16 +349,16 @@ export class Rows {
   }
 
   // what: all | text | format | merge
-  deleteCells(cellRange, what = 'all') {
-    cellRange.each((i, j) => {
+  deleteCells(cellRange: CellRange, what = 'all'): void {
+    cellRange.each((i: number, j: number) => {
       this.deleteCell(i, j, what);
     });
   }
 
   // what: all | text | format | merge
-  deleteCell(ri, ci, what = 'all') {
+  deleteCell(ri: number, ci: number, what = 'all'): void {
     const row = this.get(ri);
-    if (row !== null) {
+    if (row !== null && row !== undefined) {
       const cell = this.getCell(ri, ci);
       if (cell !== null && cell.editable !== false) {
         if (what === 'all') {
@@ -321,10 +376,10 @@ export class Rows {
     }
   }
 
-  maxCell() {
+  maxCell(): [number, number] {
     const keys = Object.keys(this._);
     const ri = keys[keys.length - 1];
-    const col = this._[ri];
+    const col = this._[Number.parseInt(ri, 10)];
     if (col) {
       const { cells } = col;
       const ks = Object.keys(cells);
@@ -334,29 +389,30 @@ export class Rows {
     return [0, 0];
   }
 
-  each(cb) {
+  each(cb: (ri: string, row: Row) => void): void {
     Object.entries(this._).forEach(([ri, row]) => {
       cb(ri, row);
     });
   }
 
-  eachCells(ri, cb) {
-    if (this._[ri] && this._[ri].cells) {
-      Object.entries(this._[ri].cells).forEach(([ci, cell]) => {
+  eachCells(ri: string, cb: (ci: string, cell: Cell) => void): void {
+    const riNum = Number.parseInt(ri, 10);
+    if (this._[riNum] && this._[riNum].cells) {
+      Object.entries(this._[riNum].cells).forEach(([ci, cell]) => {
         cb(ci, cell);
       });
     }
   }
 
-  setData(d) {
+  setData(d: { len?: number; [key: number]: Row }): void {
     if (d.len) {
       this.len = d.len;
       delete d.len;
     }
-    this._ = d;
+    this._ = d as { [key: number]: Row };
   }
 
-  getData() {
+  getData(): { len: number; [key: number]: Row } {
     const { len } = this;
     return Object.assign({ len }, this._);
   }

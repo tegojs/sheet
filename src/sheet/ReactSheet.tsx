@@ -47,7 +47,7 @@ const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
   useEffect(() => {
     const updateIconBackgrounds = () => {
       const elements = document.querySelectorAll(`.${cssPrefix}-icon-img`);
-      for (const element of elements) {
+      for (const element of Array.from(elements)) {
         const htmlElement = element as HTMLElement;
         if (
           !htmlElement.style.backgroundImage ||
