@@ -252,14 +252,14 @@ export class Rows {
       let nri = Number.parseInt(ri, 10);
       if (nri >= sri) {
         nri += n;
-        this.eachCells(ri, (ci: string, cell: Cell) => {
+        this.eachCells(ri, (_ci: string, cell: Cell) => {
           if (cell.text && cell.text[0] === '=') {
             cell.text = cell.text.replace(/[a-zA-Z]{1,3}\d+/g, (word: string) =>
               expr2expr(
                 word as `${Uppercase<string>}${number}`,
                 0,
                 n,
-                (x: number, y: number) => y >= sri,
+                (_x: number, y: number) => y >= sri,
               ),
             );
           }
@@ -280,14 +280,14 @@ export class Rows {
         ndata[nri] = row;
       } else if (nri > eri) {
         ndata[nri - n] = row;
-        this.eachCells(ri, (ci: string, cell: Cell) => {
+        this.eachCells(ri, (_ci: string, cell: Cell) => {
           if (cell.text && cell.text[0] === '=') {
             cell.text = cell.text.replace(/[a-zA-Z]{1,3}\d+/g, (word: string) =>
               expr2expr(
                 word as `${Uppercase<string>}${number}`,
                 0,
                 -n,
-                (x: number, y: number) => y > eri,
+                (_x: number, y: number) => y > eri,
               ),
             );
           }

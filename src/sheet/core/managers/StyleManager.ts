@@ -16,10 +16,8 @@ import type Selector from '../selector';
 export class StyleManager {
   private styles: CellStyle[];
   private rows: Rows;
-  private merges: Merges;
   private selector: Selector;
   private defaultStyleGetter: () => CellStyle;
-  private onStyleChange: () => void;
 
   constructor(
     styles: CellStyle[],
@@ -145,9 +143,13 @@ export class StyleManager {
     mode,
     style,
     color,
-  }: { mode: string; style: unknown; color: unknown }): void {
+  }: {
+    mode: string;
+    style: unknown;
+    color: unknown;
+  }): void {
     const { styles, selector, rows } = this;
-    const { sri, sci, eri, eci } = selector.range;
+    const { sri, sci } = selector.range;
     const multiple = !this.isSingleSelected();
 
     if (!multiple) {
@@ -219,7 +221,9 @@ export class StyleManager {
             }
           }
         }
-        mergeIndexes.forEach((it) => merges.splice(it, 1));
+        for (const it of mergeIndexes) {
+          merges.splice(it, 1);
+        }
         if (ci > eci) break;
         // jump merges -- end
 

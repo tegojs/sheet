@@ -129,27 +129,22 @@ export const Bottombar: React.FC = () => {
               <>
                 {sheet.name}
                 {sheets.length > 1 && (
-                  <span
+                  <button
+                    type="button"
                     onClick={(e) => handleDeleteSheet(index, e)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handleDeleteSheet(
-                          index,
-                          e as unknown as React.MouseEvent<Element, MouseEvent>,
-                        );
-                      }
-                    }}
-                    role="button"
-                    tabIndex={0}
                     style={{
                       marginLeft: '8px',
                       opacity: 0.6,
                       cursor: 'pointer',
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      font: 'inherit',
+                      color: 'inherit',
                     }}
                   >
                     ×
-                  </span>
+                  </button>
                 )}
               </>
             )}

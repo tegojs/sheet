@@ -1,5 +1,5 @@
 import { t } from '../locale/locale';
-import type { BorderStyle, Cell, CellStyle } from '../types';
+import type { Cell, CellStyle } from '../types';
 import { expr2xy, xy2expr } from './alphabet';
 import AutoFilter from './autoFilter';
 import { CellRange } from './cellRange';
@@ -247,7 +247,9 @@ function setStyleBorders(
             }
           }
         }
-        mergeIndexes.forEach((it) => merges.splice(it, 1));
+        for (const it of mergeIndexes) {
+          merges.splice(it, 1);
+        }
         if (ci > eci) break;
         // jump merges -- end
         const cell = rows.getCell(ri, ci);
@@ -1288,7 +1290,9 @@ export default class DataProxy {
   }
 
   eachMergesInView(viewRange: CellRange, cb: (merge: CellRange) => void): void {
-    this.merges.filterIntersects(viewRange).forEach((it) => cb(it));
+    for (const it of this.merges.filterIntersects(viewRange)) {
+      cb(it);
+    }
   }
 
   hideRowsOrCols() {

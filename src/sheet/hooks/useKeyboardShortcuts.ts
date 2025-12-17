@@ -5,9 +5,7 @@ export function useKeyboardShortcuts() {
   const {
     undo,
     redo,
-    copy,
     cut,
-    paste,
     startEditing,
     stopEditing,
     setCellStyle,

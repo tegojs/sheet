@@ -131,11 +131,11 @@ export const ContextMenu: React.FC = () => {
         overflow: 'auto',
       }}
     >
-      {menuItems.map((item, index) => {
+      {menuItems.map((item) => {
         if (item.key === 'divider') {
           return (
             <div
-              key={`divider-${index}`}
+              key={item.key}
               className={`${cssPrefix}-item divider`}
               style={{
                 height: 0,
@@ -152,7 +152,15 @@ export const ContextMenu: React.FC = () => {
           <div
             key={item.key}
             className={`${cssPrefix}-item`}
+            role="menuitem"
+            tabIndex={0}
             onClick={() => handleItemClick(item.key)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleItemClick(item.key);
+              }
+            }}
             onMouseEnter={() => setHoveredItem(item.key)}
             onMouseLeave={() => setHoveredItem(null)}
             style={{

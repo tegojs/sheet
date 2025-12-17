@@ -46,7 +46,7 @@ export class AllBordersStrategy implements BorderStyleStrategy {
     for (let ri = sri; ri <= eri; ri += 1) {
       for (let ci = sci; ci <= eci; ci += 1) {
         // Skip merged cells
-        const [skipCi, mergeInfo] = this.handleMerges(ri, ci, merges, eci);
+        const [skipCi, _mergeInfo] = this.handleMerges(ri, ci, merges, eci);
         if (skipCi !== null) {
           ci = skipCi;
           if (ci > eci) break;
@@ -75,7 +75,7 @@ export class AllBordersStrategy implements BorderStyleStrategy {
     ri: number,
     ci: number,
     merges: [number, number, number, number][],
-    eci: number,
+    _eci: number,
   ): [number | null, [number, number, number, number][] | null] {
     const mergeIndexes: number[] = [];
     let newCi = ci;
@@ -90,7 +90,9 @@ export class AllBordersStrategy implements BorderStyleStrategy {
         }
       }
     }
-    mergeIndexes.forEach((it) => merges.splice(it, 1));
+    for (const it of mergeIndexes) {
+      merges.splice(it, 1);
+    }
 
     if (newCi !== ci) {
       return [newCi, merges];
@@ -269,11 +271,6 @@ export class VerticalBordersStrategy implements BorderStyleStrategy {
  * Remove all borders
  */
 export class NoneBordersStrategy implements BorderStyleStrategy {
-  constructor(
-    private styles: unknown[],
-    private addStyle: (style: unknown) => number,
-  ) {}
-
   apply(
     range: CellRange,
     _style: string,

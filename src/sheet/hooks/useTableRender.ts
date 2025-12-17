@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { renderCell } from '../canvas/cellRenderer';
-import { Draw } from '../canvas/draw';
-import { npx, thinLineWidth } from '../canvas/draw';
+import { Draw, DrawBox, thinLineWidth } from '../canvas/draw';
 import { stringAt } from '../core/alphabet';
 import type { CellRange } from '../core/cellRange';
 import type DataProxy from '../core/dataProxy';
@@ -212,18 +211,7 @@ export function useTableRender(data: DataProxy | null) {
           if (afRange.each) {
             afRange.each((ri: number, ci: number) => {
               const { left, top, width, height } = data.cellRect(ri, ci);
-              draw.dropdown({
-                x: left,
-                y: top,
-                width,
-                height,
-                padding: 0,
-                bgcolor: '#ffffff',
-                borderTop: null,
-                borderRight: null,
-                borderBottom: null,
-                borderLeft: null,
-              } as any);
+              draw.dropdown(new DrawBox(left, top, width, height, 0));
             });
           }
         }

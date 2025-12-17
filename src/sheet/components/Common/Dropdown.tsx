@@ -79,6 +79,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       {isOpen && (
         <div
           className={`${cssPrefix}-dropdown-content`}
+          role="menu"
           style={{ width: typeof width === 'number' ? `${width}px` : width }}
           onClick={() => {
             setIsOpen(false);

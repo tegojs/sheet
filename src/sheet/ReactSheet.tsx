@@ -117,6 +117,7 @@ const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
     <div
       ref={containerRef}
       className={cssPrefix}
+      role="application"
       onContextMenu={(e) => e.preventDefault()}
     >
       {showToolbar && <Toolbar />}

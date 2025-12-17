@@ -1,8 +1,4 @@
-import type {
-  ValidationData,
-  ValidationOperator,
-  ValidationType,
-} from '../types';
+import type { ValidationData, ValidationOperator } from '../types';
 import type { CellRange } from './cellRange';
 import { Validation } from './validation';
 import Validator from './validator';
@@ -95,7 +91,9 @@ export class Validations {
   }
 
   each(cb: (it: Validation) => void): void {
-    this._.forEach((it: Validation) => cb(it));
+    for (const it of this._) {
+      cb(it);
+    }
   }
 
   getData(): ValidationData[] {

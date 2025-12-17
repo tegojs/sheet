@@ -29,20 +29,14 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = ({
   };
 
   return (
-    <div
+    <button
+      type="button"
       className={`${cssPrefix}-toolbar-btn ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}`}
       onClick={handleClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
-        }
-      }}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
       data-tooltip={tooltip}
-      role="button"
-      tabIndex={disabled ? -1 : 0}
+      disabled={disabled}
     >
       {icon && <Icon name={icon} />}
       {children}
@@ -61,6 +55,6 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = ({
           {tooltip}
         </div>
       )}
-    </div>
+    </button>
   );
 };

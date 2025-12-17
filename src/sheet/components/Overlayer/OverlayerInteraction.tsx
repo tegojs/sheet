@@ -170,9 +170,11 @@ export const OverlayerInteraction: React.FC<OverlayerInteractionProps> = ({
   if (!data) return null;
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: spreadsheet grid has no semantic HTML equivalent
     <div
       ref={overlayerRef}
       className={`${cssPrefix}-overlayer`}
+      role="grid"
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}

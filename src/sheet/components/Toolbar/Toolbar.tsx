@@ -27,13 +27,13 @@ const makeClickable = (onClick: () => void) => ({
 export const Toolbar: React.FC = () => {
   const data = useActiveSheet();
   const { undo, redo, setCellStyle } = useSheetStore();
-  const updateCount = useUpdateCount();
+  const _updateCount = useUpdateCount();
 
   // 获取当前选中单元格的样式
   const cellStyle = useMemo(() => {
     if (!data) return { font: { bold: false, italic: false, size: 10 } };
     return data.getSelectedCellStyle();
-  }, [data, updateCount]);
+  }, [data]);
 
   const canUndo = data?.canUndo() || false;
   const canRedo = data?.canRedo() || false;
@@ -227,7 +227,12 @@ export const Toolbar: React.FC = () => {
           width={200}
           showArrow={false}
         >
-          <div style={{ padding: '10px' }} onClick={(e) => e.stopPropagation()}>
+          {/* biome-ignore lint/a11y/noStaticElementInteractions: click handler prevents propagation only */}
+          <div
+            style={{ padding: '10px' }}
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+          >
             <input
               type="color"
               value={String(cellStyle?.color || '#000000')}
@@ -249,7 +254,12 @@ export const Toolbar: React.FC = () => {
           width={200}
           showArrow={false}
         >
-          <div style={{ padding: '10px' }} onClick={(e) => e.stopPropagation()}>
+          {/* biome-ignore lint/a11y/noStaticElementInteractions: click handler prevents propagation only */}
+          <div
+            style={{ padding: '10px' }}
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+          >
             <input
               type="color"
               value={String(cellStyle?.bgcolor || '#ffffff')}
