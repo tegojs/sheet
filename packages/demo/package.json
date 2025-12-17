@@ -1,5 +1,5 @@
 {
-  "name": "@tachybase/sheet-demo",
+  "name": "@tego/sheet-demo",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tachybase/sheet": "workspace:*",
+    "@tego/sheet": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

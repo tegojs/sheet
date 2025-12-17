@@ -2,7 +2,7 @@
 
 ## 概述
 
-`@tachybase/sheet` 提供基于 React 的电子表格组件，主要导出：
+`@tego/sheet` 提供基于 React 的电子表格组件，主要导出：
 
 | 导出 | 类型 | 描述 |
 |------|------|------|
@@ -16,7 +16,7 @@
 ## 快速示例
 
 ```tsx
-import { ReactSheet, useSheetStore } from '@tachybase/sheet';
+import { ReactSheet, useSheetStore } from '@tego/sheet';
 
 function App() {
   const { loadData, getData } = useSheetStore();

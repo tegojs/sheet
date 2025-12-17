@@ -5,7 +5,7 @@ The core data management class for spreadsheet operations. Access via `useSheetS
 ## Access
 
 ```tsx
-import { useSheetStore } from '@tachybase/sheet';
+import { useSheetStore } from '@tego/sheet';
 
 const { getActiveSheet } = useSheetStore();
 const dataProxy = getActiveSheet();

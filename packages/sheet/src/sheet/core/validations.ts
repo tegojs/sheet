@@ -1,4 +1,4 @@
-import type { ValidationData, ValidationOperator } from '../types';
+import type { ValidationData, ValidationOperator } from '../types/index';
 import type { CellRange } from './cellRange';
 import { Validation } from './validation';
 import Validator from './validator';

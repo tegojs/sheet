@@ -1,4 +1,4 @@
-import type { CellRenderFn, FormulaMap } from '../types';
+import type { CellRenderFn, FormulaMap } from '../types/index';
 import { expr2xy, xy2expr } from './alphabet';
 import { numberCalc } from './helper';
 

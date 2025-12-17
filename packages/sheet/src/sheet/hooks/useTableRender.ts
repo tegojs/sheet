@@ -5,7 +5,7 @@ import { stringAt } from '../core/alphabet';
 import type { CellRange } from '../core/cellRange';
 import type DataProxy from '../core/dataProxy';
 import { RenderConfig } from '../core/renderConfig';
-import type { MergeInfo } from '../types';
+import type { MergeInfo } from '../types/index';
 
 const tableFixedHeaderCleanStyle = {
   fillStyle: RenderConfig.header.backgroundColor,

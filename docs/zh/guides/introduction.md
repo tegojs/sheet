@@ -3,13 +3,13 @@
 ## 安装
 
 ```bash
-pnpm install @tachybase/sheet
+pnpm install @tego/sheet
 ```
 
 ## 基础用法
 
 ```tsx
-import { ReactSheet } from '@tachybase/sheet';
+import { ReactSheet } from '@tego/sheet';
 
 function App() {
   return <ReactSheet />;
@@ -19,7 +19,7 @@ function App() {
 ## 配置选项
 
 ```tsx
-import { ReactSheet } from '@tachybase/sheet';
+import { ReactSheet } from '@tego/sheet';
 
 function App() {
   return (
@@ -39,7 +39,7 @@ function App() {
 ## 加载数据
 
 ```tsx
-import { ReactSheet, useSheetStore } from '@tachybase/sheet';
+import { ReactSheet, useSheetStore } from '@tego/sheet';
 import { useEffect } from 'react';
 
 function App() {
@@ -65,7 +65,7 @@ function App() {
 ## 获取数据
 
 ```tsx
-import { useSheetStore } from '@tachybase/sheet';
+import { useSheetStore } from '@tego/sheet';
 
 function ExportButton() {
   const { getData } = useSheetStore();
@@ -82,7 +82,7 @@ function ExportButton() {
 ## 监听变化
 
 ```tsx
-import { ReactSheet } from '@tachybase/sheet';
+import { ReactSheet } from '@tego/sheet';
 
 function App() {
   const handleChange = (data) => {
@@ -97,7 +97,7 @@ function App() {
 ## 程序化单元格操作
 
 ```tsx
-import { useSheetStore } from '@tachybase/sheet';
+import { useSheetStore } from '@tego/sheet';
 
 function Controls() {
   const { setCellText, setCellStyle } = useSheetStore();

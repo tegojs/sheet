@@ -3,7 +3,7 @@ pageType: home
 
 hero:
   name: Sheet
-  text: Tachybase Sheet
+  text: TegoSheet
   tagline: High-performance React spreadsheet component with Canvas rendering
   actions:
     - theme: brand

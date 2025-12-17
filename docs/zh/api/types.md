@@ -1,6 +1,6 @@
 # 类型定义
 
-`@tachybase/sheet` 的 TypeScript 类型定义。
+`@tego/sheet` 的 TypeScript 类型定义。
 
 ## 数据类型
 

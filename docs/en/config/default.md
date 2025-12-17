@@ -44,7 +44,7 @@ You can customize these options when creating a ReactSheet component. Below are 
 ## Usage
 
 ```tsx
-import { ReactSheet } from '@tachybase/sheet';
+import { ReactSheet } from '@tego/sheet';
 
 function App() {
   return (

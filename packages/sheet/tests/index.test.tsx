@@ -1,11 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { ReactSheet } from '../src/sheet';
+import { ReactSheet, TegoSheet } from '../src/sheet';
 
 // These tests check basic component exports since full rendering
 // requires extensive mocking of internal dependencies
-describe('ReactSheet', () => {
-  it('ReactSheet 组件应该存在', () => {
+describe('TegoSheet', () => {
+  it('TegoSheet component should exist', () => {
+    expect(TegoSheet).toBeDefined();
+    expect(typeof TegoSheet).toBe('function');
+  });
+
+  it('ReactSheet alias should exist for backward compatibility', () => {
     expect(ReactSheet).toBeDefined();
-    expect(typeof ReactSheet).toBe('function');
+    expect(ReactSheet).toBe(TegoSheet);
   });
 });

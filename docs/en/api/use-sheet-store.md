@@ -5,7 +5,7 @@ Zustand store hook for managing spreadsheet state and operations.
 ## Import
 
 ```tsx
-import { useSheetStore } from '@tachybase/sheet';
+import { useSheetStore } from '@tego/sheet';
 ```
 
 ## Basic Usage
@@ -306,7 +306,7 @@ removeChangeListener(myListener);
 Get the active sheet directly.
 
 ```tsx
-import { useActiveSheet } from '@tachybase/sheet';
+import { useActiveSheet } from '@tego/sheet';
 
 const sheet = useActiveSheet();
 ```
@@ -316,7 +316,7 @@ const sheet = useActiveSheet();
 Get the current selection.
 
 ```tsx
-import { useSelection } from '@tachybase/sheet';
+import { useSelection } from '@tego/sheet';
 
 const selection = useSelection();
 ```
@@ -326,7 +326,7 @@ const selection = useSelection();
 Check if currently editing.
 
 ```tsx
-import { useIsEditing } from '@tachybase/sheet';
+import { useIsEditing } from '@tego/sheet';
 
 const isEditing = useIsEditing();
 ```
@@ -336,7 +336,7 @@ const isEditing = useIsEditing();
 Get update count for re-render tracking.
 
 ```tsx
-import { useUpdateCount } from '@tachybase/sheet';
+import { useUpdateCount } from '@tego/sheet';
 
 const updateCount = useUpdateCount();
 ```

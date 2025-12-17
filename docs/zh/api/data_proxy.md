@@ -5,7 +5,7 @@
 ## 访问方式
 
 ```tsx
-import { useSheetStore } from '@tachybase/sheet';
+import { useSheetStore } from '@tego/sheet';
 
 const { getActiveSheet } = useSheetStore();
 const dataProxy = getActiveSheet();

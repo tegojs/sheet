@@ -5,7 +5,7 @@
 ## 导入
 
 ```tsx
-import { useSheetStore } from '@tachybase/sheet';
+import { useSheetStore } from '@tego/sheet';
 ```
 
 ## 基本用法
@@ -306,7 +306,7 @@ removeChangeListener(myListener);
 直接获取活动表格。
 
 ```tsx
-import { useActiveSheet } from '@tachybase/sheet';
+import { useActiveSheet } from '@tego/sheet';
 
 const sheet = useActiveSheet();
 ```
@@ -316,7 +316,7 @@ const sheet = useActiveSheet();
 获取当前选区。
 
 ```tsx
-import { useSelection } from '@tachybase/sheet';
+import { useSelection } from '@tego/sheet';
 
 const selection = useSelection();
 ```
@@ -326,7 +326,7 @@ const selection = useSelection();
 检查是否正在编辑。
 
 ```tsx
-import { useIsEditing } from '@tachybase/sheet';
+import { useIsEditing } from '@tego/sheet';
 
 const isEditing = useIsEditing();
 ```
@@ -336,7 +336,7 @@ const isEditing = useIsEditing();
 获取更新计数用于重渲染追踪。
 
 ```tsx
-import { useUpdateCount } from '@tachybase/sheet';
+import { useUpdateCount } from '@tego/sheet';
 
 const updateCount = useUpdateCount();
 ```

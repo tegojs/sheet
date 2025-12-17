@@ -3,7 +3,7 @@ pageType: home
 
 hero:
   name: Sheet
-  text: Tachybase Sheet
+  text: TegoSheet
   tagline: 基于 React + Canvas 的高性能电子表格组件
   actions:
     - theme: brand

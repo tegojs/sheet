@@ -1,13 +1,11 @@
-# @tachybase/sheet
+# TegoSheet (@tego/sheet)
 
 A high-performance spreadsheet component for React, combining React's declarative UI with Canvas rendering.
-
-一个基于 React 和 Canvas 的高性能电子表格组件。
 
 ## Installation
 
 ```bash
-pnpm install @tachybase/sheet
+pnpm install @tego/sheet
 ```
 
 ## Quick Start
@@ -15,17 +13,17 @@ pnpm install @tachybase/sheet
 ### Basic Usage
 
 ```tsx
-import { ReactSheet } from '@tachybase/sheet';
+import { TegoSheet } from '@tego/sheet';
 
 function App() {
-  return <ReactSheet />;
+  return <TegoSheet />;
 }
 ```
 
 ### With Options
 
 ```tsx
-<ReactSheet
+<TegoSheet
   options={{
     mode: 'edit',        // 'edit' | 'read'
     showToolbar: true,
@@ -38,7 +36,7 @@ function App() {
 ### Load Data
 
 ```tsx
-import { ReactSheet, useSheetStore } from '@tachybase/sheet';
+import { TegoSheet, useSheetStore } from '@tego/sheet';
 import { useEffect } from 'react';
 
 function App() {
@@ -56,18 +54,26 @@ function App() {
     ]);
   }, []);
 
-  return <ReactSheet />;
+  return <TegoSheet />;
 }
 ```
 
 ### Listen to Changes
 
 ```tsx
-<ReactSheet
+<TegoSheet
   onChange={(data) => {
     console.log('Sheet data changed:', data);
   }}
 />
+```
+
+## Backward Compatibility
+
+For backward compatibility, `ReactSheet` is also exported as an alias:
+
+```tsx
+import { ReactSheet } from '@tego/sheet';  // Same as TegoSheet
 ```
 
 ## Documentation

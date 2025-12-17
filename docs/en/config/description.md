@@ -147,7 +147,7 @@ Set the default cell style for all cells.
 ## Complete Example
 
 ```tsx
-import { ReactSheet } from '@tachybase/sheet';
+import { ReactSheet } from '@tego/sheet';
 
 function App() {
   return (

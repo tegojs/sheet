@@ -1,4 +1,4 @@
-import type { CellStyle } from '../../types';
+import type { CellStyle } from '../../types/index';
 import type { BorderStyleParams } from '../dataProxyTypes';
 import { cloneDeep, equals, merge } from '../helper';
 import type { Merges } from '../merge';

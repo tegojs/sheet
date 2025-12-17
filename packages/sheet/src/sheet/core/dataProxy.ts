@@ -1,5 +1,5 @@
 import { t } from '../locale/locale';
-import type { Cell, CellStyle } from '../types';
+import type { Cell, CellStyle } from '../types/index';
 import { expr2xy, xy2expr } from './alphabet';
 import AutoFilter from './autoFilter';
 import { CellRange } from './cellRange';

@@ -2,7 +2,7 @@
  * Builder pattern for creating DrawBox instances with fluent API
  */
 
-import type { BorderStyle } from '../types';
+import type { BorderStyle } from '../types/index';
 import { DrawBox } from './draw';
 import { DrawConfig } from './drawConfig';
 

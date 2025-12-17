@@ -5,7 +5,7 @@ The main React component for rendering the spreadsheet.
 ## Import
 
 ```tsx
-import { ReactSheet } from '@tachybase/sheet';
+import { ReactSheet } from '@tego/sheet';
 ```
 
 ## Usage

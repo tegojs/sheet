@@ -44,7 +44,7 @@
 ## 用法
 
 ```tsx
-import { ReactSheet } from '@tachybase/sheet';
+import { ReactSheet } from '@tego/sheet';
 
 function App() {
   return (

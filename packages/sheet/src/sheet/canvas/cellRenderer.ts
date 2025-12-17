@@ -8,7 +8,7 @@ import type DataProxy from '../core/dataProxy';
 import { getFontSizePxByPt } from '../core/font';
 import { formatm } from '../core/format';
 import { formulam } from '../core/formula';
-import type { FormatMap, FormulaMap } from '../types';
+import type { FormatMap, FormulaMap } from '../types/index';
 import { type Draw, DrawBox } from './draw';
 
 const cellPaddingWidth = 5;

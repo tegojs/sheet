@@ -2,7 +2,7 @@
 
 ## Overview
 
-`@tachybase/sheet` provides a React-based spreadsheet component with the following main exports:
+`@tego/sheet` provides a React-based spreadsheet component with the following main exports:
 
 | Export | Type | Description |
 |--------|------|-------------|
@@ -16,7 +16,7 @@
 ## Quick Example
 
 ```tsx
-import { ReactSheet, useSheetStore } from '@tachybase/sheet';
+import { ReactSheet, useSheetStore } from '@tego/sheet';
 
 function App() {
   const { loadData, getData } = useSheetStore();

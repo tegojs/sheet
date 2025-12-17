@@ -2,7 +2,7 @@
  * DataProxy 相关类型定义
  */
 
-import type { BorderStyle, CellStyleFull } from '../types';
+import type { BorderStyle, CellStyleFull } from '../types/index';
 
 /**
  * DataProxy 设置接口

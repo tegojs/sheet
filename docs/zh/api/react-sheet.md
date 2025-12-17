@@ -5,7 +5,7 @@
 ## 导入
 
 ```tsx
-import { ReactSheet } from '@tachybase/sheet';
+import { ReactSheet } from '@tego/sheet';
 ```
 
 ## 用法

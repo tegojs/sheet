@@ -2,7 +2,11 @@ import { create } from 'zustand';
 import type { CellRange } from '../core/cellRange';
 import DataProxy from '../core/dataProxy';
 import type { Options } from '../index';
-import type { ChangeListener, SheetDataInput, StyleValue } from '../types';
+import type {
+  ChangeListener,
+  SheetDataInput,
+  StyleValue,
+} from '../types/index';
 
 interface SheetState {
   // 数据状态

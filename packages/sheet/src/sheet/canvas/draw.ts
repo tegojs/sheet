@@ -3,7 +3,7 @@ import type {
   BorderStyle,
   CanvasRenderingOptions,
   DrawTextCallback,
-} from '../types';
+} from '../types/index';
 import { DrawConfig } from './drawConfig';
 import { calculateDecorationOffset } from './textRenderer';
 

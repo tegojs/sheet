@@ -11,17 +11,21 @@ import { Toolbar } from './components/Toolbar/Toolbar';
 import { cssPrefix } from './configs';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { useSheetStore } from './store/useSheetStore';
-import type { SheetDataInput } from './types';
+import type { SheetDataInput } from './types/index';
 import './sheet.less';
 import svg from './assets/sprite.svg';
 import type { Options } from './index';
 
-interface ReactSheetProps {
+interface TegoSheetProps {
   options?: Options;
   onChange?: (data: unknown) => void;
 }
 
-const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
+/**
+ * TegoSheet - React-based Spreadsheet Component
+ * @tego/sheet
+ */
+const TegoSheet: React.FC<TegoSheetProps> = ({ options = {}, onChange }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const initializdRef = useRef(false);
   const { addChangeListener, removeChangeListener, getActiveSheet } =
@@ -192,7 +196,10 @@ const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
   );
 };
 
-export default ReactSheet;
+export default TegoSheet;
+
+// Alias for backward compatibility
+export { TegoSheet as ReactSheet };
 
 // 导出 API 方法供外部使用
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

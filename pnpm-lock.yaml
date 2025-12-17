@@ -32,7 +32,7 @@ importers:
 
   packages/demo:
     dependencies:
-      '@tachybase/sheet':
+      '@tego/sheet':
         specifier: workspace:*
         version: link:../sheet
       react:

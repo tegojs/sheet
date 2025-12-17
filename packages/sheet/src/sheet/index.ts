@@ -7,7 +7,7 @@ import type {
   ChangeListener,
   Messages,
   SheetDataInput,
-} from './types';
+} from './types/index';
 
 export interface ExtendToolbarOption {
   tip?: string;
@@ -130,7 +130,7 @@ export interface SpreadsheetData {
 }
 
 // Re-export Cell and CellStyle from types
-export type { Cell, CellStyle } from './types';
+export type { Cell, CellStyle } from './types/index';
 
 export type Editor = Record<string, unknown>;
 export type Element = Record<string, unknown>;
@@ -139,8 +139,8 @@ export type Table = Record<string, unknown>;
 export type Sheet = Record<string, unknown>;
 
 /**
- * React-based Spreadsheet API
- * 兼容旧版 API，但使用新的 React + Zustand 架构
+ * TegoSheet - React-based Spreadsheet API
+ * @tego/sheet
  */
 export default class Spreadsheet {
   static targets = new WeakMap<HTMLElement, Spreadsheet>();
@@ -261,12 +261,12 @@ export default class Spreadsheet {
 
 export * from './components';
 export * from './hooks';
-// 导出新的 React 组件
-export { default as ReactSheet } from './ReactSheet';
-// 导出 store 和 hooks
+// Export store and hooks
 export {
   useActiveSheet,
   useIsEditing,
   useSelection,
   useSheetStore,
 } from './store/useSheetStore';
+// Export TegoSheet React component (ReactSheet alias for backward compatibility)
+export { default as TegoSheet, ReactSheet } from './TegoSheet';

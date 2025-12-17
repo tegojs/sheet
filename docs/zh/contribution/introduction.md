@@ -5,7 +5,7 @@
 首先你需要安装 [pnpm](https://pnpm.io/zh/installation) 的环境
 
 ```bash
-  git clone https://github.com/tachybase/sheet
+  git clone https://github.com/tego/sheet
   # 初始化
   pnpm install
   # 项目启动

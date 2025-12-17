@@ -1,5 +1,5 @@
 import { t } from '../../locale/locale';
-import type { Cell } from '../../types';
+import type { Cell } from '../../types/index';
 import { CellRange } from '../cellRange';
 import type Clipboard from '../clipboard';
 import type { Merges } from '../merge';

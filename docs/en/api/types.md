@@ -1,6 +1,6 @@
 # Types
 
-TypeScript type definitions for `@tachybase/sheet`.
+TypeScript type definitions for `@tego/sheet`.
 
 ## Data Types
 

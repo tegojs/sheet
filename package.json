@@ -1,5 +1,5 @@
 {
-  "name": "@tachybase/sheet-monorepo",
+  "name": "@tego/sheet-monorepo",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@9.15.4",
