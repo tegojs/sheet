@@ -305,8 +305,16 @@ export function useTableRender(data: DataProxy | null) {
     const fh = rows.height;
 
     // 调整 canvas 大小
-    draw.resize(data.viewWidth(), data.viewHeight());
+    const viewWidth = data.viewWidth();
+    const viewHeight = data.viewHeight();
+    draw.resize(viewWidth, viewHeight);
     draw.clear();
+
+    // 先填充整个背景（防止滚动到边缘时出现空白区域）
+    draw.save();
+    draw.attr({ fillStyle: RenderConfig.grid.backgroundColor });
+    draw.fillRect(0, 0, viewWidth, viewHeight);
+    draw.restore();
 
     const viewRange = data.viewRange();
     const tx = data.freezeTotalWidth();
