@@ -45,10 +45,37 @@ const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
 
   // 初始化图标背景
   useEffect(() => {
-    const elements = document.querySelectorAll(`.${cssPrefix}-icon-img`);
-    for (const element of elements) {
-      (element as HTMLElement).style.backgroundImage = `url('${svg}')`;
+    const updateIconBackgrounds = () => {
+      const elements = document.querySelectorAll(`.${cssPrefix}-icon-img`);
+      for (const element of elements) {
+        const htmlElement = element as HTMLElement;
+        if (
+          !htmlElement.style.backgroundImage ||
+          htmlElement.style.backgroundImage === 'none'
+        ) {
+          htmlElement.style.backgroundImage = `url('${svg}')`;
+        }
+      }
+    };
+
+    // 立即执行一次
+    updateIconBackgrounds();
+
+    // 使用 MutationObserver 监听 DOM 变化，确保动态添加的图标也能设置背景
+    const observer = new MutationObserver(() => {
+      updateIconBackgrounds();
+    });
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current, {
+        childList: true,
+        subtree: true,
+      });
     }
+
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   // 注册 onChange 监听器
@@ -66,8 +93,8 @@ const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
     const data = getActiveSheet();
     if (data) {
       data.scrolly(distance, () => {
-        // 滚动后触发重新渲染
-        useSheetStore.getState().triggerChange();
+        // 滚动后触发重新渲染 - 使用 setState 强制触发 zustand 订阅者
+        useSheetStore.setState({});
       });
     }
   };
@@ -76,8 +103,8 @@ const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
     const data = getActiveSheet();
     if (data) {
       data.scrollx(distance, () => {
-        // 滚动后触发重新渲染
-        useSheetStore.getState().triggerChange();
+        // 滚动后触发重新渲染 - 使用 setState 强制触发 zustand 订阅者
+        useSheetStore.setState({});
       });
     }
   };

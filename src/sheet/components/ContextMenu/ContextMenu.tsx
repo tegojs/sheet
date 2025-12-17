@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cssPrefix } from '../../configs';
 import { tf } from '../../locale/locale';
 import { useActiveSheet, useSheetStore } from '../../store/useSheetStore';
@@ -47,6 +47,7 @@ export const ContextMenu: React.FC = () => {
     paste,
   } = useSheetStore();
   const menuRef = useRef<HTMLDivElement>(null);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -152,9 +153,14 @@ export const ContextMenu: React.FC = () => {
             key={item.key}
             className={`${cssPrefix}-item`}
             onClick={() => handleItemClick(item.key)}
+            onMouseEnter={() => setHoveredItem(item.key)}
+            onMouseLeave={() => setHoveredItem(null)}
             style={{
               userSelect: 'none',
-              background: 0,
+              background:
+                hoveredItem === item.key
+                  ? 'rgba(0, 0, 0, 0.05)'
+                  : 'transparent',
               border: '1px solid transparent',
               outline: 'none',
               height: 26,

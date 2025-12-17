@@ -1,7 +1,7 @@
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { cssPrefix } from '../../configs';
-import { useActiveSheet, useSelection } from '../../store/useSheetStore';
+import { useActiveSheet, useSheetStore } from '../../store/useSheetStore';
 
 interface SelectionRect {
   left: number;
@@ -12,7 +12,6 @@ interface SelectionRect {
 
 export const SelectionOverlay: React.FC = () => {
   const data = useActiveSheet();
-  const selection = useSelection();
   const [selectionRect, setSelectionRect] = useState<SelectionRect | null>(
     null,
   );
@@ -20,7 +19,8 @@ export const SelectionOverlay: React.FC = () => {
     null,
   );
 
-  useEffect(() => {
+  // 更新选区的函数
+  const updateSelection = useCallback(() => {
     if (!data) return;
 
     // 获取选区矩形
@@ -29,16 +29,23 @@ export const SelectionOverlay: React.FC = () => {
     // 注意：不需要添加 cols.indexWidth 和 rows.height 偏移
     // 因为 SelectionOverlay 已经在 overlayer-content 内部，
     // overlayer-content 已经有偏移了
-    setSelectionRect({
-      left: rect.left,
-      top: rect.top,
-      width: rect.width,
-      height: rect.height,
-    });
+    if ('width' in rect && 'height' in rect) {
+      setSelectionRect({
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height,
+      });
+    }
 
     // 获取剪贴板矩形（如果有）
     const clipRect = data.getClipboardRect();
-    if (clipRect.left >= 0 && clipRect.top >= 0) {
+    if (
+      'width' in clipRect &&
+      'height' in clipRect &&
+      clipRect.left >= 0 &&
+      clipRect.top >= 0
+    ) {
       setClipboardRect({
         left: clipRect.left,
         top: clipRect.top,
@@ -49,6 +56,20 @@ export const SelectionOverlay: React.FC = () => {
       setClipboardRect(null);
     }
   }, [data]);
+
+  // 初始化时更新一次
+  useEffect(() => {
+    updateSelection();
+  }, [updateSelection]);
+
+  // 监听 store 变化并更新选区
+  useEffect(() => {
+    const unsubscribe = useSheetStore.subscribe(() => {
+      updateSelection();
+    });
+
+    return unsubscribe;
+  }, [updateSelection]);
 
   if (!selectionRect) {
     return null;

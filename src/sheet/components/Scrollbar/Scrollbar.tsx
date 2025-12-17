@@ -15,12 +15,13 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
   const data = useActiveSheet();
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const isScrollingRef = useRef(false);
 
-  // 设置滚动条尺寸
+  // 设置滚动条尺寸和位置
   useEffect(() => {
     if (!data || !scrollRef.current || !contentRef.current) return;
 
-    const { rows, cols } = data;
+    const { rows, cols, scroll } = data;
     const viewWidth = data.viewWidth();
     const viewHeight = data.viewHeight();
 
@@ -34,6 +35,10 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
         scrollRef.current.style.display = 'block';
         contentRef.current.style.width = '1px';
         contentRef.current.style.height = `${contentDistance}px`;
+        // 同步滚动位置
+        if (!isScrollingRef.current) {
+          scrollRef.current.scrollTop = scroll.y;
+        }
       } else {
         scrollRef.current.style.display = 'none';
       }
@@ -46,6 +51,10 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
         scrollRef.current.style.display = 'block';
         contentRef.current.style.height = '1px';
         contentRef.current.style.width = `${contentDistance}px`;
+        // 同步滚动位置
+        if (!isScrollingRef.current) {
+          scrollRef.current.scrollLeft = scroll.x;
+        }
       } else {
         scrollRef.current.style.display = 'none';
       }
@@ -57,9 +66,14 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
       const target = e.target as HTMLDivElement;
       const distance = vertical ? target.scrollTop : target.scrollLeft;
 
+      isScrollingRef.current = true;
       if (onScroll) {
         onScroll(distance);
       }
+      // 重置标志，允许后续的同步更新
+      setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 100);
     },
     [vertical, onScroll],
   );
