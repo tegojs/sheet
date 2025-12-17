@@ -67,7 +67,7 @@ interface SheetState {
   removeChangeListener: (listener: ChangeListener) => void;
 }
 
-const defaultOptions: Options = {
+const defaultOptions: Partial<Options> = {
   mode: 'edit',
   showToolbar: true,
   showGrid: true,
@@ -77,6 +77,22 @@ const defaultOptions: Options = {
     height: () => 600,
     width: () => 800,
   },
+  style: {
+    bgcolor: '#ffffff',
+    align: 'left',
+    valign: 'middle',
+    textwrap: false,
+    strike: false,
+    underline: false,
+    color: '#0a0a0a',
+    font: {
+      name: 'Helvetica',
+      size: 10,
+      bold: false,
+      italic: false,
+    },
+    format: 'normal',
+  },
 };
 
 export const useSheetStore = create<SheetState>((set, get) => {
@@ -84,10 +100,10 @@ export const useSheetStore = create<SheetState>((set, get) => {
 
   const createSheet = (
     name?: string,
-    options: Options = defaultOptions,
+    options: Partial<Options> = defaultOptions,
   ): DataProxy => {
     const sheetName = name || `sheet${sheetIndex}`;
-    const data = new DataProxy(sheetName, options);
+    const data = new DataProxy(sheetName, options as Partial<typeof import('../core/dataProxy').default['settings']>);
 
     // 绑定 change 事件到 store
     data.change = () => {

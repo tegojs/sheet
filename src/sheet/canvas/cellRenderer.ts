@@ -3,6 +3,7 @@
  * 从 component/table.ts 迁移而来
  */
 
+import type { FormatMap, FormulaMap } from '../types';
 import { cellRender } from '../core/cell';
 import type DataProxy from '../core/dataProxy';
 import { getFontSizePxByPt } from '../core/font';
@@ -48,7 +49,7 @@ export function renderCell(
 
   let nrindex = rindex;
   if (sortedRowMap.has(rindex)) {
-    nrindex = sortedRowMap.get(rindex);
+    nrindex = sortedRowMap.get(rindex) || rindex;
   }
 
   const cell = data.getCell(nrindex, cindex);
@@ -61,7 +62,7 @@ export function renderCell(
 
   const style = data.getCellStyleOrDefault(nrindex, cindex);
   const dbox = getDrawBox(data, rindex, cindex, xoffset, yoffset);
-  dbox.bgcolor = style.bgcolor;
+  dbox.bgcolor = style.bgcolor || '#ffffff';
 
   if (style.border !== undefined) {
     dbox.setBorders(style.border);
@@ -71,33 +72,34 @@ export function renderCell(
   draw.rect(dbox, () => {
     // render text
     let cellText = '';
-    if (!data.settings.evalPaused) {
-      cellText = cellRender(cell.text || '', formulam, (y, x) =>
+    const settings = data.settings as typeof data.settings & { evalPaused?: boolean };
+    if (!settings.evalPaused) {
+      cellText = String(cellRender(cell.text || '', formulam as FormulaMap, (y: number, x: number) =>
         data.getCellTextOrDefault(x, y),
-      );
+      ));
     } else {
       cellText = cell.text || '';
     }
 
-    if (style.format) {
-      cellText = formatm[style.format].render(cellText);
+    if (style.format && (formatm as FormatMap)[style.format]) {
+      cellText = (formatm as FormatMap)[style.format].render(cellText);
     }
 
-    const font = Object.assign({}, style.font);
-    font.size = getFontSizePxByPt(font.size);
+    const font = Object.assign({ name: 'Arial', size: 10, bold: false, italic: false }, style.font);
+    font.size = getFontSizePxByPt(font.size || 10);
 
     draw.text(
       cellText,
       dbox,
       {
-        align: style.align,
-        valign: style.valign,
+        align: style.align || 'left',
+        valign: style.valign || 'middle',
         font,
-        color: style.color,
-        strike: style.strike,
-        underline: style.underline,
+        color: style.color || '#000000',
+        strike: style.strike || false,
+        underline: style.underline || false,
       },
-      style.textwrap,
+      style.textwrap || false,
     );
 
     // error

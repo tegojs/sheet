@@ -31,15 +31,17 @@ const mergeDeep = (
 };
 
 export function equals(
-  obj1: Record<string, unknown>,
-  obj2: Record<string, unknown>,
-) {
-  const keys = Object.keys(obj1);
-  if (keys.length !== Object.keys(obj2).length) return false;
+  obj1: Record<string, unknown> | object,
+  obj2: Record<string, unknown> | object,
+): boolean {
+  const o1 = obj1 as Record<string, unknown>;
+  const o2 = obj2 as Record<string, unknown>;
+  const keys = Object.keys(o1);
+  if (keys.length !== Object.keys(o2).length) return false;
   for (let i = 0; i < keys.length; i += 1) {
     const k = keys[i];
-    const v1 = obj1[k];
-    const v2 = obj2[k];
+    const v1 = o1[k];
+    const v2 = o2[k];
     if (v2 === undefined) return false;
     if (
       typeof v1 === 'string' ||
@@ -68,11 +70,14 @@ export function equals(
   objOrAry: obejct or Array
   cb: (value, index | key) => { return value }
 */
-export const sum = (objOrAry, cb = (value) => value) => {
+export const sum = <T extends Record<string, unknown> | unknown[]>(
+  objOrAry: T,
+  cb: (value: unknown, key: string) => number = (value) => Number(value),
+): [number, number] => {
   let total = 0;
   let size = 0;
   for (const key of Object.keys(objOrAry)) {
-    total += cb(objOrAry[key], key);
+    total += cb((objOrAry as Record<string, unknown>)[key], key);
     size += 1;
   }
   return [total, size];

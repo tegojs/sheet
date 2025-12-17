@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "ES2015",
     "lib": ["DOM", "ES2021"],
     "module": "ESNext",
     "jsx": "react-jsx",
@@ -8,7 +9,8 @@
     "isolatedModules": true,
     "resolveJsonModule": true,
     "moduleResolution": "bundler",
-    "useDefineForClassFields": true
+    "useDefineForClassFields": true,
+    "downlevelIteration": true
   },
   "include": ["src"]
 }

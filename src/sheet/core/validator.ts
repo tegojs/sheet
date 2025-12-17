@@ -6,7 +6,7 @@ const rules = {
   email: /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/,
 };
 
-function returnMessage(flag, key, ...arg) {
+function returnMessage(flag: boolean, key: string, ...arg: (string | number)[]): [boolean, string] {
   let message = '';
   if (!flag) {
     message = t(`validation.${key}`, ...arg);
@@ -54,7 +54,7 @@ export default class Validator {
     return (this.value as string).split(',');
   }
 
-  validate(v: string) {
+  validate(v: string): [boolean, string?] {
     if (this.required && /^\s*$/.test(v)) {
       return returnMessage(false, 'required');
     }
@@ -71,63 +71,73 @@ export default class Validator {
     if (this.operator) {
       const v1 = this.parseValue(v);
       if (this.operator === 'be') {
-        const [min, max] = this.value;
-        return returnMessage(
-          v1 >= this.parseValue(min) && v1 <= this.parseValue(max),
-          'between',
-          min,
-          max,
-        );
+        if (Array.isArray(this.value) && this.value.length >= 2) {
+          const [min, max] = this.value;
+          return returnMessage(
+            v1 >= this.parseValue(min) && v1 <= this.parseValue(max),
+            'between',
+            min,
+            max,
+          );
+        }
       }
       if (this.operator === 'nbe') {
-        const [min, max] = this.value;
-        return returnMessage(
-          v1 < this.parseValue(min) || v1 > this.parseValue(max),
-          'notBetween',
-          min,
-          max,
-        );
+        if (Array.isArray(this.value) && this.value.length >= 2) {
+          const [min, max] = this.value;
+          return returnMessage(
+            v1 < this.parseValue(min) || v1 > this.parseValue(max),
+            'notBetween',
+            min,
+            max,
+          );
+        }
       }
       if (this.operator === 'eq') {
+        const val = Array.isArray(this.value) ? this.value[0] : this.value;
         return returnMessage(
-          v1 === this.parseValue(this.value),
+          v1 === this.parseValue(val),
           'equal',
-          this.value,
+          val,
         );
       }
       if (this.operator === 'neq') {
+        const val = Array.isArray(this.value) ? this.value[0] : this.value;
         return returnMessage(
-          v1 !== this.parseValue(this.value),
+          v1 !== this.parseValue(val),
           'notEqual',
-          this.value,
+          val,
         );
       }
       if (this.operator === 'lt') {
+        const val = Array.isArray(this.value) ? this.value[0] : this.value;
         return returnMessage(
-          v1 < this.parseValue(this.value),
+          v1 < this.parseValue(val),
           'lessThan',
-          this.value,
+          val,
         );
       }
       if (this.operator === 'lte') {
+        const val = Array.isArray(this.value) ? this.value[0] : this.value;
         return returnMessage(
-          v1 <= this.parseValue(this.value),
+          v1 <= this.parseValue(val),
           'lessThanEqual',
-          this.value,
+          val,
         );
       }
       if (this.operator === 'gt') {
+        const val = Array.isArray(this.value) ? this.value[0] : this.value;
         return returnMessage(
-          v1 > this.parseValue(this.value),
+          v1 > this.parseValue(val),
           'greaterThan',
-          this.value,
+          val,
         );
       }
       if (this.operator === 'gte') {
+        const val = Array.isArray(this.value) ? this.value[0] : this.value;
         return returnMessage(
-          v1 >= this.parseValue(this.value),
+          v1 >= this.parseValue(val),
           'greaterThanEqual',
-          this.value,
+          val,
         );
       }
     }

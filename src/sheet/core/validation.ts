@@ -3,7 +3,7 @@ import Validator from './validator';
 
 export class Validation {
   constructor(
-    public mode: 'read' | 'edit',
+    public mode: 'stop' | 'alert' | 'hint',
     public refs: string[],
     public validator: Validator,
   ) {}
@@ -60,7 +60,7 @@ export class Validation {
     value,
   }: {
     refs: string[];
-    mode: 'read' | 'edit';
+    mode: 'stop' | 'alert' | 'hint';
     type: 'date' | 'number' | 'list' | 'phone' | 'email';
     required: boolean;
     operator: 'be' | 'nbe' | 'eq' | 'neq' | 'lt' | 'lte' | 'gt' | 'gte';

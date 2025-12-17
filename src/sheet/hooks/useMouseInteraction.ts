@@ -14,7 +14,7 @@ export function useMouseInteraction(
 ) {
   const { setSelection, setSelectionEnd, startEditing, openContextMenu } =
     useSheetStore();
-  const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const clickCountRef = useRef(0);
   const isDraggingRef = useRef(false);
   const startCellRef = useRef<{ ri: number; ci: number } | null>(null);

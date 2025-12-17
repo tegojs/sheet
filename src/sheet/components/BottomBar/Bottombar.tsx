@@ -136,7 +136,7 @@ export const Bottombar: React.FC = () => {
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        handleDeleteSheet(index, e);
+                        handleDeleteSheet(index, e as unknown as React.MouseEvent<Element, MouseEvent>);
                       }
                     }}
                     role="button"

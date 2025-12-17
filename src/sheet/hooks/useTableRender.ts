@@ -13,10 +13,17 @@ const tableGridStyle = {
   strokeStyle: '#e6e6e6',
 };
 
-function tableFixedHeaderStyle() {
+function tableFixedHeaderStyle(): {
+  textAlign: CanvasTextAlign;
+  textBaseline: CanvasTextBaseline;
+  font: string;
+  fillStyle: string;
+  lineWidth: number;
+  strokeStyle: string;
+} {
   return {
-    textAlign: 'center',
-    textBaseline: 'middle',
+    textAlign: 'center' as CanvasTextAlign,
+    textBaseline: 'middle' as CanvasTextBaseline,
     font: `500 ${npx(12)}px Source Sans Pro`,
     fillStyle: '#585757',
     lineWidth: thinLineWidth(),
@@ -91,7 +98,7 @@ export function useTableRender(data: DataProxy | null) {
               draw.restore();
             }
 
-            draw.fillText(i + 1, w / 2, y + rowHeight / 2);
+            draw.fillText(String(i + 1), w / 2, y + rowHeight / 2);
 
             if (i > 0 && data.rows.isHide(i - 1)) {
               draw.save();
@@ -168,12 +175,14 @@ export function useTableRender(data: DataProxy | null) {
       // 渲染单元格
       draw.save();
       draw.translate(0, -exceptRowTotalHeight);
-      viewRange.each(
-        (ri: number, ci: number) => {
-          renderCell(draw, data, ri, ci);
-        },
-        (ri: number) => filteredTranslateFunc(ri),
-      );
+      if (viewRange.each) {
+        viewRange.each(
+          (ri: number, ci: number) => {
+            renderCell(draw, data, ri, ci);
+          },
+          (ri: number) => filteredTranslateFunc(ri),
+        );
+      }
       draw.restore();
 
       // 渲染合并单元格
@@ -195,12 +204,13 @@ export function useTableRender(data: DataProxy | null) {
       const { autoFilter } = data;
       if (autoFilter.active()) {
         const afRange = autoFilter.hrange();
-        if (viewRange.intersects(afRange)) {
-          afRange.each((ri: number, ci: number) => {
-            const { left, top, width, height } = data.cellRect(ri, ci);
-            const dbox = { x: left, y: top, width, height };
-            draw.dropdown(dbox);
-          });
+        if (viewRange.intersects && viewRange.intersects(afRange)) {
+          if (afRange.each) {
+            afRange.each((ri: number, ci: number) => {
+              const { left, top, width, height } = data.cellRect(ri, ci);
+              draw.dropdown({ x: left, y: top, width, height, padding: 0, bgcolor: '#ffffff', borderTop: null, borderRight: null, borderBottom: null, borderLeft: null } as any);
+            });
+          }
         }
       }
 

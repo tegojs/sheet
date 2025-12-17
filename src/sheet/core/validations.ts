@@ -5,7 +5,7 @@ import type {
 } from '../types';
 import type { CellRange } from './cellRange';
 import { Validation } from './validation';
-import { Validator } from './validator';
+import Validator from './validator';
 
 export class Validations {
   _: Validation[];
@@ -28,7 +28,7 @@ export class Validations {
     if (v !== null) {
       const [flag, message] = v.validator.validate(text);
       if (!flag) {
-        errors.set(key, message);
+        errors.set(key, message || '');
       } else {
         errors.delete(key);
       }
@@ -41,7 +41,7 @@ export class Validations {
   // type: date|number|phone|email|list
   // validator: { required, value, operator }
   add(
-    mode: 'read' | 'edit',
+    mode: 'stop' | 'alert' | 'hint',
     ref: string | CellRange,
     {
       type,
@@ -49,7 +49,7 @@ export class Validations {
       value,
       operator,
     }: {
-      type: ValidationType;
+      type: 'date' | 'number' | 'list' | 'phone' | 'email';
       required: boolean;
       value: string | string[];
       operator: ValidationOperator;
@@ -58,9 +58,9 @@ export class Validations {
     const validator = new Validator(type, required, value, operator);
     const v = this.getByValidator(validator);
     if (v !== null) {
-      v.addRef(ref);
+      v.addRef(typeof ref === 'string' ? ref : ref.toString());
     } else {
-      this._.push(new Validation(mode, [ref], validator));
+      this._.push(new Validation(mode, [typeof ref === 'string' ? ref : ref.toString()], validator));
     }
   }
 
@@ -99,6 +99,15 @@ export class Validations {
   }
 
   setData(d: ValidationData[]): void {
-    this._ = d.map((it: ValidationData) => Validation.valueOf(it));
+    this._ = d
+      .filter((it: ValidationData) => it.type !== 'custom')
+      .map((it: ValidationData) => Validation.valueOf(it as {
+        refs: string[];
+        mode: 'stop' | 'alert' | 'hint';
+        type: 'date' | 'number' | 'list' | 'phone' | 'email';
+        required: boolean;
+        operator: 'be' | 'nbe' | 'eq' | 'neq' | 'lt' | 'lte' | 'gt' | 'gte';
+        value: string | string[];
+      }));
   }
 }

@@ -11,6 +11,7 @@ import { Toolbar } from './components/Toolbar/Toolbar';
 import { cssPrefix } from './configs';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { useSheetStore } from './store/useSheetStore';
+import type { SheetDataInput } from './types';
 import './sheet.less';
 import svg from './assets/sprite.svg';
 import type { Options } from './index';
@@ -146,7 +147,7 @@ export default ReactSheet;
 export const createSheet = (_container: HTMLElement, _options?: Options) => {
   // TODO: 实现 React 渲染到容器
   return {
-    loadData: (data: unknown) => useSheetStore.getState().loadData(data),
+    loadData: (data: unknown) => useSheetStore.getState().loadData(data as SheetDataInput | SheetDataInput[]),
     getData: () => useSheetStore.getState().getData(),
     on: (event: string, callback: (data: unknown) => void) => {
       if (event === 'change') {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import { locale } from './locale/locale';
 import { useSheetStore } from './store/useSheetStore';
-import type { ChangeListener, SheetDataInput } from './types';
+import type { Cell, CellStyle, ChangeListener, Messages, SheetDataInput } from './types';
 
 export interface ExtendToolbarOption {
   tip?: string;
@@ -187,17 +187,17 @@ export default class Spreadsheet {
   /**
    * retrieve cell
    */
-  cell(rowIndex: number, colIndex: number, sheetIndex = 0): Cell {
+  cell(rowIndex: number, colIndex: number, sheetIndex = 0): Cell | null {
     const sheets = useSheetStore.getState().sheets;
-    return sheets[sheetIndex]?.getCell(rowIndex, colIndex);
+    return sheets[sheetIndex]?.getCell(rowIndex, colIndex) || null;
   }
 
   /**
    * retrieve cell style
    */
-  cellStyle(rowIndex: number, colIndex: number, sheetIndex = 0): CellStyle {
+  cellStyle(rowIndex: number, colIndex: number, sheetIndex = 0): CellStyle | null {
     const sheets = useSheetStore.getState().sheets;
-    return sheets[sheetIndex]?.getCellStyle(rowIndex, colIndex);
+    return sheets[sheetIndex]?.getCellStyle(rowIndex, colIndex) || null;
   }
 
   /**
@@ -254,7 +254,7 @@ export default class Spreadsheet {
   /**
    * set locale
    */
-  static locale(lang: string, message: object): void {
+  static locale(lang: string, message: Messages): void {
     locale(lang, message);
   }
 

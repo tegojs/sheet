@@ -99,7 +99,7 @@ export class DrawBox {
     return y;
   }
 
-  topxys() {
+  topxys(): [number, number][] {
     const { x, y, width } = this;
     return [
       [x, y],
@@ -107,7 +107,7 @@ export class DrawBox {
     ];
   }
 
-  rightxys() {
+  rightxys(): [number, number][] {
     const { x, y, width, height } = this;
     return [
       [x + width, y],
@@ -115,7 +115,7 @@ export class DrawBox {
     ];
   }
 
-  bottomxys() {
+  bottomxys(): [number, number][] {
     const { x, y, width, height } = this;
     return [
       [x, y + height],
@@ -123,7 +123,7 @@ export class DrawBox {
     ];
   }
 
-  leftxys() {
+  leftxys(): [number, number][] {
     const { x, y, height } = this;
     return [
       [x, y],
@@ -182,7 +182,8 @@ export class Draw {
     }
     this.ctx = context;
     this.resize(width, height);
-    this.ctx.scale(dpr(), dpr());
+    const currentDpr = dpr();
+    this.ctx.scale(currentDpr, currentDpr);
   }
 
   resize(width: number, height: number) {
@@ -286,8 +287,8 @@ export class Draw {
     ctx.save();
     ctx.beginPath();
     this.attr({
-      textAlign: align,
-      textBaseline: valign,
+      textAlign: align as CanvasTextAlign,
+      textBaseline: valign as CanvasTextBaseline,
       font: `${font.italic ? 'italic' : ''} ${font.bold ? 'bold' : ''} ${npx(font.size)}px ${font.name}`,
       fillStyle: color,
       strokeStyle: color,
@@ -391,19 +392,23 @@ export class Draw {
     if (borderTop) {
       this.border(borderTop[0], borderTop[1]);
       // console.log('box.topxys:', box.topxys());
-      this.line(...box.topxys());
+      const topPoints = box.topxys();
+      this.line(...(topPoints as [number, number][]));
     }
     if (borderRight) {
       this.border(borderRight[0], borderRight[1]);
-      this.line(...box.rightxys());
+      const rightPoints = box.rightxys();
+      this.line(...(rightPoints as [number, number][]));
     }
     if (borderBottom) {
       this.border(borderBottom[0], borderBottom[1]);
-      this.line(...box.bottomxys());
+      const bottomPoints = box.bottomxys();
+      this.line(...(bottomPoints as [number, number][]));
     }
     if (borderLeft) {
       this.border(borderLeft[0], borderLeft[1]);
-      this.line(...box.leftxys());
+      const leftPoints = box.leftxys();
+      this.line(...(leftPoints as [number, number][]));
     }
     ctx.restore();
   }

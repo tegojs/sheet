@@ -67,6 +67,38 @@ export interface CellStyle {
     bottom?: BorderStyle;
     left?: BorderStyle;
   };
+  format?: string;
+}
+
+/**
+ * 完整的单元格样式（用于默认样式）
+ */
+export interface CellStyleFull {
+  align: 'left' | 'center' | 'right';
+  valign: 'top' | 'middle' | 'bottom';
+  font: {
+    bold: boolean;
+    italic: boolean;
+    name: string;
+    size: number;
+  };
+  bgcolor: string;
+  textwrap: boolean;
+  color: string;
+  strike: boolean;
+  underline: boolean;
+  format: string;
+}
+
+/**
+ * 单元格数据
+ */
+export interface Cell {
+  text?: string;
+  style?: number;
+  merge?: [number, number];
+  editable?: boolean;
+  [key: string]: unknown;
 }
 
 // ============================================================================
@@ -140,6 +172,12 @@ export interface ViewRange {
   eci: number; // end column index
   w: number; // width
   h: number; // height
+  each?: (
+    cb: (ri: number, ci: number) => void,
+    filteredCb?: (ri: number) => boolean,
+  ) => void;
+  intersects?: (other: ViewRange | { sri: number; sci: number; eri: number; eci: number }) => boolean;
+  clone?: () => ViewRange;
 }
 
 /**
@@ -203,11 +241,16 @@ export interface ValidationRule {
 }
 
 /**
+ * 验证模式
+ */
+export type ValidationMode = 'stop' | 'alert' | 'hint';
+
+/**
  * 验证数据
  */
 export interface ValidationData {
   refs: string[]; // 单元格引用，如 ['A1', 'B2:C3']
-  mode: 'stop' | 'alert' | 'hint'; // 验证模式
+  mode: ValidationMode; // 验证模式
   type: ValidationType;
   required: boolean;
   operator: ValidationOperator;
@@ -236,3 +279,63 @@ export type RangeCallback<T = unknown> = (value: T) => void;
  * 事件监听器
  */
 export type EventListener<T = unknown> = (event: T) => void;
+
+/**
+ * 公式映射类型
+ */
+export interface FormulaMap {
+  [key: string]: {
+    render: (params: unknown[]) => unknown;
+  };
+}
+
+/**
+ * 单元格渲染函数类型
+ */
+export type CellRenderFn = (x: number, y: number) => string | number;
+
+/**
+ * 格式化映射类型
+ */
+export interface FormatMap {
+  [key: string]: {
+    render: (value: string) => string;
+  };
+}
+
+/**
+ * 消息映射类型
+ */
+export interface Messages {
+  [key: string]: string | Messages;
+}
+
+/**
+ * 绘制框类型（完整版）
+ */
+export interface DrawBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  padding: number;
+  bgcolor?: string;
+  borderTop?: BorderStyle | null;
+  borderRight?: BorderStyle | null;
+  borderBottom?: BorderStyle | null;
+  borderLeft?: BorderStyle | null;
+  textx: (align: string) => number;
+  texty: (valign: string, txtHeight: number) => number;
+  innerWidth: () => number;
+  innerHeight: () => number;
+  topxys: () => [number, number][];
+  rightxys: () => [number, number][];
+  bottomxys: () => [number, number][];
+  leftxys: () => [number, number][];
+  setBorders: (borders: {
+    top?: BorderStyle;
+    right?: BorderStyle;
+    bottom?: BorderStyle;
+    left?: BorderStyle;
+  } | null) => void;
+}

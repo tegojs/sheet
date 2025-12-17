@@ -1,10 +1,11 @@
+import type { CellRenderFn, FormulaMap } from '../types';
 import { expr2xy, xy2expr } from './alphabet';
 import { numberCalc } from './helper';
 
 // Converting infix expression to a suffix expression
 // src: AVERAGE(SUM(A1,A2), B1) + 50 + B20
 // return: [A1, A2], SUM[, B1],AVERAGE,50,+,B20,+
-export const infixExprToSuffixExpr = (src) => {
+export const infixExprToSuffixExpr = (src: string): (string | [string, number])[] => {
   const operatorStack = [];
   const stack = [];
   let subStrs = []; // SUM, A1, B2, 50 ...
@@ -47,20 +48,24 @@ export const infixExprToSuffixExpr = (src) => {
               const [sx, sy] = expr2xy(stack.pop());
               // console.log('::', sx, sy, ex, ey);
               let rangelen = 0;
-              for (let x = sx; x <= ex; x += 1) {
-                for (let y = sy; y <= ey; y += 1) {
-                  stack.push(xy2expr(x, y));
-                  rangelen += 1;
-                }
+            for (let x = sx; x <= ex; x += 1) {
+              for (let y = sy; y <= ey; y += 1) {
+                stack.push(xy2expr(x, y));
+                rangelen += 1;
               }
+            }
+            if (typeof c1 === 'string') {
               stack.push([c1, rangelen]);
+            }
             } catch {
               // console.log(e);
             }
           } else if (fnArgType === 1 || fnArgType === 3) {
             if (fnArgType === 3) stack.push(fnArgOperator);
             // fn argument => A1,A2,B5
-            stack.push([c1, fnArgsLen]);
+            if (typeof c1 === 'string') {
+              stack.push([c1, fnArgsLen]);
+            }
             fnArgsLen = 1;
           } else {
             // console.log('c1:', c1, fnArgType, stack, operatorStack);
@@ -123,7 +128,7 @@ export const infixExprToSuffixExpr = (src) => {
   return stack;
 };
 
-const evalSubExpr = (subExpr, cellRender) => {
+const evalSubExpr = (subExpr: string, cellRender: CellRenderFn): string | number => {
   const [fl] = subExpr;
   let expr = subExpr;
   if (fl === '"') {
@@ -137,16 +142,25 @@ const evalSubExpr = (subExpr, cellRender) => {
   if (expr[0] >= '0' && expr[0] <= '9') {
     return ret * Number(expr);
   }
-  const [x, y] = expr2xy(expr);
-  return ret * cellRender(x, y);
+      try {
+        const [x, y] = expr2xy(expr);
+        return ret * Number(cellRender(x, y));
+      } catch {
+        return 0;
+      }
 };
 
 // evaluate the suffix expression
 // srcStack: <= infixExprToSufixExpr
 // formulaMap: {'SUM': {}, ...}
 // cellRender: (x, y) => {}
-const evalSuffixExpr = (srcStack, formulaMap, cellRender, cellList) => {
-  const stack = [];
+const evalSuffixExpr = (
+  srcStack: (string | [string, number])[],
+  formulaMap: FormulaMap,
+  cellRender: CellRenderFn,
+  cellList: string[],
+): unknown => {
+  const stack: unknown[] = [];
   // console.log(':::::formulaMap:', formulaMap);
   for (let i = 0; i < srcStack.length; i += 1) {
     // console.log(':::>>>', srcStack[i]);
@@ -172,18 +186,19 @@ const evalSuffixExpr = (srcStack, formulaMap, cellRender, cellList) => {
       let top = stack.pop();
       if (!Number.isNaN(top)) top = Number(top);
       let left = stack.pop();
-      if (!Number.isNaN(left)) left = Number(left);
+      if (typeof left === 'number' && !Number.isNaN(left)) left = Number(left);
+      if (typeof top === 'number' && !Number.isNaN(top)) top = Number(top);
       let ret = false;
       if (fc === '=') {
         ret = left === top;
       } else if (expr === '>') {
-        ret = left > top;
+        ret = (left as number) > (top as number);
       } else if (expr === '>=') {
-        ret = left >= top;
+        ret = (left as number) >= (top as number);
       } else if (expr === '<') {
-        ret = left < top;
+        ret = (left as number) < (top as number);
       } else if (expr === '<=') {
-        ret = left <= top;
+        ret = (left as number) <= (top as number);
       }
       stack.push(ret);
     } else if (Array.isArray(expr)) {
@@ -208,15 +223,22 @@ const evalSuffixExpr = (srcStack, formulaMap, cellRender, cellList) => {
   return stack[0];
 };
 
-export const cellRender = (src, formulaMap, getCellText, cellList = []) => {
+export const cellRender = (
+  src: string,
+  formulaMap: FormulaMap,
+  getCellText: CellRenderFn,
+  cellList: string[] = [],
+): unknown => {
   if (src[0] === '=') {
     const stack = infixExprToSuffixExpr(src.substring(1));
     if (stack.length <= 0) return src;
     return evalSuffixExpr(
       stack,
       formulaMap,
-      (x, y) =>
-        cellRender(getCellText(x, y), formulaMap, getCellText, cellList),
+      (x: number, y: number): string | number => {
+        const text = getCellText(x, y);
+        return cellRender(String(text), formulaMap, getCellText, cellList) as string | number;
+      },
       cellList,
     );
   }

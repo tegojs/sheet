@@ -1,3 +1,5 @@
+import type { BorderStyle, Cell, CellStyle } from '../types';
+import type { BorderStyleParams } from './dataProxyTypes';
 import { t } from '../locale/locale';
 import { expr2xy, xy2expr } from './alphabet';
 import AutoFilter from './autoFilter';
@@ -180,7 +182,7 @@ function setStyleBorder(
   this: DataProxy,
   ri: number,
   ci: number,
-  bss: unknown,
+  bss: BorderStyleParams | null,
 ): void {
   const { styles, rows } = this;
   const cell = rows.getCellOrNew(ri, ci);
@@ -189,7 +191,7 @@ function setStyleBorder(
     cstyle = cloneDeep(styles[cell.style] as Record<string, unknown>);
   }
   cstyle = merge(cstyle, { border: bss });
-  cell.style = this.addStyle(cstyle);
+  cell.style = this.addStyle(cstyle as CellStyle);
 }
 
 function setStyleBorders(
@@ -230,11 +232,11 @@ function setStyleBorders(
     mode === 'horizontal' ||
     mode === 'vertical'
   ) {
-    const merges = [];
+    const merges: [number, number, number, number][] = [];
     for (let ri = sri; ri <= eri; ri += 1) {
       for (let ci = sci; ci <= eci; ci += 1) {
         // jump merges -- start
-        const mergeIndexes = [];
+        const mergeIndexes: number[] = [];
         for (let ii = 0; ii < merges.length; ii += 1) {
           const [mri, mci, rn, cn] = merges[ii];
           if (ri === mri + rn + 1) mergeIndexes.push(ii);
@@ -256,26 +258,24 @@ function setStyleBorders(
         }
         const mrl = rn > 0 && ri + rn === eri;
         const mcl = cn > 0 && ci + cn === eci;
-        let bss = {};
+        const bss: BorderStyleParams = {};
         if (mode === 'all') {
-          bss = {
-            bottom: [style, color],
-            top: [style, color],
-            left: [style, color],
-            right: [style, color],
-          };
+          bss.bottom = [style as string, color as string, ''];
+          bss.top = [style as string, color as string, ''];
+          bss.left = [style as string, color as string, ''];
+          bss.right = [style as string, color as string, ''];
         } else if (mode === 'inside') {
-          if (!mcl && ci < eci) bss.right = [style, color];
-          if (!mrl && ri < eri) bss.bottom = [style, color];
+          if (!mcl && ci < eci) bss.right = [style as string, color as string, ''];
+          if (!mrl && ri < eri) bss.bottom = [style as string, color as string, ''];
         } else if (mode === 'horizontal') {
-          if (!mrl && ri < eri) bss.bottom = [style, color];
+          if (!mrl && ri < eri) bss.bottom = [style as string, color as string, ''];
         } else if (mode === 'vertical') {
-          if (!mcl && ci < eci) bss.right = [style, color];
+          if (!mcl && ci < eci) bss.right = [style as string, color as string, ''];
         } else if (mode === 'outside' && multiple) {
-          if (sri === ri) bss.top = [style, color];
-          if (mrl || eri === ri) bss.bottom = [style, color];
-          if (sci === ci) bss.left = [style, color];
-          if (mcl || eci === ci) bss.right = [style, color];
+          if (sri === ri) bss.top = [style as string, color as string, ''];
+          if (mrl || eri === ri) bss.bottom = [style as string, color as string, ''];
+          if (sci === ci) bss.left = [style as string, color as string, ''];
+          if (mcl || eci === ci) bss.right = [style as string, color as string, ''];
         }
         if (Object.keys(bss).length > 0) {
           setStyleBorder.call(this, ri, ci, bss);
@@ -308,7 +308,7 @@ function setStyleBorders(
   }
 }
 
-function getCellRowByY(y, scrollOffsety) {
+function getCellRowByY(this: DataProxy, y: number, scrollOffsety: number) {
   const { rows } = this;
   const fsh = this.freezeTotalHeight();
   // console.log('y:', y, ', fsh:', fsh);
@@ -338,7 +338,7 @@ function getCellRowByY(y, scrollOffsety) {
   return { ri: ri - 1, top, height };
 }
 
-function getCellColByX(x, scrollOffsetx) {
+function getCellColByX(this: DataProxy, x: number, scrollOffsetx: number) {
   const { cols } = this;
   const fsw = this.freezeTotalWidth();
   let inits = cols.indexWidth;
@@ -349,7 +349,7 @@ function getCellColByX(x, scrollOffsetx) {
     inits,
     cols.indexWidth,
     x,
-    (i) => cols.getWidth(i),
+    (i: number) => cols.getWidth(i),
   );
   if (left <= 0) {
     return { ci: -1, left: 0, width: cols.indexWidth };
@@ -362,7 +362,7 @@ export default class DataProxy {
   settings: typeof defaultSettings;
   name: string;
   freeze: [number, number];
-  styles: unknown[];
+  styles: CellStyle[];
   merges: Merges;
   rows: Rows;
   cols: Cols;
@@ -382,7 +382,7 @@ export default class DataProxy {
   unsortedRowMap: Map<number, number>;
 
   constructor(name: string, settings?: Partial<typeof defaultSettings>) {
-    this.settings = merge(defaultSettings, settings || {});
+    this.settings = merge(defaultSettings, settings || {}) as typeof defaultSettings;
     // save data begin
     this.name = name || 'sheet';
     this.freeze = [0, 0];
@@ -407,7 +407,12 @@ export default class DataProxy {
     this.unsortedRowMap = new Map();
   }
 
-  addValidation(mode: string, ref: string, validator: unknown): void {
+  addValidation(mode: 'stop' | 'alert' | 'hint', ref: string, validator: {
+    type: 'date' | 'number' | 'list' | 'phone' | 'email';
+    required: boolean;
+    value: string | string[];
+    operator: 'be' | 'nbe' | 'eq' | 'neq' | 'lt' | 'lte' | 'gt' | 'gte';
+  }): void {
     // console.log('mode:', mode, ', ref:', ref, ', validator:', validator);
     this.changeData(() => {
       this.validations.add(mode, ref, validator);
@@ -465,24 +470,24 @@ export default class DataProxy {
   }
 
   copyToSystemClipboard(evt: ClipboardEvent): void {
-    let copyText = [];
+    const copyRows: string[][] = [];
     const { sri, eri, sci, eci } = this.selector.range;
 
     for (let ri = sri; ri <= eri; ri += 1) {
-      const row = [];
+      const row: string[] = [];
       for (let ci = sci; ci <= eci; ci += 1) {
         const cell = this.getCell(ri, ci);
         row.push((cell && cell.text) || '');
       }
-      copyText.push(row);
+      copyRows.push(row);
     }
 
     // Adding \n and why not adding \r\n is to support online office and client MS office and WPS
-    copyText = copyText.map((row) => row.join('\t')).join('\n');
+    const copyText = copyRows.map((row) => row.join('\t')).join('\n');
 
     // why used this
     // cuz http protocol will be blocked request clipboard by browser
-    if (evt) {
+    if (evt && evt.clipboardData) {
       evt.clipboardData.clearData();
       evt.clipboardData.setData('text/plain', copyText);
       evt.preventDefault();
@@ -618,7 +623,7 @@ export default class DataProxy {
     return selector.range;
   }
 
-  calSelectedRangeByStart(ri, ci) {
+  calSelectedRangeByStart(ri: number, ci: number): CellRange {
     const { selector, rows, cols, merges } = this;
     let cellRange = merges.getFirstIncludes(ri, ci);
     // console.log('cellRange:', cellRange, ri, ci, merges);
@@ -637,7 +642,7 @@ export default class DataProxy {
     return cellRange;
   }
 
-  setSelectedCellAttr(property, value) {
+  setSelectedCellAttr(property: string, value: unknown): void {
     this.changeData(() => {
       const { selector, styles, rows } = this;
       if (property === 'merge') {
@@ -666,50 +671,50 @@ export default class DataProxy {
         }
       } else {
         selector.range.each((ri, ci) => {
-          const cell = rows.getCellOrNew(ri, ci);
-          let cstyle = {};
-          if (cell.style !== undefined) {
-            cstyle = cloneDeep(styles[cell.style]);
-          }
-          if (property === 'format') {
-            cstyle.format = value;
-            cell.style = this.addStyle(cstyle);
-          } else if (
-            property === 'font-bold' ||
-            property === 'font-italic' ||
-            property === 'font-name' ||
-            property === 'font-size'
-          ) {
-            const nfont = {};
-            nfont[property.split('-')[1]] = value;
-            cstyle.font = Object.assign(cstyle.font || {}, nfont);
-            cell.style = this.addStyle(cstyle);
-          } else if (
-            property === 'strike' ||
-            property === 'textwrap' ||
-            property === 'underline' ||
-            property === 'align' ||
-            property === 'valign' ||
-            property === 'color' ||
-            property === 'bgcolor'
-          ) {
-            cstyle[property] = value;
-            cell.style = this.addStyle(cstyle);
-          } else {
-            cell[property] = value;
-          }
+            const cell = rows.getCellOrNew(ri, ci);
+            let cstyle: Record<string, unknown> = {};
+            if (cell.style !== undefined) {
+              cstyle = cloneDeep(styles[cell.style] as Record<string, unknown>);
+            }
+            if (property === 'format') {
+              cstyle.format = value;
+              cell.style = this.addStyle(cstyle as CellStyle);
+            } else if (
+              property === 'font-bold' ||
+              property === 'font-italic' ||
+              property === 'font-name' ||
+              property === 'font-size'
+            ) {
+              const nfont: Record<string, unknown> = {};
+              nfont[property.split('-')[1]] = value;
+              cstyle.font = Object.assign(cstyle.font || {}, nfont);
+              cell.style = this.addStyle(cstyle as CellStyle);
+            } else if (
+              property === 'strike' ||
+              property === 'textwrap' ||
+              property === 'underline' ||
+              property === 'align' ||
+              property === 'valign' ||
+              property === 'color' ||
+              property === 'bgcolor'
+            ) {
+              cstyle[property] = value;
+              cell.style = this.addStyle(cstyle as CellStyle);
+            } else {
+              (cell as Record<string, unknown>)[property] = value;
+            }
         });
       }
     });
   }
 
   // state: input | finished
-  setSelectedCellText(text, state = 'input') {
+  setSelectedCellText(text: string, state: 'input' | 'finished' = 'input'): void {
     const { autoFilter, selector, rows } = this;
     const { ri, ci } = selector;
     let nri = ri;
     if (this.unsortedRowMap.has(ri)) {
-      nri = this.unsortedRowMap.get(ri);
+      nri = this.unsortedRowMap.get(ri) || ri;
     }
     const oldCell = rows.getCell(nri, ci);
     const oldText = oldCell ? oldCell.text : '';
@@ -717,8 +722,8 @@ export default class DataProxy {
     // replace filter.value
     if (autoFilter.active()) {
       const filter = autoFilter.getFilter(ci);
-      if (filter) {
-        const vIndex = filter.value.findIndex((v) => v === oldText);
+      if (filter && Array.isArray(filter.value)) {
+        const vIndex = filter.value.findIndex((v: unknown) => v === oldText);
         if (vIndex >= 0) {
           filter.value.splice(vIndex, 1, text);
         }
@@ -728,21 +733,21 @@ export default class DataProxy {
     // this.resetAutoFilter();
   }
 
-  getSelectedCell() {
+  getSelectedCell(): Cell | null {
     const { ri, ci } = this.selector;
     let nri = ri;
     if (this.unsortedRowMap.has(ri)) {
-      nri = this.unsortedRowMap.get(ri);
+      nri = this.unsortedRowMap.get(ri) || ri;
     }
     return this.rows.getCell(nri, ci);
   }
 
-  xyInSelectedRect(x, y) {
+  xyInSelectedRect(x: number, y: number): boolean {
     const { left, top, width, height } = this.getSelectedRect();
     const x1 = x - this.cols.indexWidth;
     const y1 = y - this.rows.height;
     // console.log('x:', x, ',y:', y, 'left:', left, 'top:', top);
-    return x1 > left && x1 < left + width && y1 > top && y1 < top + height;
+    return width !== undefined && height !== undefined && x1 > left && x1 < left + width && y1 > top && y1 < top + height;
   }
 
   getSelectedRect() {
@@ -757,7 +762,7 @@ export default class DataProxy {
     return { left: -100, top: -100 };
   }
 
-  getRect(cellRange) {
+  getRect(cellRange: CellRange) {
     const { scroll, rows, cols, exceptRowSet } = this;
     const { sri, sci, eri, eci } = cellRange;
     // console.log('sri:', sri, ',sci:', sci, ', eri:', eri, ', eci:', eci);
@@ -1102,12 +1107,12 @@ export default class DataProxy {
     return null;
   }
 
-  getCellStyleOrDefault(ri, ci) {
+  getCellStyleOrDefault(ri: number, ci: number): CellStyle {
     const { styles, rows } = this;
     const cell = rows.getCell(ri, ci);
     const cellStyle =
       cell && cell.style !== undefined ? styles[cell.style] : {};
-    return merge(this.defaultStyle(), cellStyle);
+    return merge(this.defaultStyle(), cellStyle as Record<string, unknown>) as CellStyle;
   }
 
   getSelectedCellStyle() {
@@ -1135,7 +1140,7 @@ export default class DataProxy {
     return ri > 0 || ci > 0;
   }
 
-  setFreeze(ri, ci) {
+  setFreeze(ri: number, ci: number): void {
     this.changeData(() => {
       this.freeze = [ri, ci];
     });
@@ -1149,13 +1154,13 @@ export default class DataProxy {
     return this.rows.sumHeight(0, this.freeze[0]);
   }
 
-  setRowHeight(ri, height) {
+  setRowHeight(ri: number, height: number): void {
     this.changeData(() => {
       this.rows.setHeight(ri, height);
     });
   }
 
-  setColWidth(ci, width) {
+  setColWidth(ci: number, width: number): void {
     this.changeData(() => {
       this.cols.setWidth(ci, width);
     });
@@ -1197,11 +1202,11 @@ export default class DataProxy {
     return new CellRange(0, 0, ri, ci, w, h);
   }
 
-  exceptRowTotalHeight(sri, eri) {
+  exceptRowTotalHeight(sri: number, eri: number): number {
     const { exceptRowSet, rows } = this;
     const exceptRows = Array.from(exceptRowSet);
     let exceptRowTH = 0;
-    exceptRows.forEach((ri) => {
+    exceptRows.forEach((ri: number) => {
       if (ri < sri || ri > eri) {
         const height = rows.getHeight(ri);
         exceptRowTH += height;
@@ -1235,7 +1240,7 @@ export default class DataProxy {
     return new CellRange(ri, ci, eri, eci, x, y);
   }
 
-  eachMergesInView(viewRange, cb) {
+  eachMergesInView(viewRange: { sri: number; sci: number; eri: number; eci: number }, cb: (merge: { sri: number; sci: number; eri: number; eci: number }) => void): void {
     this.merges.filterIntersects(viewRange).forEach((it) => cb(it));
   }
 
@@ -1256,11 +1261,15 @@ export default class DataProxy {
 
   // type: row | col
   // index row-index | col-index
-  unhideRowsOrCols(type, index) {
-    this[`${type}s`].unhide(index);
+  unhideRowsOrCols(type: 'row' | 'col', index: number): void {
+    if (type === 'row') {
+      this.rows.unhide(index);
+    } else {
+      this.cols.unhide(index);
+    }
   }
 
-  rowEach(min, max, cb) {
+  rowEach(min: number, max: number, cb: (ri: number, y: number, height: number) => void): void {
     let y = 0;
     const { rows } = this;
     const frset = this.exceptRowSet;
@@ -1286,7 +1295,7 @@ export default class DataProxy {
     }
   }
 
-  colEach(min, max, cb) {
+  colEach(min: number, max: number, cb: (ci: number, x: number, width: number) => void): void {
     let x = 0;
     const { cols } = this;
     for (let i = min; i <= max; i += 1) {
@@ -1303,18 +1312,18 @@ export default class DataProxy {
     return this.settings.style;
   }
 
-  addStyle(nstyle) {
+  addStyle(nstyle: CellStyle): number {
     const { styles } = this;
     // console.log('old.styles:', styles, nstyle);
     for (let i = 0; i < styles.length; i += 1) {
       const style = styles[i];
-      if (equals(style, nstyle)) return i;
+      if (equals(style as Record<string, unknown>, nstyle as Record<string, unknown>)) return i;
     }
     styles.push(nstyle);
     return styles.length - 1;
   }
 
-  changeData(cb) {
+  changeData(cb: () => void): void {
     this.history.add(this.getData());
     cb();
     this.change(this.getData());

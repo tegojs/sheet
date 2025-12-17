@@ -26,7 +26,7 @@ export const Toolbar: React.FC = () => {
 
   // 获取当前选中单元格的样式
   const cellStyle = useMemo(() => {
-    if (!data) return null;
+    if (!data) return { font: { bold: false, italic: false, size: 10 } };
     return data.getSelectedCellStyle();
   }, [data]);
 
@@ -156,7 +156,7 @@ export const Toolbar: React.FC = () => {
           </div>
         </Dropdown>
 
-        <Dropdown title={cellStyle?.font?.size || '10'} width={80}>
+        <Dropdown title={String(cellStyle?.font?.size || '10')} width={80}>
           {[8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32].map((size) => (
             <div
               key={size}
@@ -214,7 +214,7 @@ export const Toolbar: React.FC = () => {
           <div style={{ padding: '10px' }}>
             <input
               type="color"
-              value={cellStyle?.color || '#000000'}
+              value={String(cellStyle?.color || '#000000')}
               onChange={(e) => setCellStyle('color', e.target.value)}
               style={{ width: '100%', height: '30px' }}
             />
@@ -236,7 +236,7 @@ export const Toolbar: React.FC = () => {
           <div style={{ padding: '10px' }}>
             <input
               type="color"
-              value={cellStyle?.bgcolor || '#ffffff'}
+              value={String(cellStyle?.bgcolor || '#ffffff')}
               onChange={(e) => setCellStyle('bgcolor', e.target.value)}
               style={{ width: '100%', height: '30px' }}
             />
