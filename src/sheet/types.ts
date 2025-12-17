@@ -176,7 +176,9 @@ export interface ViewRange {
     cb: (ri: number, ci: number) => void,
     filteredCb?: (ri: number) => boolean,
   ) => void;
-  intersects?: (other: ViewRange | { sri: number; sci: number; eri: number; eci: number }) => boolean;
+  intersects?: (
+    other: ViewRange | { sri: number; sci: number; eri: number; eci: number },
+  ) => boolean;
   clone?: () => ViewRange;
 }
 
@@ -332,10 +334,12 @@ export interface DrawBox {
   rightxys: () => [number, number][];
   bottomxys: () => [number, number][];
   leftxys: () => [number, number][];
-  setBorders: (borders: {
-    top?: BorderStyle;
-    right?: BorderStyle;
-    bottom?: BorderStyle;
-    left?: BorderStyle;
-  } | null) => void;
+  setBorders: (
+    borders: {
+      top?: BorderStyle;
+      right?: BorderStyle;
+      bottom?: BorderStyle;
+      left?: BorderStyle;
+    } | null,
+  ) => void;
 }

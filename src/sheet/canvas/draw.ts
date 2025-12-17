@@ -354,7 +354,8 @@ export class Draw {
     const { ctx } = this;
     ctx.lineWidth = thinLineWidth();
     ctx.strokeStyle = color;
-    // console.log('style:', style);
+    // Reset lineDash first to avoid state pollution from previous calls
+    ctx.setLineDash([]);
     if (style === 'medium') {
       ctx.lineWidth = npx(2) - 0.5;
     } else if (style === 'thick') {

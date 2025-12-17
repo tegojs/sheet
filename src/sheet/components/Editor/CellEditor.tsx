@@ -24,10 +24,24 @@ export const CellEditor: React.FC<CellEditorProps> = ({ onFinish }) => {
     height: number;
   } | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // 记录正在编辑的单元格坐标
+  const editingCellRef = useRef<{ ri: number; ci: number } | null>(null);
+  // 记录 blur 超时，用于在开始新编辑时取消
+  const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // 当开始编辑时，获取单元格内容和位置
   useEffect(() => {
     if (isEditing && data) {
+      // 取消任何待处理的 blur 超时，防止 Chrome 中的竞态条件
+      if (blurTimeoutRef.current) {
+        clearTimeout(blurTimeoutRef.current);
+        blurTimeoutRef.current = null;
+      }
+
+      const { ri, ci } = data.selector;
+      // 保存正在编辑的单元格坐标
+      editingCellRef.current = { ri, ci };
+
       const cell = data.getSelectedCell();
       const cellText = cell?.text || '';
       setText(cellText);
@@ -57,7 +71,16 @@ export const CellEditor: React.FC<CellEditorProps> = ({ onFinish }) => {
       }, 0);
     } else {
       setPosition(null);
+      editingCellRef.current = null;
     }
+
+    // 清理函数：组件卸载或依赖变化时取消待处理的超时
+    return () => {
+      if (blurTimeoutRef.current) {
+        clearTimeout(blurTimeoutRef.current);
+        blurTimeoutRef.current = null;
+      }
+    };
   }, [isEditing, data]);
 
   const handleChange = useCallback(
@@ -65,24 +88,26 @@ export const CellEditor: React.FC<CellEditorProps> = ({ onFinish }) => {
       const newText = e.target.value;
       setText(newText);
 
-      if (data) {
-        const { ri, ci } = data.selector;
+      // 使用保存的编辑单元格坐标
+      if (editingCellRef.current) {
+        const { ri, ci } = editingCellRef.current;
         setCellText(ri, ci, newText, 'input');
       }
     },
-    [data, setCellText],
+    [setCellText],
   );
 
   const handleFinish = useCallback(() => {
-    if (data) {
-      const { ri, ci } = data.selector;
+    // 使用保存的编辑单元格坐标，而不是当前选区
+    if (editingCellRef.current) {
+      const { ri, ci } = editingCellRef.current;
       setCellText(ri, ci, text, 'finished');
     }
     stopEditing();
     if (onFinish) {
       onFinish();
     }
-  }, [data, text, setCellText, stopEditing, onFinish]);
+  }, [text, setCellText, stopEditing, onFinish]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -115,7 +140,9 @@ export const CellEditor: React.FC<CellEditorProps> = ({ onFinish }) => {
 
   const handleBlur = useCallback(() => {
     // 延迟处理，避免与其他点击事件冲突
-    setTimeout(() => {
+    // 保存超时 ID 以便在开始新编辑时取消
+    blurTimeoutRef.current = setTimeout(() => {
+      blurTimeoutRef.current = null;
       if (isEditing) {
         handleFinish();
       }

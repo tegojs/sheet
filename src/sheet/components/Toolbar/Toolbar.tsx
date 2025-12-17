@@ -2,7 +2,11 @@ import type React from 'react';
 import { useMemo } from 'react';
 import { cssPrefix } from '../../configs';
 import { t } from '../../locale/locale';
-import { useActiveSheet, useSheetStore } from '../../store/useSheetStore';
+import {
+  useActiveSheet,
+  useSheetStore,
+  useUpdateCount,
+} from '../../store/useSheetStore';
 import { Dropdown } from '../Common/Dropdown';
 import { Icon } from '../Common/Icon';
 import { ToolbarButton } from './ToolbarButton';
@@ -23,12 +27,13 @@ const makeClickable = (onClick: () => void) => ({
 export const Toolbar: React.FC = () => {
   const data = useActiveSheet();
   const { undo, redo, setCellStyle } = useSheetStore();
+  const updateCount = useUpdateCount();
 
   // 获取当前选中单元格的样式
   const cellStyle = useMemo(() => {
     if (!data) return { font: { bold: false, italic: false, size: 10 } };
     return data.getSelectedCellStyle();
-  }, [data]);
+  }, [data, updateCount]);
 
   const canUndo = data?.canUndo() || false;
   const canRedo = data?.canRedo() || false;
@@ -133,7 +138,18 @@ export const Toolbar: React.FC = () => {
         <div className={`${cssPrefix}-toolbar-divider`} />
 
         {/* 字体格式 */}
-        <Dropdown title={t('toolbar.font')} width={120}>
+        <Dropdown
+          title={String(cellStyle?.font?.name || 'Source Sans Pro')}
+          width={160}
+        >
+          <div
+            className={`${cssPrefix}-item`}
+            {...makeClickable(() =>
+              setCellStyle('font-name', 'Source Sans Pro'),
+            )}
+          >
+            Source Sans Pro
+          </div>
           <div
             className={`${cssPrefix}-item`}
             {...makeClickable(() => setCellStyle('font-name', 'Arial'))}
@@ -202,7 +218,7 @@ export const Toolbar: React.FC = () => {
         <Dropdown
           title={
             <Icon
-              name="text-color"
+              name="color"
               style={{
                 borderBottom: `3px solid ${cellStyle?.color || '#000000'}`,
               }}
@@ -211,12 +227,12 @@ export const Toolbar: React.FC = () => {
           width={200}
           showArrow={false}
         >
-          <div style={{ padding: '10px' }}>
+          <div style={{ padding: '10px' }} onClick={(e) => e.stopPropagation()}>
             <input
               type="color"
               value={String(cellStyle?.color || '#000000')}
               onChange={(e) => setCellStyle('color', e.target.value)}
-              style={{ width: '100%', height: '30px' }}
+              style={{ width: '100%', height: '30px', cursor: 'pointer' }}
             />
           </div>
         </Dropdown>
@@ -224,7 +240,7 @@ export const Toolbar: React.FC = () => {
         <Dropdown
           title={
             <Icon
-              name="fill-color"
+              name="bgcolor"
               style={{
                 borderBottom: `3px solid ${cellStyle?.bgcolor || '#ffffff'}`,
               }}
@@ -233,12 +249,12 @@ export const Toolbar: React.FC = () => {
           width={200}
           showArrow={false}
         >
-          <div style={{ padding: '10px' }}>
+          <div style={{ padding: '10px' }} onClick={(e) => e.stopPropagation()}>
             <input
               type="color"
               value={String(cellStyle?.bgcolor || '#ffffff')}
               onChange={(e) => setCellStyle('bgcolor', e.target.value)}
-              style={{ width: '100%', height: '30px' }}
+              style={{ width: '100%', height: '30px', cursor: 'pointer' }}
             />
           </div>
         </Dropdown>
@@ -272,7 +288,7 @@ export const Toolbar: React.FC = () => {
         </Dropdown>
 
         <Dropdown
-          title={<Icon name={`valign-${cellStyle?.valign || 'middle'}`} />}
+          title={<Icon name={`align-${cellStyle?.valign || 'middle'}`} />}
           width={120}
           showArrow={false}
         >
@@ -280,19 +296,19 @@ export const Toolbar: React.FC = () => {
             className={`${cssPrefix}-item`}
             {...makeClickable(() => setCellStyle('valign', 'top'))}
           >
-            <Icon name="valign-top" />
+            <Icon name="align-top" />
           </div>
           <div
             className={`${cssPrefix}-item`}
             {...makeClickable(() => setCellStyle('valign', 'middle'))}
           >
-            <Icon name="valign-middle" />
+            <Icon name="align-middle" />
           </div>
           <div
             className={`${cssPrefix}-item`}
             {...makeClickable(() => setCellStyle('valign', 'bottom'))}
           >
-            <Icon name="valign-bottom" />
+            <Icon name="align-bottom" />
           </div>
         </Dropdown>
 

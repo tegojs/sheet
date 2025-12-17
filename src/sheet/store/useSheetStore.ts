@@ -14,6 +14,9 @@ interface SheetState {
   contextMenuPosition: { x: number; y: number } | null;
   showContextMenu: boolean;
 
+  // 更新计数器 - 用于触发组件重新渲染
+  updateCount: number;
+
   // 计算属性获取器
   getActiveSheet: () => DataProxy;
   getSelection: () => CellRange;
@@ -103,7 +106,10 @@ export const useSheetStore = create<SheetState>((set, get) => {
     options: Partial<Options> = defaultOptions,
   ): DataProxy => {
     const sheetName = name || `sheet${sheetIndex}`;
-    const data = new DataProxy(sheetName, options as ConstructorParameters<typeof DataProxy>[1]);
+    const data = new DataProxy(
+      sheetName,
+      options as ConstructorParameters<typeof DataProxy>[1],
+    );
 
     // 绑定 change 事件到 store
     data.change = () => {
@@ -124,6 +130,7 @@ export const useSheetStore = create<SheetState>((set, get) => {
     isEditing: false,
     contextMenuPosition: null,
     showContextMenu: false,
+    updateCount: 0,
     changeListeners: [],
 
     // 计算属性
@@ -193,11 +200,8 @@ export const useSheetStore = create<SheetState>((set, get) => {
       state: 'input' | 'finished' = 'finished',
     ) => {
       const sheet = get().getActiveSheet();
-      // 先设置选区到指定单元格
-      sheet.selector.setIndexes(ri, ci);
-      sheet.calSelectedRangeByStart(ri, ci);
-      // 然后设置文本
-      sheet.setSelectedCellText(text, state);
+      // 直接设置指定单元格的文本，不改变当前选区
+      sheet.setCellText(ri, ci, text, state);
       if (state === 'finished') {
         get().triggerChange();
       }
@@ -309,6 +313,9 @@ export const useSheetStore = create<SheetState>((set, get) => {
 
     // 事件系统
     triggerChange: () => {
+      // 增加更新计数器，触发组件重新渲染
+      set((state) => ({ updateCount: state.updateCount + 1 }));
+
       const state = get();
       const data = state.getData();
       state.changeListeners.forEach((listener) => {
@@ -340,3 +347,4 @@ export const useActiveSheet = () =>
 export const useSelection = () =>
   useSheetStore((state) => state.getSelection());
 export const useIsEditing = () => useSheetStore((state) => state.isEditing);
+export const useUpdateCount = () => useSheetStore((state) => state.updateCount);

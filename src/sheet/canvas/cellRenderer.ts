@@ -3,12 +3,12 @@
  * 从 component/table.ts 迁移而来
  */
 
-import type { FormatMap, FormulaMap } from '../types';
 import { cellRender } from '../core/cell';
 import type DataProxy from '../core/dataProxy';
 import { getFontSizePxByPt } from '../core/font';
 import { formatm } from '../core/format';
 import { formulam } from '../core/formula';
+import type { FormatMap, FormulaMap } from '../types';
 import { type Draw, DrawBox } from './draw';
 
 const cellPaddingWidth = 5;
@@ -72,11 +72,17 @@ export function renderCell(
   draw.rect(dbox, () => {
     // render text
     let cellText = '';
-    const settings = data.settings as typeof data.settings & { evalPaused?: boolean };
+    const settings = data.settings as typeof data.settings & {
+      evalPaused?: boolean;
+    };
     if (!settings.evalPaused) {
-      cellText = String(cellRender(cell.text || '', formulam as FormulaMap, (y: number, x: number) =>
-        data.getCellTextOrDefault(x, y),
-      ));
+      cellText = String(
+        cellRender(
+          cell.text || '',
+          formulam as FormulaMap,
+          (y: number, x: number) => data.getCellTextOrDefault(x, y),
+        ),
+      );
     } else {
       cellText = cell.text || '';
     }
@@ -85,7 +91,10 @@ export function renderCell(
       cellText = (formatm as FormatMap)[style.format].render(cellText);
     }
 
-    const font = Object.assign({ name: 'Arial', size: 10, bold: false, italic: false }, style.font);
+    const font = Object.assign(
+      { name: 'Arial', size: 10, bold: false, italic: false },
+      style.font,
+    );
     font.size = getFontSizePxByPt(font.size || 10);
 
     draw.text(

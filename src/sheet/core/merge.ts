@@ -98,7 +98,9 @@ export class Merges {
   }
 
   setData(merges: string[]): this {
-    this._ = merges.map((merge) => CellRange.valueOf(merge as Parameters<typeof CellRange.valueOf>[0]));
+    this._ = merges.map((merge) =>
+      CellRange.valueOf(merge as Parameters<typeof CellRange.valueOf>[0]),
+    );
     return this;
   }
 

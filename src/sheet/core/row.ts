@@ -33,7 +33,7 @@ export class Rows {
   getHeight(ri: number): number {
     if (this.isHide(ri)) return 0;
     const row = this.get(ri);
-    if (row && row.height) {
+    if (row?.height) {
       return row.height;
     }
     return this.height;
@@ -62,7 +62,7 @@ export class Rows {
   setHide(ri: number, v: boolean): void {
     const row = this.getOrNew(ri);
     if (v === true) row.hide = true;
-    else delete row.hide;
+    else row.hide = undefined;
   }
 
   setStyle(ri: number, style: number): void {
@@ -72,7 +72,7 @@ export class Rows {
 
   sumHeight(min: number, max: number, exceptSet?: Set<number>): number {
     return rangeSum(min, max, (i: number) => {
-      if (exceptSet && exceptSet.has(i)) return 0;
+      if (exceptSet?.has(i)) return 0;
       return this.getHeight(i);
     });
   }
@@ -104,7 +104,7 @@ export class Rows {
 
   getCellMerge(ri: number, ci: number): [number, number] {
     const cell = this.getCell(ri, ci);
-    if (cell && cell.merge) return cell.merge;
+    if (cell?.merge) return cell.merge;
     return [0, 0];
   }
 
@@ -160,7 +160,7 @@ export class Rows {
     for (let i = sri; i <= eri; i += 1) {
       if (this._[i]) {
         for (let j = sci; j <= eci; j += 1) {
-          if (this._[i].cells && this._[i].cells[j]) {
+          if (this._[i].cells?.[j]) {
             for (let ii = dsri; ii <= deri; ii += rn) {
               for (let jj = dsci; jj <= deci; jj += cn) {
                 const nri = ii + (i - sri);
@@ -364,13 +364,13 @@ export class Rows {
         if (what === 'all') {
           delete row.cells[ci];
         } else if (what === 'text') {
-          if (cell.text) delete cell.text;
-          if (cell.value) delete cell.value;
+          if (cell.text) cell.text = undefined;
+          if (cell.value) cell.value = undefined;
         } else if (what === 'format') {
-          if (cell.style !== undefined) delete cell.style;
-          if (cell.merge) delete cell.merge;
+          if (cell.style !== undefined) cell.style = undefined;
+          if (cell.merge) cell.merge = undefined;
         } else if (what === 'merge') {
-          if (cell.merge) delete cell.merge;
+          if (cell.merge) cell.merge = undefined;
         }
       }
     }
@@ -397,7 +397,7 @@ export class Rows {
 
   eachCells(ri: string, cb: (ci: string, cell: Cell) => void): void {
     const riNum = Number.parseInt(ri, 10);
-    if (this._[riNum] && this._[riNum].cells) {
+    if (this._[riNum]?.cells) {
       Object.entries(this._[riNum].cells).forEach(([ci, cell]) => {
         cb(ci, cell);
       });
@@ -407,7 +407,7 @@ export class Rows {
   setData(d: { len?: number; [key: number]: Row }): void {
     if (d.len) {
       this.len = d.len;
-      delete d.len;
+      d.len = undefined;
     }
     this._ = d as { [key: number]: Row };
   }

@@ -6,7 +6,11 @@ const rules = {
   email: /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/,
 };
 
-function returnMessage(flag: boolean, key: string, ...arg: (string | number)[]): [boolean, string] {
+function returnMessage(
+  flag: boolean,
+  key: string,
+  ...arg: (string | number)[]
+): [boolean, string] {
   let message = '';
   if (!flag) {
     message = t(`validation.${key}`, ...arg);
@@ -94,43 +98,23 @@ export default class Validator {
       }
       if (this.operator === 'eq') {
         const val = Array.isArray(this.value) ? this.value[0] : this.value;
-        return returnMessage(
-          v1 === this.parseValue(val),
-          'equal',
-          val,
-        );
+        return returnMessage(v1 === this.parseValue(val), 'equal', val);
       }
       if (this.operator === 'neq') {
         const val = Array.isArray(this.value) ? this.value[0] : this.value;
-        return returnMessage(
-          v1 !== this.parseValue(val),
-          'notEqual',
-          val,
-        );
+        return returnMessage(v1 !== this.parseValue(val), 'notEqual', val);
       }
       if (this.operator === 'lt') {
         const val = Array.isArray(this.value) ? this.value[0] : this.value;
-        return returnMessage(
-          v1 < this.parseValue(val),
-          'lessThan',
-          val,
-        );
+        return returnMessage(v1 < this.parseValue(val), 'lessThan', val);
       }
       if (this.operator === 'lte') {
         const val = Array.isArray(this.value) ? this.value[0] : this.value;
-        return returnMessage(
-          v1 <= this.parseValue(val),
-          'lessThanEqual',
-          val,
-        );
+        return returnMessage(v1 <= this.parseValue(val), 'lessThanEqual', val);
       }
       if (this.operator === 'gt') {
         const val = Array.isArray(this.value) ? this.value[0] : this.value;
-        return returnMessage(
-          v1 > this.parseValue(val),
-          'greaterThan',
-          val,
-        );
+        return returnMessage(v1 > this.parseValue(val), 'greaterThan', val);
       }
       if (this.operator === 'gte') {
         const val = Array.isArray(this.value) ? this.value[0] : this.value;

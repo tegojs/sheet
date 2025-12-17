@@ -5,7 +5,9 @@ import { numberCalc } from './helper';
 // Converting infix expression to a suffix expression
 // src: AVERAGE(SUM(A1,A2), B1) + 50 + B20
 // return: [A1, A2], SUM[, B1],AVERAGE,50,+,B20,+
-export const infixExprToSuffixExpr = (src: string): (string | [string, number])[] => {
+export const infixExprToSuffixExpr = (
+  src: string,
+): (string | [string, number])[] => {
   const operatorStack = [];
   const stack = [];
   let subStrs = []; // SUM, A1, B2, 50 ...
@@ -46,22 +48,29 @@ export const infixExprToSuffixExpr = (src: string): (string | [string, number])[
             try {
               const endExpr = stack.pop();
               const startExpr = stack.pop();
-              if (typeof endExpr !== 'string' || typeof startExpr !== 'string') {
+              if (
+                typeof endExpr !== 'string' ||
+                typeof startExpr !== 'string'
+              ) {
                 throw new Error('Invalid range expression');
               }
-              const [ex, ey] = expr2xy(endExpr as Parameters<typeof expr2xy>[0]);
-              const [sx, sy] = expr2xy(startExpr as Parameters<typeof expr2xy>[0]);
+              const [ex, ey] = expr2xy(
+                endExpr as Parameters<typeof expr2xy>[0],
+              );
+              const [sx, sy] = expr2xy(
+                startExpr as Parameters<typeof expr2xy>[0],
+              );
               // console.log('::', sx, sy, ex, ey);
               let rangelen = 0;
-            for (let x = sx; x <= ex; x += 1) {
-              for (let y = sy; y <= ey; y += 1) {
-                stack.push(xy2expr(x, y));
-                rangelen += 1;
+              for (let x = sx; x <= ex; x += 1) {
+                for (let y = sy; y <= ey; y += 1) {
+                  stack.push(xy2expr(x, y));
+                  rangelen += 1;
+                }
               }
-            }
-            if (typeof c1 === 'string') {
-              stack.push([c1, rangelen]);
-            }
+              if (typeof c1 === 'string') {
+                stack.push([c1, rangelen]);
+              }
             } catch {
               // console.log(e);
             }
@@ -133,10 +142,15 @@ export const infixExprToSuffixExpr = (src: string): (string | [string, number])[
       stack.push(op);
     }
   }
-  return stack.filter((item): item is string | [string, number] => item !== undefined);
+  return stack.filter(
+    (item): item is string | [string, number] => item !== undefined,
+  );
 };
 
-const evalSubExpr = (subExpr: string, cellRender: CellRenderFn): string | number => {
+const evalSubExpr = (
+  subExpr: string,
+  cellRender: CellRenderFn,
+): string | number => {
   const [fl] = subExpr;
   let expr = subExpr;
   if (fl === '"') {
@@ -150,12 +164,12 @@ const evalSubExpr = (subExpr: string, cellRender: CellRenderFn): string | number
   if (expr[0] >= '0' && expr[0] <= '9') {
     return ret * Number(expr);
   }
-      try {
-        const [x, y] = expr2xy(expr as Parameters<typeof expr2xy>[0]);
-        return ret * Number(cellRender(x, y));
-      } catch {
-        return 0;
-      }
+  try {
+    const [x, y] = expr2xy(expr as Parameters<typeof expr2xy>[0]);
+    return ret * Number(cellRender(x, y));
+  } catch {
+    return 0;
+  }
 };
 
 // evaluate the suffix expression
@@ -245,7 +259,9 @@ export const cellRender = (
       formulaMap,
       (x: number, y: number): string | number => {
         const text = getCellText(x, y);
-        return cellRender(String(text), formulaMap, getCellText, cellList) as string | number;
+        return cellRender(String(text), formulaMap, getCellText, cellList) as
+          | string
+          | number;
       },
       cellList,
     );

@@ -72,4 +72,3 @@ export interface CellCoordinate {
   ri: number;
   ci: number;
 }
-

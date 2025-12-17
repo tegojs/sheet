@@ -185,7 +185,7 @@ export default class AutoFilter {
       const { sri, eri } = this.range();
       for (let ri = sri + 1; ri <= eri; ri += 1) {
         const cell = getCell(ri, ci);
-        if (cell !== null && cell.text && !/^\s*$/.test(cell.text)) {
+        if (cell?.text && !/^\s*$/.test(cell.text)) {
           const key = cell.text;
           const cnt = (m[key] || 0) + 1;
           m[key] = cnt;

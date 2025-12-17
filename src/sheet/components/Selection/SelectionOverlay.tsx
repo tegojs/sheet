@@ -10,6 +10,9 @@ interface SelectionRect {
   height: number;
 }
 
+// Selection border width constant (should match LESS @selection-border-width)
+const SELECTION_BORDER_WIDTH = 2;
+
 export const SelectionOverlay: React.FC = () => {
   const data = useActiveSheet();
   const [selectionRect, setSelectionRect] = useState<SelectionRect | null>(
@@ -86,67 +89,33 @@ export const SelectionOverlay: React.FC = () => {
     return null;
   }
 
-  const selectorHeightBorderWidth = 2 * 2 - 1;
+  const selectorHeightBorderWidth = SELECTION_BORDER_WIDTH * 2 - 1;
 
   return (
-    <div
-      className={`${cssPrefix}-selector`}
-      style={{
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none',
-        overflow: 'hidden',
-        zIndex: 10,
-      }}
-    >
-      {/* 主选区 */}
+    <div className={`${cssPrefix}-selector`}>
+      {/* 主选区 - 使用 CSS 类定义的颜色 */}
       <div
         className={`${cssPrefix}-selector-area`}
         style={{
-          position: 'absolute',
           left: selectionRect.left - 0.8,
           top: selectionRect.top - 0.8,
           width: selectionRect.width - selectorHeightBorderWidth + 0.8,
           height: selectionRect.height - selectorHeightBorderWidth + 0.8,
-          border: '2px solid rgb(75, 137, 255)',
-          background: 'rgba(75, 137, 255, 0.1)',
-          zIndex: 5,
         }}
       >
-        {/* 右下角拖拽点 */}
-        <div
-          className={`${cssPrefix}-selector-corner`}
-          style={{
-            position: 'absolute',
-            cursor: 'crosshair',
-            fontSize: 0,
-            height: 5,
-            width: 5,
-            right: -5,
-            bottom: -5,
-            border: '2px solid rgb(255, 255, 255)',
-            background: 'rgb(75, 137, 255)',
-            pointerEvents: 'auto',
-          }}
-        />
+        {/* 右下角拖拽点 - 使用 CSS 类定义的颜色 */}
+        <div className={`${cssPrefix}-selector-corner`} />
       </div>
 
-      {/* 剪贴板选区 */}
+      {/* 剪贴板选区 - 使用 CSS 类定义的颜色 */}
       {clipboardRect && (
         <div
           className={`${cssPrefix}-selector-clipboard`}
           style={{
-            position: 'absolute',
             left: clipboardRect.left,
             top: clipboardRect.top,
             width: clipboardRect.width - 5,
             height: clipboardRect.height - 5,
-            border: '2px dashed rgb(75, 137, 255)',
-            background: 'transparent',
-            zIndex: 100,
           }}
         />
       )}

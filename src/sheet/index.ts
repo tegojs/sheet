@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import { locale } from './locale/locale';
 import { useSheetStore } from './store/useSheetStore';
-import type { Cell, CellStyle, ChangeListener, Messages, SheetDataInput } from './types';
+import type {
+  Cell,
+  CellStyle,
+  ChangeListener,
+  Messages,
+  SheetDataInput,
+} from './types';
 
 export interface ExtendToolbarOption {
   tip?: string;
@@ -181,7 +187,11 @@ export default class Spreadsheet {
   /**
    * retrieve cell style
    */
-  cellStyle(rowIndex: number, colIndex: number, sheetIndex = 0): CellStyle | null {
+  cellStyle(
+    rowIndex: number,
+    colIndex: number,
+    sheetIndex = 0,
+  ): CellStyle | null {
     const sheets = useSheetStore.getState().sheets;
     return sheets[sheetIndex]?.getCellStyle(rowIndex, colIndex) || null;
   }

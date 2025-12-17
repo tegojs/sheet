@@ -91,8 +91,6 @@ export const Bottombar: React.FC = () => {
               }
             }}
             onDoubleClick={() => handleSheetDoubleClick(index)}
-            role="tab"
-            tabIndex={0}
             style={{
               float: 'left',
               lineHeight: '40px',
@@ -136,7 +134,10 @@ export const Bottombar: React.FC = () => {
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        handleDeleteSheet(index, e as unknown as React.MouseEvent<Element, MouseEvent>);
+                        handleDeleteSheet(
+                          index,
+                          e as unknown as React.MouseEvent<Element, MouseEvent>,
+                        );
                       }
                     }}
                     role="button"

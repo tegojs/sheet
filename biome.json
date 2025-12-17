@@ -24,28 +24,7 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
-      "a11y": {
-        "useKeyWithClickEvents": "warn",
-        "noAutofocus": "warn",
-        "useSemanticElements": "warn",
-        "noNoninteractiveElementToInteractiveRole": "warn"
-      },
-      "style": {
-        "useTemplate": "warn",
-        "useForOf": "warn"
-      },
-      "suspicious": {
-        "noArrayIndexKey": "warn",
-        "noDuplicateObjectKeys": "warn"
-      },
-      "performance": {
-        "noDelete": "warn"
-      },
-      "complexity": {
-        "useOptionalChain": "warn",
-        "noForEach": "warn"
-      }
+      "recommended": true
     }
   }
 }

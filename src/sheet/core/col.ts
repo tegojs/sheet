@@ -29,7 +29,7 @@ export class Cols {
   setData(d: { len?: number; [key: number]: Col | number | undefined }): void {
     if (d.len) {
       this.len = d.len;
-      delete d.len;
+      d.len = undefined;
     }
     this._ = d as { [key: number]: Col };
   }
@@ -75,7 +75,7 @@ export class Cols {
   setHide(ci: number, v: boolean): void {
     const col = this.getOrNew(ci);
     if (v === true) col.hide = true;
-    else delete col.hide;
+    else col.hide = undefined;
   }
 
   setStyle(ci: number, style: number): void {

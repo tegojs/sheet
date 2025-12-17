@@ -1,4 +1,19 @@
 @css-prefix: x-spreadsheet;
+
+// Selection & Grid colors
+@selection-color: rgb(75, 137, 255);
+@selection-bg: rgba(75, 137, 255, 0.1);
+@selection-border-width: 2px;
+@grid-line-color: #e6e6e6;
+@header-bg-color: #f4f5f8;
+@scrollbar-bg-color: #f4f5f8;
+
+// Font definitions
+@font-family-base: 'Lato', 'Source Sans Pro', Roboto, Helvetica, Arial, sans-serif;
+@font-family-mono: Arial, 'Lato', 'Source Sans Pro', Roboto, Helvetica, sans-serif;
+@font-size-base: 13px;
+@line-height-base: 22px;
+
 // color
 @red-color: #db2828;
 @red-hover-color: #d01919;
@@ -256,7 +271,7 @@ body {
   z-index: 11;
 
   .@{css-prefix}-resizer-hover {
-    background-color: rgba(75, 137, 255, 0.25);
+    background-color: fade(@selection-color, 25%);
   }
   .@{css-prefix}-resizer-line {
     position: absolute;
@@ -265,7 +280,7 @@ body {
   &.horizontal {
     cursor: row-resize;
     .@{css-prefix}-resizer-line {
-      border-bottom: 2px dashed rgb(75, 137, 255);
+      border-bottom: @selection-border-width dashed @selection-color;
       left: 0;
       bottom: 0;
     }
@@ -273,7 +288,7 @@ body {
   &.vertical {
     cursor: col-resize;
     .@{css-prefix}-resizer-line {
-      border-right: 2px dashed rgb(75, 137, 255);
+      border-right: @selection-border-width dashed @selection-color;
       top: 0;
       right: 0;
     }
@@ -284,7 +299,7 @@ body {
   position: absolute;
   bottom: 0;
   right: 0;
-  background-color: #f4f5f8;
+  background-color: @scrollbar-bg-color;
   opacity: 0.9;
   z-index: 12;
   &.horizontal {
@@ -350,8 +365,8 @@ body {
   }
   .@{css-prefix}-selector-area {
     position: absolute;
-    border: 2px solid rgb(75, 137, 255);
-    background: rgba(75, 137, 255, 0.1);
+    border: @selection-border-width solid @selection-color;
+    background: @selection-bg;
     z-index: 5;
   }
   .@{css-prefix}-selector-clipboard,
@@ -361,10 +376,10 @@ body {
     z-index: 100;
   }
   .@{css-prefix}-selector-clipboard {
-    border: 2px dashed rgb(75, 137, 255);
+    border: @selection-border-width dashed @selection-color;
   }
   .@{css-prefix}-selector-autofill {
-    border: 1px dashed rgba(0, 0, 0, 0.45); // #606060; // rgba(0, 0, 0, .2);
+    border: 1px dashed rgba(0, 0, 0, 0.45);
   }
   .@{css-prefix}-selector-corner {
     pointer-events: auto;
@@ -375,8 +390,8 @@ body {
     width: 5px;
     right: -5px;
     bottom: -5px;
-    border: 2px solid rgb(255, 255, 255);
-    background: rgb(75, 137, 255);
+    border: @selection-border-width solid #fff;
+    background: @selection-color;
   }
 }
 .@{css-prefix}-editor {
@@ -384,7 +399,7 @@ body {
   .@{css-prefix}-editor-area {
     position: absolute;
     text-align: left;
-    border: 2px solid rgb(75, 137, 255);
+    border: @selection-border-width solid @selection-color;
     line-height: 0;
     z-index: 100;
     pointer-events: auto;
@@ -634,6 +649,8 @@ body {
 
   .@{css-prefix}-toolbar-btns {
     display: inline-flex;
+    align-items: center;
+    height: 100%;
   }
 
   .@{css-prefix}-toolbar-more {
@@ -644,6 +661,37 @@ body {
     }
   }
 
+  .@{css-prefix}-dropdown {
+    display: inline-block;
+    height: 26px;
+    line-height: 26px;
+    border-radius: 2px;
+
+    .@{css-prefix}-dropdown-header {
+      display: inline-flex;
+      align-items: center;
+      height: 100%;
+      padding: 0 5px;
+      cursor: pointer;
+      border-radius: 2px;
+      // Reset button default styles
+      border: none;
+      background: none;
+      font: inherit;
+      color: inherit;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    .@{css-prefix}-toolbar-btn {
+      margin: 0;
+      height: auto;
+      line-height: inherit;
+    }
+  }
+
   .@{css-prefix}-toolbar-btn {
     flex: 0 0 auto;
     display: inline-block;
@@ -651,7 +699,7 @@ body {
     height: 26px;
     line-height: 26px;
     min-width: 26px;
-    margin: 6px 1px 0;
+    margin: 0 1px;
     padding: 0;
     text-align: center;
     border-radius: 2px;
@@ -672,9 +720,8 @@ body {
   display: inline-block;
   border-right: 1px solid #e0e2e4;
   width: 0;
-  vertical-align: middle;
   height: 18px;
-  margin: 12px 3px 0;
+  margin: 0 3px;
 }
 
 .@{css-prefix}-print {
@@ -887,8 +934,8 @@ body {
     box-shadow: inset 0 1px 2px hsla(0, 0%, 4%, 0.06);
 
     &:focus {
-      border-color: rgb(75, 137, 255);
-      box-shadow: inset 0 1px 2px rgba(75, 137, 255, 0.2);
+      border-color: @selection-color;
+      box-shadow: inset 0 1px 2px fade(@selection-color, 20%);
     }
   }
 }

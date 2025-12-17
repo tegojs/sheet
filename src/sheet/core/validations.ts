@@ -60,7 +60,13 @@ export class Validations {
     if (v !== null) {
       v.addRef(typeof ref === 'string' ? ref : ref.toString());
     } else {
-      this._.push(new Validation(mode, [typeof ref === 'string' ? ref : ref.toString()], validator));
+      this._.push(
+        new Validation(
+          mode,
+          [typeof ref === 'string' ? ref : ref.toString()],
+          validator,
+        ),
+      );
     }
   }
 
@@ -101,13 +107,17 @@ export class Validations {
   setData(d: ValidationData[]): void {
     this._ = d
       .filter((it: ValidationData) => it.type !== 'custom')
-      .map((it: ValidationData) => Validation.valueOf(it as {
-        refs: string[];
-        mode: 'stop' | 'alert' | 'hint';
-        type: 'date' | 'number' | 'list' | 'phone' | 'email';
-        required: boolean;
-        operator: 'be' | 'nbe' | 'eq' | 'neq' | 'lt' | 'lte' | 'gt' | 'gte';
-        value: string | string[];
-      }));
+      .map((it: ValidationData) =>
+        Validation.valueOf(
+          it as {
+            refs: string[];
+            mode: 'stop' | 'alert' | 'hint';
+            type: 'date' | 'number' | 'list' | 'phone' | 'email';
+            required: boolean;
+            operator: 'be' | 'nbe' | 'eq' | 'neq' | 'lt' | 'lte' | 'gt' | 'gte';
+            value: string | string[];
+          },
+        ),
+      );
   }
 }

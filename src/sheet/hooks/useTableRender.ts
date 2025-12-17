@@ -3,15 +3,18 @@ import { renderCell } from '../canvas/cellRenderer';
 import { Draw } from '../canvas/draw';
 import { npx, thinLineWidth } from '../canvas/draw';
 import { stringAt } from '../core/alphabet';
-import { CellRange } from '../core/cellRange';
+import type { CellRange } from '../core/cellRange';
 import type DataProxy from '../core/dataProxy';
+import { RenderConfig } from '../core/renderConfig';
 import type { MergeInfo } from '../types';
 
-const tableFixedHeaderCleanStyle = { fillStyle: '#f4f5f8' };
+const tableFixedHeaderCleanStyle = {
+  fillStyle: RenderConfig.header.backgroundColor,
+};
 const tableGridStyle = {
-  fillStyle: '#fff',
+  fillStyle: RenderConfig.grid.backgroundColor,
   lineWidth: thinLineWidth(),
-  strokeStyle: '#e6e6e6',
+  strokeStyle: RenderConfig.grid.lineColor,
 };
 
 function tableFixedHeaderStyle(): {
@@ -25,10 +28,10 @@ function tableFixedHeaderStyle(): {
   return {
     textAlign: 'center' as CanvasTextAlign,
     textBaseline: 'middle' as CanvasTextBaseline,
-    font: `500 ${npx(12)}px Source Sans Pro`,
-    fillStyle: '#585757',
+    font: RenderConfig.font.getHeaderFont(window.devicePixelRatio || 1),
+    fillStyle: RenderConfig.header.textColor,
     lineWidth: thinLineWidth(),
-    strokeStyle: '#e6e6e6',
+    strokeStyle: RenderConfig.grid.lineColor,
   };
 }
 
@@ -94,7 +97,7 @@ export function useTableRender(data: DataProxy | null) {
             if (sri <= i && i < eri + 1) {
               draw.save();
               draw
-                .attr({ fillStyle: 'rgba(75, 137, 255, 0.08)' })
+                .attr({ fillStyle: RenderConfig.selection.highlight })
                 .fillRect(0, y, w, rowHeight);
               draw.restore();
             }
@@ -103,7 +106,7 @@ export function useTableRender(data: DataProxy | null) {
 
             if (i > 0 && data.rows.isHide(i - 1)) {
               draw.save();
-              draw.attr({ strokeStyle: '#c6c6c6' });
+              draw.attr({ strokeStyle: RenderConfig.header.hiddenLineColor });
               draw.line([5, y + 5], [w - 5, y + 5]);
               draw.restore();
             }
@@ -125,7 +128,7 @@ export function useTableRender(data: DataProxy | null) {
             if (sci <= i && i < eci + 1) {
               draw.save();
               draw
-                .attr({ fillStyle: 'rgba(75, 137, 255, 0.08)' })
+                .attr({ fillStyle: RenderConfig.selection.highlight })
                 .fillRect(x, 0, colWidth, h);
               draw.restore();
             }
@@ -134,7 +137,7 @@ export function useTableRender(data: DataProxy | null) {
 
             if (i > 0 && data.cols.isHide(i - 1)) {
               draw.save();
-              draw.attr({ strokeStyle: '#c6c6c6' });
+              draw.attr({ strokeStyle: RenderConfig.header.hiddenLineColor });
               draw.line([x + 5, 5], [x + 5, h - 5]);
               draw.restore();
             }
@@ -205,11 +208,22 @@ export function useTableRender(data: DataProxy | null) {
       const { autoFilter } = data;
       if (autoFilter.active()) {
         const afRange = autoFilter.hrange();
-        if (viewRange.intersects && viewRange.intersects(afRange)) {
+        if (viewRange.intersects?.(afRange)) {
           if (afRange.each) {
             afRange.each((ri: number, ci: number) => {
               const { left, top, width, height } = data.cellRect(ri, ci);
-              draw.dropdown({ x: left, y: top, width, height, padding: 0, bgcolor: '#ffffff', borderTop: null, borderRight: null, borderBottom: null, borderLeft: null } as any);
+              draw.dropdown({
+                x: left,
+                y: top,
+                width,
+                height,
+                padding: 0,
+                bgcolor: '#ffffff',
+                borderTop: null,
+                borderRight: null,
+                borderBottom: null,
+                borderLeft: null,
+              } as any);
             });
           }
         }
@@ -267,7 +281,9 @@ export function useTableRender(data: DataProxy | null) {
 
     const draw = drawRef.current;
     draw.save();
-    draw.attr({ fillStyle: '#f4f5f8' }).fillRect(0, 0, fw, fh);
+    draw
+      .attr({ fillStyle: RenderConfig.header.backgroundColor })
+      .fillRect(0, 0, fw, fh);
     draw.restore();
   }, []);
 
@@ -283,7 +299,7 @@ export function useTableRender(data: DataProxy | null) {
       draw
         .save()
         .translate(fw, fh)
-        .attr({ strokeStyle: 'rgba(75, 137, 255, .6)' });
+        .attr({ strokeStyle: RenderConfig.selection.freezeLine });
       draw.line([0, fth], [twidth, fth]);
       draw.line([ftw, 0], [ftw, theight]);
       draw.restore();

@@ -56,17 +56,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
   return (
     <div ref={dropdownRef} className={`${cssPrefix}-dropdown ${placement}`}>
-      <div
+      <button
+        type="button"
         className={`${cssPrefix}-dropdown-header`}
         onClick={handleToggle}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleToggle();
-          }
-        }}
-        role="button"
-        tabIndex={0}
       >
         {typeof title === 'string' ? (
           <div
@@ -82,11 +75,21 @@ export const Dropdown: React.FC<DropdownProps> = ({
             <div className={`${cssPrefix}-icon-img arrow-down`} />
           </div>
         )}
-      </div>
+      </button>
       {isOpen && (
         <div
           className={`${cssPrefix}-dropdown-content`}
           style={{ width: typeof width === 'number' ? `${width}px` : width }}
+          onClick={() => {
+            setIsOpen(false);
+            if (onClose) onClose();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              setIsOpen(false);
+              if (onClose) onClose();
+            }
+          }}
         >
           {children}
         </div>
