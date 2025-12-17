@@ -44,8 +44,13 @@ export const infixExprToSuffixExpr = (src: string): (string | [string, number])[
           if (fnArgType === 2) {
             // fn argument range => A1:B5
             try {
-              const [ex, ey] = expr2xy(stack.pop());
-              const [sx, sy] = expr2xy(stack.pop());
+              const endExpr = stack.pop();
+              const startExpr = stack.pop();
+              if (typeof endExpr !== 'string' || typeof startExpr !== 'string') {
+                throw new Error('Invalid range expression');
+              }
+              const [ex, ey] = expr2xy(endExpr as Parameters<typeof expr2xy>[0]);
+              const [sx, sy] = expr2xy(startExpr as Parameters<typeof expr2xy>[0]);
               // console.log('::', sx, sy, ex, ey);
               let rangelen = 0;
             for (let x = sx; x <= ex; x += 1) {
@@ -123,9 +128,12 @@ export const infixExprToSuffixExpr = (src: string): (string | [string, number])[
     stack.push(subStrs.join(''));
   }
   while (operatorStack.length > 0) {
-    stack.push(operatorStack.pop());
+    const op = operatorStack.pop();
+    if (op !== undefined) {
+      stack.push(op);
+    }
   }
-  return stack;
+  return stack.filter((item): item is string | [string, number] => item !== undefined);
 };
 
 const evalSubExpr = (subExpr: string, cellRender: CellRenderFn): string | number => {
@@ -143,7 +151,7 @@ const evalSubExpr = (subExpr: string, cellRender: CellRenderFn): string | number
     return ret * Number(expr);
   }
       try {
-        const [x, y] = expr2xy(expr);
+        const [x, y] = expr2xy(expr as Parameters<typeof expr2xy>[0]);
         return ret * Number(cellRender(x, y));
       } catch {
         return 0;

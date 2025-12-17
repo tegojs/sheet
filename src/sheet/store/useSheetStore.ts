@@ -103,7 +103,7 @@ export const useSheetStore = create<SheetState>((set, get) => {
     options: Partial<Options> = defaultOptions,
   ): DataProxy => {
     const sheetName = name || `sheet${sheetIndex}`;
-    const data = new DataProxy(sheetName, options as Partial<typeof import('../core/dataProxy').default['settings']>);
+    const data = new DataProxy(sheetName, options as ConstructorParameters<typeof DataProxy>[1]);
 
     // 绑定 change 事件到 store
     data.change = () => {
@@ -290,7 +290,7 @@ export const useSheetStore = create<SheetState>((set, get) => {
             sheetData.name || `sheet${i + 1}`,
             defaultOptions,
           );
-          sheet.setData(sheetData);
+          sheet.setData(sheetData as unknown as Record<string, unknown>);
           newSheets.push(sheet);
         });
 

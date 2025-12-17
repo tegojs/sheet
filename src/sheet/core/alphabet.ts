@@ -5,6 +5,11 @@
 export type TagA1 = `${Uppercase<string>}${number}`;
 
 /**
+ * Excel-like range tag, e.g. "A1:B10"
+ */
+export type TagA1Range = `${Uppercase<string>}${number}:${Uppercase<string>}${number}`;
+
+/**
  * XY 坐标对，例如 [0, 0]
  */
 export type TagXY = [x: number, y: number];

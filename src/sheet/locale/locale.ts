@@ -52,12 +52,17 @@ function translate(key: string, messages: Messages) {
   return undefined;
 }
 
-function t(key: string) {
+function t(key: string, ...args: (string | number)[]): string {
   let v = translate(key, $messages);
   if (!v && window?.x_spreadsheet?.$messages) {
     v = translate(key, window.x_spreadsheet.$messages);
   }
-  return (v || '') as string;
+  let result = (v || '') as string;
+  // Replace placeholders like {0}, {1}, etc. with corresponding arguments
+  for (let i = 0; i < args.length; i++) {
+    result = result.replace(new RegExp(`\\{${i}\\}`, 'g'), String(args[i]));
+  }
+  return result;
 }
 
 function tf(key: string): () => string {

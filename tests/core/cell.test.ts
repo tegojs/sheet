@@ -1,5 +1,5 @@
 import { assert, describe, it } from 'vitest';
-import cell, { infixExprToSuffixExpr } from '../../src/sheet/core/cell';
+import { cellRender, infixExprToSuffixExpr } from '../../src/sheet/core/cell';
 import { formulam } from '../../src/sheet/core/formula';
 
 describe('infixExprToSuffixExpr', () => {
@@ -74,10 +74,10 @@ describe('infixExprToSuffixExpr', () => {
       '9312*-3*+42/+',
     );
   });
-  it('should return 931-+23+*42/+ when the value is (9+(3-1))*(2+3)+4/2', () => {
+  it('should return 931-+*23+42/+ when the value is (9+(3-1))*(2+3)+4/2', () => {
     assert.equal(
       infixExprToSuffixExpr('(9+(3-1))*(2+3)+4/2').join(''),
-      '931-+23+*42/+',
+      '931-+*23+42/+',
     );
   });
   it('should return SUM(1) when the value is 1SUM,1', () => {
@@ -91,38 +91,36 @@ describe('infixExprToSuffixExpr', () => {
   });
 });
 
-describe('cell', () => {
-  describe('.render()', () => {
-    it('should return 0 + 2 + 2 + 6 + 49 + 20 when the value is =SUM(A1,B2, C1, C5) + 50 + B20', () => {
-      assert.equal(
-        cell.render(
-          '=SUM(A1,B2, C1, C5) + 50 + B20',
-          formulam,
-          (x, y) => x + y,
-        ),
-        0 + 2 + 2 + 6 + 50 + 20,
-      );
-    });
-    it('should return 50 + 20 when the value is =50 + B20', () => {
-      assert.equal(
-        cell.render('=50 + B20', formulam, (x, y) => x + y),
-        50 + 20,
-      );
-    });
-    it('should return 2 when the value is =IF(2>1, 2, 1)', () => {
-      assert.equal(
-        cell.render('=IF(2>1, 2, 1)', formulam, (x, y) => x + y),
-        2,
-      );
-    });
-    it('should return 1 + 500 - 20 when the value is =AVERAGE(A1:A3) + 50 * 10 - B20', () => {
-      assert.equal(
-        cell.render('=AVERAGE(A1:A3) + 50 * 10 - B20', formulam, (x, y) => {
-          // console.log('x:', x, ', y:', y);
-          return x + y;
-        }),
-        1 + 500 - 20,
-      );
-    });
+describe('cellRender', () => {
+  it('should return 0 + 2 + 2 + 6 + 49 + 20 when the value is =SUM(A1,B2, C1, C5) + 50 + B20', () => {
+    assert.equal(
+      cellRender(
+        '=SUM(A1,B2, C1, C5) + 50 + B20',
+        formulam,
+        (x, y) => x + y,
+      ),
+      0 + 2 + 2 + 6 + 50 + 20,
+    );
+  });
+  it('should return 50 + 20 when the value is =50 + B20', () => {
+    assert.equal(
+      cellRender('=50 + B20', formulam, (x, y) => x + y),
+      50 + 20,
+    );
+  });
+  it('should return 2 when the value is =IF(2>1, 2, 1)', () => {
+    assert.equal(
+      cellRender('=IF(2>1, 2, 1)', formulam, (x, y) => x + y),
+      2,
+    );
+  });
+  it('should return 1 + 500 - 20 when the value is =AVERAGE(A1:A3) + 50 * 10 - B20', () => {
+    assert.equal(
+      cellRender('=AVERAGE(A1:A3) + 50 * 10 - B20', formulam, (x, y) => {
+        // console.log('x:', x, ', y:', y);
+        return x + y;
+      }),
+      1 + 500 - 20,
+    );
   });
 });

@@ -42,7 +42,7 @@ export interface SheetDataInput {
 /**
  * 变更监听器类型
  */
-export type ChangeListener = (data: SheetDataInput) => void;
+export type ChangeListener = (data: SheetDataInput | SheetDataInput[]) => void;
 
 /**
  * 单元格样式

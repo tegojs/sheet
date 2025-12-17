@@ -21,7 +21,7 @@ const mergeDeep = (
         v instanceof Object
       ) {
         object[key] = object[key] || {};
-        mergeDeep(object[key] as Record<string, unknown>, v);
+        mergeDeep(object[key] as Record<string, unknown>, v as Record<string, unknown>);
       } else {
         object[key] = v;
       }

@@ -3,8 +3,9 @@ import { renderCell } from '../canvas/cellRenderer';
 import { Draw } from '../canvas/draw';
 import { npx, thinLineWidth } from '../canvas/draw';
 import { stringAt } from '../core/alphabet';
+import { CellRange } from '../core/cellRange';
 import type DataProxy from '../core/dataProxy';
-import type { MergeInfo, ViewRange } from '../types';
+import type { MergeInfo } from '../types';
 
 const tableFixedHeaderCleanStyle = { fillStyle: '#f4f5f8' };
 const tableGridStyle = {
@@ -54,7 +55,7 @@ export function useTableRender(data: DataProxy | null) {
   const renderFixedHeaders = useCallback(
     (
       type: 'all' | 'left' | 'top',
-      viewRange: ViewRange,
+      viewRange: CellRange,
       w: number,
       h: number,
       tx: number,
@@ -150,7 +151,7 @@ export function useTableRender(data: DataProxy | null) {
 
   // 渲染内容区域
   const renderContent = useCallback(
-    (viewRange: ViewRange, fw: number, fh: number, tx: number, ty: number) => {
+    (viewRange: CellRange, fw: number, fh: number, tx: number, ty: number) => {
       if (!drawRef.current || !data) return;
 
       const draw = drawRef.current;
@@ -221,7 +222,7 @@ export function useTableRender(data: DataProxy | null) {
 
   // 渲染网格线
   const renderContentGrid = useCallback(
-    (viewRange: ViewRange, fw: number, fh: number, tx: number, ty: number) => {
+    (viewRange: CellRange, fw: number, fh: number, tx: number, ty: number) => {
       if (!drawRef.current || !data) return;
 
       const draw = drawRef.current;

@@ -1,4 +1,4 @@
-import { type TagA1, expr2xy, xy2expr } from './alphabet';
+import { type TagA1, type TagA1Range, expr2xy, xy2expr } from './alphabet';
 
 export class CellRange {
   constructor(
@@ -195,7 +195,7 @@ export class CellRange {
     );
   }
 
-  static valueOf(ref: TagA1) {
+  static valueOf(ref: TagA1 | TagA1Range) {
     // B1:B8, B1 => 1 x 1 cell range
     const refs = ref.split(':');
     const [sci, sri] = expr2xy(refs[0] as TagA1);

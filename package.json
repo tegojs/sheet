@@ -8,7 +8,10 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -26,7 +29,10 @@
     "test": "vitest run"
   },
   "lint-staged": {
-    "*.{js,json,sql,ts,tsx}": ["biome check --write", "biome format --write"]
+    "*.{js,json,sql,ts,tsx}": [
+      "biome check --write",
+      "biome format --write"
+    ]
   },
   "peerDependencies": {
     "react": ">=16.9.0",
@@ -53,6 +59,7 @@
     "@types/react-dom": "^18.0.0",
     "husky": "^9.1.7",
     "jsdom": "^25.0.1",
+    "less": "^4.5.1",
     "lint-staged": "15.2.11",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

@@ -43,6 +43,7 @@ export interface Options {
     strike: boolean;
     underline: boolean;
     color: string;
+    format?: string;
     font: {
       name: 'Helvetica';
       size: number;
@@ -122,28 +123,13 @@ export interface SpreadsheetData {
   [index: number]: SheetData;
 }
 
-export interface CellStyle {
-  align?: 'left' | 'center' | 'right';
-  valign?: 'top' | 'middle' | 'bottom';
-  font?: {
-    bold?: boolean;
-  };
-  bgcolor?: string;
-  textwrap?: boolean;
-  color?: string;
-  border?: {
-    top?: string[];
-    right?: string[];
-    bottom?: string[];
-    left?: string[];
-  };
-}
+// Re-export Cell and CellStyle from types
+export type { Cell, CellStyle } from './types';
 
 export type Editor = Record<string, unknown>;
 export type Element = Record<string, unknown>;
 export type Row = Record<string, unknown>;
 export type Table = Record<string, unknown>;
-export type Cell = Record<string, unknown>;
 export type Sheet = Record<string, unknown>;
 
 /**

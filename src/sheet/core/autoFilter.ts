@@ -199,8 +199,7 @@ export default class AutoFilter {
 
   range(): CellRange {
     return CellRange.valueOf(
-      (this.ref ||
-        '') as `${Uppercase<string>}${number}:${Uppercase<string>}${number}`,
+      (this.ref || 'A1') as Parameters<typeof CellRange.valueOf>[0],
     );
   }
 

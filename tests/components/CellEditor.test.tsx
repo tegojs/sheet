@@ -1,17 +1,28 @@
 import { render } from '@testing-library/react';
 import React from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { CellEditor } from '../../src/sheet/components/Editor/CellEditor';
-import { useSheetStore } from '../../src/sheet/store/useSheetStore';
 
 // Mock useSheetStore
-vi.mock('/home/zhanglin/sheet/src/sheet/store/useSheetStore', () => ({
-  useSheetStore: vi.fn(),
-  useActiveSheet: vi.fn(),
-  useIsEditing: vi.fn(),
+const mockUseSheetStore = vi.fn();
+const mockUseActiveSheet = vi.fn();
+const mockUseIsEditing = vi.fn();
+
+vi.mock('../../src/sheet/store/useSheetStore', () => ({
+  useSheetStore: () => mockUseSheetStore(),
+  useActiveSheet: () => mockUseActiveSheet(),
+  useIsEditing: () => mockUseIsEditing(),
 }));
 
 describe('CellEditor', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockUseSheetStore.mockReturnValue({
+      setCellText: vi.fn(),
+      stopEditing: vi.fn(),
+    });
+  });
+
   it('当不在编辑状态时不应该显示', () => {
     const mockData = {
       rows: { len: 100, height: 25 },
@@ -21,17 +32,8 @@ describe('CellEditor', () => {
       selector: { ri: 0, ci: 0 },
     };
 
-    vi.mocked(useSheetStore).mockReturnValue({
-      setCellText: vi.fn(),
-      stopEditing: vi.fn(),
-    } as ReturnType<typeof useSheetStore>);
-
-    const {
-      useActiveSheet,
-      useIsEditing,
-    } = require('/home/zhanglin/sheet/src/sheet/store/useSheetStore');
-    vi.mocked(useActiveSheet).mockReturnValue(mockData);
-    vi.mocked(useIsEditing).mockReturnValue(false);
+    mockUseActiveSheet.mockReturnValue(mockData);
+    mockUseIsEditing.mockReturnValue(false);
 
     const { container } = render(<CellEditor />);
 
@@ -47,17 +49,8 @@ describe('CellEditor', () => {
       selector: { ri: 0, ci: 0 },
     };
 
-    vi.mocked(useSheetStore).mockReturnValue({
-      setCellText: vi.fn(),
-      stopEditing: vi.fn(),
-    } as ReturnType<typeof useSheetStore>);
-
-    const {
-      useActiveSheet,
-      useIsEditing,
-    } = require('/home/zhanglin/sheet/src/sheet/store/useSheetStore');
-    vi.mocked(useActiveSheet).mockReturnValue(mockData);
-    vi.mocked(useIsEditing).mockReturnValue(true);
+    mockUseActiveSheet.mockReturnValue(mockData);
+    mockUseIsEditing.mockReturnValue(true);
 
     const { container } = render(<CellEditor />);
     const textarea = container.querySelector('textarea');
