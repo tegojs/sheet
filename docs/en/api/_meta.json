@@ -1,11 +1,1 @@
-[
-  "introduction",
-  "data_proxy",
-  "editor",
-  "element",
-  "row",
-  "sheet",
-  "spreadsheet",
-  "style",
-  "table"
-]
+["introduction", "react-sheet", "use-sheet-store", "data_proxy", "types"]

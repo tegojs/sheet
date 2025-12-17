@@ -1,25 +1,41 @@
-# 基础功能
+# Features
 
-> 已经支持下列功能
+## Supported Features
 
-- 撤销重做
-- 添加行列
-- 删除行列
-- 隐藏行列
-- 动态调整行列功能
-- 冻结行列
-- 添加边框/颜色/边框线条样式
-- 合并单元格
-- 复制
-- 粘贴
-- 打印
-- 公式
-- 筛选
-- 自动填充
-- 多表支持
-- 字体样式
-- 自定义字体/大小/颜色
-- 填充前景色/背景色
-- 格式校验
-- 对齐方式
-- 文字换行
+### Cell Operations
+- Cell editing with inline editor
+- Copy, cut, paste
+- Undo / Redo
+- Cell merging
+- Auto-fill
+
+### Styling
+- Font family, size, color
+- Bold, italic, underline, strikethrough
+- Background color
+- Text alignment (horizontal & vertical)
+- Text wrapping
+- Cell borders with custom styles
+
+### Row & Column
+- Add / delete rows and columns
+- Hide / show rows and columns
+- Resize row height and column width
+- Freeze rows and columns
+
+### Multiple Sheets
+- Add / delete sheets
+- Rename sheets
+- Switch between sheets
+
+### Data
+- Load data from JSON
+- Export data to JSON
+- Data validation
+- Auto-filter
+
+### UI Components
+- Customizable toolbar
+- Context menu (right-click)
+- Bottom bar with sheet tabs
+- Scrollbars

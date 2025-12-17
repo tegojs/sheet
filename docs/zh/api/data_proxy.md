@@ -1,536 +1,582 @@
-# data_proxy 数据驱动核心类
+# DataProxy
 
-数据核心类，里边代理了很多功能
+电子表格操作的核心数据管理类。通过 `useSheetStore` 访问。
 
-```js
-// instance 你创建的实例，公有方法可以直接调用，私有方法不可以
-instance.data.publicFn(args);
-// 或者
-instance.sheet.data.publicFn(args);
+## 访问方式
+
+```tsx
+import { useSheetStore } from '@tachybase/sheet';
+
+const { getActiveSheet } = useSheetStore();
+const dataProxy = getActiveSheet();
 ```
 
-## 私有方法
+## 单元格操作
 
-### Method: `canPaste`
+### `getCell(ri, ci)`
 
-粘贴前调用，用以判断是否可以粘贴
+通过行列索引获取单元格数据。
 
-`@param {Object}` src 由 cellRange 包装的对象，源单元格
-
-`@param {Object}` dst 由 cellRange 包装的对象，目标单元格
-
-`@param {Function}` error 错误回调 当目标单元格包含 merge 时调用
-
-`@returns {boolean}` 是否可以粘贴
-
-```js
-function canPaste(src, dst, error = () => {}) {
-  // 正常返回 Boolean 类型
-  // 若目标单元格包含 merge 时则调用 error() 并返回 false
-})
+```tsx
+const cell = dataProxy.getCell(0, 0);
+// { text: 'Hello', style: 0, merge: [1, 1] }
 ```
 
-### Method: `copyPaste`
+### `getCellTextOrDefault(ri, ci)`
 
-粘贴复制的单元格时使用，用以将源单元格复制到目标单元格
+获取单元格文本或默认值。
 
-`@param {Object}` srcCellRange 由 cellRange 包装的对象，源单元格
-
-`@param {Object}` dstCellRange 由 cellRange 包装的对象，目标单元格
-
-`@param {String}` what 复制条件 all 全部 | format 仅格式
-
-`@param {Boolean}` autofill 是否自动填充，默认 false
-
-```js
-function copyPaste(srcCellRange, dstCellRange, what, autofill = false) {
-  // 根据 what 条件
-  // 调用 rows.copyPaste 进行复制单元格
-})
+```tsx
+const text = dataProxy.getCellTextOrDefault(0, 0);
 ```
 
-### Method: `cutPaste`
+### `getCellStyle(ri, ci)`
 
-粘贴剪切的单元格时使用，用以将源单元格复制到目标单元格
+获取单元格样式。
 
-`@param {Object}` srcCellRange 由 cellRange 包装的对象，源单元格
-
-`@param {Object}` dstCellRange 由 cellRange 包装的对象，目标单元格
-
-`@param {String}` what 复制条件 all 全部 | format 仅格式
-
-`@param {Boolean}` autofill 是否自动填充，默认 false
-
-```js
-function cutPaste(srcCellRange, dstCellRange) {
-  // 调用 rows.cutPaste 进行粘贴剪切的单元格
-})
+```tsx
+const style = dataProxy.getCellStyle(0, 0);
 ```
 
-### Method:`setStyleBorder`
+### `getCellStyleOrDefault(ri, ci)`
 
-设置指定的单元格边框
+获取单元格样式或默认样式。
 
-`@param {Number}` ri 行下标
-
-`@param {Number}` ci 列下标
-
-`@param {Object}` bss 边框样式
-
-```js
-function setStyleBorder(ri, ci, bss) {
-  // 将 bss 样式通过 this.addStyle 方法添加到样式数据中，并将返回的样式下标设置到 cell.style 单元格数据中
-})
+```tsx
+const style = dataProxy.getCellStyleOrDefault(0, 0);
 ```
 
-### Method:`setStyleBorders`
+### `setCellText(ri, ci, text, state)`
 
-根据当前选区（this.selector）批量设置多个单元格的边框
+设置单元格文本。
 
-`@param {String}` mode all 全部 | inside 内边框 | outside 外边框 | horizontal 水平边框 | vertical 竖边框 | none 无边框
+- `ri`: 行索引
+- `ci`: 列索引
+- `text`: 文本内容
+- `state`: `'input'` 或 `'finished'`
 
-`@param {String}` style 边框样式
-
-`@param {String}` color 边框样式
-
-```js
-function setStyleBorders({ mode, style, color }) {
-  // 根据 mode 设置边框
-})
+```tsx
+dataProxy.setCellText(0, 0, 'Hello', 'finished');
 ```
 
-### Method:`getCellRowByY`
+### `getSelectedCell()`
 
-根据 Y 坐标获取所在行的下标
+获取当前选中的单元格。
 
-`@param {Number}` y Y坐标
-
-`@param {Number}` scrollOffsety 滚动条 Offset Y
-
-`@returns {Object}` 带有 ri 行下标的对象
-
-```js
-function getCellRowByY(y, scrollOffsety) {
-  // 根据 Y 坐标返回 { ri, top, height }
-})
+```tsx
+const cell = dataProxy.getSelectedCell();
 ```
 
-### Method: `getCellRowByX`
+### `getSelectedCellStyle()`
 
-获得单元格的通过 X 的坐标
+获取选中单元格的样式。
 
-根据 X 坐标获取所在行的下标
-
-`@param {Number}` x X坐标
-
-`@param {Number}` scrollOffsety 滚动条 Offset X
-
-返回格式
-
-```ts
-interface ICellRetun {
-  ci: number;
-  left: number;
-  width: number;
-}
+```tsx
+const style = dataProxy.getSelectedCellStyle();
 ```
 
-## DataProxy 类
+### `setSelectedCellAttr(property, value)`
 
-### Method: `addValidation(mode, ref, validator)`
+设置选中单元格的属性。
 
-添加验证
+```tsx
+dataProxy.setSelectedCellAttr('bold', true);
+dataProxy.setSelectedCellAttr('bgcolor', '#ffff00');
+```
 
-@param mode 编辑模式
+### `setSelectedCellText(text, state)`
 
-@param ref 参考范围
+设置选中单元格的文本。
 
-@param validator 验证器
+```tsx
+dataProxy.setSelectedCellText('Hello', 'finished');
+```
 
-### Method: `removeValidation()`
+## 选区操作
 
-移除验证范围
+### `calSelectedRangeByStart(ri, ci)`
 
-### Method: `getSelectedValidator()`
+通过起始位置计算选区范围。
 
-获得选中范围类的过滤或验证器
+```tsx
+dataProxy.calSelectedRangeByStart(0, 0);
+```
 
-### Method: `getSelectedValidation()`
+### `calSelectedRangeByEnd(ri, ci)`
 
-获得选中范围类的过滤或验证器具体信息
+通过结束位置计算选区范围。
 
-### Method: `canUndo()`
+```tsx
+dataProxy.calSelectedRangeByEnd(5, 5);
+```
 
-是否可以不做，撤销操作
+### `isSignleSelected()`
 
-### Method: `canRedo()`
+检查是否只选中了单个单元格。
 
-是否可以重做
+```tsx
+const isSingle = dataProxy.isSignleSelected();
+```
 
-### Method: `undo()`
+### `getSelectedRect()`
 
-撤销一步
+获取选中的矩形区域。
 
-### Method: `redo()`
+```tsx
+const rect = dataProxy.getSelectedRect();
+```
 
-重做一步
+### `xyInSelectedRect(x, y)`
 
-### Method: `copy()`
+检查坐标是否在选中区域内。
 
-复制当前的选区
+```tsx
+const isInside = dataProxy.xyInSelectedRect(100, 200);
+```
 
-### Method: `copyToSystemClipboard()`
+### `getCellRectByXY(x, y)`
 
-复制到系统剪切板
+通过坐标获取单元格矩形。
 
-### Method: `cut()`
+```tsx
+const rect = dataProxy.getCellRectByXY(100, 200);
+```
 
-集成剪切事件
+## 剪贴板
 
-### Method: `paste(what, error)`
+### `copy()`
 
-粘贴事件
+复制选中单元格。
 
-@param what: all(所有) | text(文字) | format(格式)
+```tsx
+dataProxy.copy();
+```
 
-@param error: Function
+### `copyToSystemClipboard()`
 
-### Method: `pasteFromText(txt)`
+复制到系统剪贴板。
 
-粘贴文字
+```tsx
+dataProxy.copyToSystemClipboard();
+```
 
-@param txt: string
+### `cut()`
 
-### Method: `autofill(cellRange, what, error)`
+剪切选中单元格。
 
-自动填充
+```tsx
+dataProxy.cut();
+```
 
-@param cellRange: CellRange
+### `paste(what, error)`
 
-@param what: all(所有) | text(文字) | format(格式)
+从剪贴板粘贴。
 
-@param error: Function
+- `what`: `'all'`、`'text'` 或 `'format'`
+- `error`: 错误回调函数
 
-### Method: `clearClipboard()`
+```tsx
+dataProxy.paste('all', (msg) => console.error(msg));
+```
 
-清除剪切板数据
+### `pasteFromText(txt)`
 
-### Method: `calSelectedRangeByEnd(ri, ci)`
+粘贴文本。
 
-计算选区范围，通过结束坐标
+```tsx
+dataProxy.pasteFromText('Hello\tWorld');
+```
 
-@param ri 行索引
+### `clearClipboard()`
 
-@param ci 列索引
+清除剪贴板。
 
-### Method: `calSelectedRangeByStart(ri, ci)`
+```tsx
+dataProxy.clearClipboard();
+```
 
-计算选区范围，通过开始坐标
+### `getClipboardRect()`
 
-@param ri 行索引
+获取剪贴板选区矩形。
 
-@param ci 列索引
+```tsx
+const rect = dataProxy.getClipboardRect();
+```
 
-### Method: `setSelectedCellAttr(property, value)`
+## 合并单元格
 
-设置选中单元格属性
+### `merge()`
 
-@param property: string 属性
+合并选中单元格。
 
-@param value: string | number | unknow
+```tsx
+dataProxy.merge();
+```
 
-### Method: `setSelectedCellText(text, state = 'input)`
+### `unmerge()`
 
-设置选中单元格文字
+取消合并选中单元格。
 
-@param text: string 文字
+```tsx
+dataProxy.unmerge();
+```
 
-@param state: string 当前输入状态
+### `canUnmerge()`
 
-### Method: `getSelectedCell()`
+检查是否可以取消合并。
 
-获得当前选中单元格
+```tsx
+const canUnmerge = dataProxy.canUnmerge();
+```
 
-### Method: `xyInSelectedRect()`
+## 历史记录
 
-判断当前鼠标点击坐标是否在选中范围内
+### `undo()`
 
-### Method: `getSelectedRect()`
+撤销上一次操作。
 
-获得选中的矩形区域
+```tsx
+dataProxy.undo();
+```
 
-### Method: `getClipboardRect()`
+### `redo()`
 
-获得当前剪切板选中区域
+重做上一次撤销的操作。
 
-### Method: `getRect(cellRange)`
+```tsx
+dataProxy.redo();
+```
 
-获得设定选中范围区域
+### `canUndo()`
 
-@param cellRange: CellRange
+检查是否可以撤销。
 
-### Method: `getCellRectByXY(x, y)`
+```tsx
+const canUndo = dataProxy.canUndo();
+```
 
-获得当前选中区域，通过鼠标的 x 和 y 坐标
+### `canRedo()`
 
-@param x: number
+检查是否可以重做。
 
-@param y: number
+```tsx
+const canRedo = dataProxy.canRedo();
+```
 
-### Method: `isSignleSelected()`
+## 行列操作
 
-判断是否是单个选中
+### `setRowHeight(ri, height)`
 
-### Method: `canUnmerge()`
+设置行高。
 
-能否不合并
+```tsx
+dataProxy.setRowHeight(0, 50);
+```
 
-### Method: `merge()`
+### `setColWidth(ci, width)`
 
-合并
+设置列宽。
 
-### Method: `unmerge()`
+```tsx
+dataProxy.setColWidth(0, 150);
+```
 
-不做合并，撤销合并
+### `insert(type, n)`
 
-### Method: `canAutofilter()`
+插入行或列。
 
-能自动过滤
+- `type`: `'row'` 或 `'column'`
+- `n`: 插入数量
 
-### Method: `autofilter()`
+```tsx
+dataProxy.insert('row', 1);
+dataProxy.insert('column', 2);
+```
 
-过滤
+### `delete(type)`
 
-### Method: `setAutoFilter(ci, order, operator, value)`
+删除选中的行或列。
 
-设置过滤器
+```tsx
+dataProxy.delete('row');
+dataProxy.delete('column');
+```
 
-@param ci 列索引
+### `hideRowsOrCols()`
 
-@param order 排序方式
+隐藏选中的行或列。
 
-@param operator 操作
+```tsx
+dataProxy.hideRowsOrCols();
+```
 
-@param value 值
+### `unhideRowsOrCols(type, index)`
 
-### Method: `resetAutoFilter()`
+取消隐藏行或列。
 
-重置自动过滤
+```tsx
+dataProxy.unhideRowsOrCols('row', 5);
+```
 
-### Method: `deleteCell(what = 'all')`
+## 冻结窗格
 
-删除单元格
+### `setFreeze(ri, ci)`
 
-@param what: string all(所有) | fomat(格式)
+设置冻结窗格。
 
-### Method: `insert(type, n = 1)`
+```tsx
+dataProxy.setFreeze(1, 1); // 冻结第一行和第一列
+```
 
-插入行或者列
+### `freezeIsActive()`
 
-@param type: string 可能的值 row | column
+检查冻结是否激活。
 
-@param n: number > 0
+```tsx
+const isActive = dataProxy.freezeIsActive();
+```
 
-### Method: `delete(type)`
+### `freezeTotalWidth()`
 
-删除选中行或者列
+获取冻结区域宽度。
 
-@param type: string 可能的值 row | column
+```tsx
+const width = dataProxy.freezeTotalWidth();
+```
 
-### Method: `scrollx(x, cb)`
+### `freezeTotalHeight()`
 
-滚动 x 距离触发 cb
+获取冻结区域高度。
 
-@param x: number 距离
+```tsx
+const height = dataProxy.freezeTotalHeight();
+```
 
-@param cb: Function 触发的回调函数
+## 筛选
 
-### Method: `scrolly(y, cb)`
+### `autofilter()`
 
-滚动 y 距离触发 cb
+切换自动筛选。
 
-@param y: number 距离
+```tsx
+dataProxy.autofilter();
+```
 
-@param cb: Function 触发的回调函数
+### `canAutofilter()`
 
-### Method: `cellRect(ri, ci)`
+检查是否可以应用自动筛选。
 
-返回当前单元格的具体坐标信息
+```tsx
+const can = dataProxy.canAutofilter();
+```
 
-@param ri: number 行索引
+### `setAutoFilter(ci, order, operator, value)`
 
-@param ci: number 列索引
+设置自动筛选选项。
 
-### Method: `getCell(ri, ci)`
+```tsx
+dataProxy.setAutoFilter(0, 'asc', 'eq', 'value');
+```
 
-获得当前单元格，通过索引
+### `resetAutoFilter()`
 
-@param ri: number 行索引
+重置自动筛选。
 
-@param ci: number 列索引
+```tsx
+dataProxy.resetAutoFilter();
+```
 
-### Method: `getCellTextOrDefault(ri, ci)`
+## 数据验证
 
-获得当前单元格文字或者默认值
+### `addValidation(mode, ref, validator)`
 
-@param ri: number 行索引
+添加验证规则。
 
-@param ci: number 列索引
+```tsx
+dataProxy.addValidation('stop', 'A1:B10', validator);
+```
 
-### Method: `getCellStyle(ri, ci)`
+### `removeValidation()`
 
-获得当前单元格样式
+从选中范围移除验证。
 
-@param ri: number 行索引
+```tsx
+dataProxy.removeValidation();
+```
 
-@param ci: number 列索引
+### `getSelectedValidator()`
 
-### Method: `getCellStyleOrDefault(ri, ci)`
+获取选中范围的验证器。
 
-获得当前单元格样式或者默认值
+```tsx
+const validator = dataProxy.getSelectedValidator();
+```
 
-@param ri: number 行索引
+### `getSelectedValidation()`
 
-@param ci: number 列索引
+获取选中范围的验证信息。
 
-### Method: `getSelectedCellStyle()`
+```tsx
+const validation = dataProxy.getSelectedValidation();
+```
 
-获得当前选中单元格样式
+## 视图
 
-### Method: `setCellText(ri, ci, text, state)`
+### `viewWidth()`
 
-设定指定单元格值，并更新输入状态
+获取视图宽度。
 
-@param ri: number 行索引
+```tsx
+const width = dataProxy.viewWidth();
+```
 
-@param ci: number 列索引
+### `viewHeight()`
 
-@param text: string 文字
+获取视图高度。
 
-@param state: string input | finished
+```tsx
+const height = dataProxy.viewHeight();
+```
 
-### Method: `freezeIsActive()`
+### `viewRange()`
 
-冻结是否可以激活
+获取可见范围。
 
-### Method: `setFreeze(ri, ci)`
+```tsx
+const range = dataProxy.viewRange();
+```
 
-设置冻结栏
+### `freezeViewRange()`
 
-@param ri: number 行索引
+获取冻结视图范围。
 
-@param ci: number 列索引
+```tsx
+const range = dataProxy.freezeViewRange();
+```
 
-### Method: `freezeTotalWidth()`
+### `contentRange()`
 
-获得冻结栏的总计宽度
+获取内容范围。
 
-### Method: `freezeTotalHeight()`
+```tsx
+const range = dataProxy.contentRange();
+```
 
-获得冻结栏总计高度
+## 滚动
 
-### Method: `setRowHeight(ri, height)`
+### `scrollx(x, cb)`
 
-设置某一行高度
+水平滚动。
 
-@param ri: number 行索引
+```tsx
+dataProxy.scrollx(100, () => console.log('已滚动'));
+```
 
-@param height: number 行高度
+### `scrolly(y, cb)`
 
-### Method: `setColWidth(ci, width)`
+垂直滚动。
 
-设置某一列宽度
+```tsx
+dataProxy.scrolly(100, () => console.log('已滚动'));
+```
 
-@param ci: number 列索引
+## 数据
 
-@param width: number 列宽度
+### `setData(d)`
 
-### Method: `viewHeight()`
+设置表格数据。
 
-获得可视区域高度
+```tsx
+dataProxy.setData({
+  name: 'Sheet1',
+  rows: { /* ... */ },
+});
+```
 
-### Method: `viewWidth()`
+### `getData()`
 
-获得可视区域宽度
+获取表格数据。
 
-### Method: `freezeViewRange()`
+```tsx
+const data = dataProxy.getData();
+```
 
-获得冻结范围
+### `changeData(cb)`
 
-### Method: `contentRange()`
+设置变更回调。
 
-获得文本区域显示范围
+```tsx
+dataProxy.changeData((data) => {
+  console.log('数据变化:', data);
+});
+```
 
-### Method: `exceptRowTotalHeight(sri, eri)`
+## 样式
 
-获得忽略行后的总计高度
+### `defaultStyle()`
 
-### Method: `viewRange()`
+获取默认样式。
 
-获得可视区显示范围
+```tsx
+const style = dataProxy.defaultStyle();
+```
 
-### Method: `eachMergesInView(viewRange, cb)`
+### `addStyle(nstyle)`
 
-每个合并发生的时候触发的回调
+添加样式到样式数组。
 
-@param viewRange: ViewRange
+```tsx
+const styleIndex = dataProxy.addStyle({
+  bold: true,
+  bgcolor: '#ffff00',
+});
+```
 
-@param cb: Function
+## 工具方法
 
-### Method: `hideRowsOrCols()`
+### `cellRect(ri, ci)`
 
-隐藏选中列或者行
+获取单元格矩形信息。
 
-### Method: `unhideRowsOrCols(type, index)`
+```tsx
+const rect = dataProxy.cellRect(0, 0);
+// { left, top, width, height }
+```
 
-取消隐藏行或者列
+### `getRect(cellRange)`
 
-@param type: row | col
+获取单元格范围的矩形。
 
-@param index: row-index | col-index
+```tsx
+const rect = dataProxy.getRect(cellRange);
+```
 
-### Method: `rowEach(min, max, cb)`
+### `rowEach(min, max, cb)`
 
-行遍历，可以指定范围
+遍历行。
 
-@param min: number 最小行
+```tsx
+dataProxy.rowEach(0, 10, (ri, row) => {
+  console.log(ri, row);
+});
+```
 
-@param max: number 最大行
+### `colEach(min, max, cb)`
 
-@param cb: Function
+遍历列。
 
-### Method: `colEach(min, max, cb)`
+```tsx
+dataProxy.colEach(0, 10, (ci, col) => {
+  console.log(ci, col);
+});
+```
 
-列遍历，可以指定范围
+### `eachMergesInView(viewRange, cb)`
 
-@param min: number 最小列
+遍历视图中的合并单元格。
 
-@param max: number 最大列
-
-@param cb: Function
-
-### Method: `defaultStyle()`
-
-获得默认样式
-
-### Method: `addStyle(nstyle)`
-
-设置多个样式
-
-@param nstyle object
-
-### Method: `changeData(cb)`
-
-设置数据变化时的回调函数
-
-@param cb: Function
-
-### Method: `setData(d)`
-
-设置表格数据，d 如果不知道可以通过 getData() 方法先获取一份默认的看看
-
-@param d: object
-
-### Method: `getData()`
-
-获得当前表格的数据
+```tsx
+dataProxy.eachMergesInView(viewRange, (merge) => {
+  console.log(merge);
+});
+```

@@ -1,108 +1,195 @@
-# 参数说明
+# Configuration Options
 
-这些参数都是在第一次实例化加载的，也可以后期设定，但是建议一次对自己需要变更的提前修改加载
+These options can be passed to the ReactSheet component's `options` prop.
 
-## 只读/编辑 模式切换
+## Mode
 
-你只需要将配置中的 `mode` 设置为 `read` 或者 `edit` 在第一次加载的时候
+Switch between read-only and edit mode.
 
-```js
-mode: 'read'; // 'edit'
+```tsx
+<ReactSheet options={{ mode: 'edit' }} />  // Edit mode (default)
+<ReactSheet options={{ mode: 'read' }} />  // Read-only mode
 ```
 
-## 工具栏
+## UI Toggles
 
-工具栏的显示状态 `showToolbar: boolean`, 默认为 true
+### Toolbar
 
-底部工具栏 `showBottomBar: boolean`, 默认为 true
+Show or hide the toolbar. Default: `true`
 
-```js
-showToolbar: true; // false
-showBottomBar: true; // false
+```tsx
+<ReactSheet options={{ showToolbar: false }} />
 ```
 
-## 网格
+### Bottom Bar
 
-内容区域网格显示状态 `showGrid: boolean`
+Show or hide the sheet tabs at the bottom. Default: `true`
 
-```js
-showGrid: true; // false
+```tsx
+<ReactSheet options={{ showBottomBar: false }} />
 ```
 
-## 右键菜单
+### Grid Lines
 
-切换右键菜单显示状态 `showContextmenu: boolean`
+Show or hide the grid lines. Default: `true`
 
-```js
-showContextmenu: true; // false
+```tsx
+<ReactSheet options={{ showGrid: false }} />
 ```
 
-## 指定表格宽高
+### Context Menu
 
-这包含工具栏高度，可以调整表格固定的宽高 `view` 属性的 `height` 和 `width`
+Enable or disable the right-click context menu. Default: `true`
 
-```js
-  // 可以是固定值
-  view: {
-    height: () => document.documentElement.clientHeight,
-    width: () => document.documentElement.clientWidth
-  }
+```tsx
+<ReactSheet options={{ showContextmenu: false }} />
 ```
 
-## 行
+## View Size
 
-调整行的高度和默认展示数量，分别通过 `height` 属性和 `len` 调整
+Set the spreadsheet dimensions using functions that return width/height.
 
-```js
-  row: {
-    height: 25,
-    len: 100
-  }
-```
-
-## 列
-
-可以调整默认显示的列数 `len`，A-Z，默认每个列的宽度 `width` ，左边序列栏默认宽度 `indexWidth` ，以及每个列默认最小宽度 `minWidth`
-
-```js
-  col: {
-    len: 26,
-    width: 100,
-    indexWidth: 60,
-    minWidth: 60,
-  }
-```
-
-## 样式
-
-可以调整表格渲染的样式
-
-```js
-style: {
-    // 背景颜色
-    bgcolor: '#ffffff',
-    // 水平对齐方式
-    align: 'left',
-    // 垂直对齐方式
-    valign: 'middle',
-    // 是否需要换行
-    textwrap: false,
-    // 虚线边框
-    strike: false,
-    // 下画线
-    underline: false,
-    // 文字颜色
-    color: '#0a0a0a',
-    // 字体设置
-    font: {
-      // 字体
-      name: 'Helvetica',
-      // 字号大小
-      size: 10,
-      // 是否加粗
-      bold: false,
-      // 斜体
-      italic: false,
+```tsx
+<ReactSheet
+  options={{
+    view: {
+      height: () => 600,                              // Fixed height
+      width: () => document.documentElement.clientWidth,  // Full width
     },
-  }
+  }}
+/>
+```
+
+## Row Configuration
+
+Configure default row settings.
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `len` | `number` | `100` | Number of rows |
+| `height` | `number` | `25` | Default row height in pixels |
+
+```tsx
+<ReactSheet
+  options={{
+    row: {
+      len: 200,    // 200 rows
+      height: 30,  // 30px row height
+    },
+  }}
+/>
+```
+
+## Column Configuration
+
+Configure default column settings.
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `len` | `number` | `26` | Number of columns (A-Z) |
+| `width` | `number` | `100` | Default column width |
+| `indexWidth` | `number` | `60` | Width of row index column |
+| `minWidth` | `number` | `60` | Minimum column width |
+
+```tsx
+<ReactSheet
+  options={{
+    col: {
+      len: 52,        // A-AZ (52 columns)
+      width: 120,     // Default width 120px
+      indexWidth: 50, // Row index width
+      minWidth: 50,   // Minimum width
+    },
+  }}
+/>
+```
+
+## Default Style
+
+Set the default cell style for all cells.
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `bgcolor` | `string` | `'#ffffff'` | Background color |
+| `align` | `string` | `'left'` | Horizontal alignment: `'left'`, `'center'`, `'right'` |
+| `valign` | `string` | `'middle'` | Vertical alignment: `'top'`, `'middle'`, `'bottom'` |
+| `textwrap` | `boolean` | `false` | Enable text wrapping |
+| `strike` | `boolean` | `false` | Strikethrough text |
+| `underline` | `boolean` | `false` | Underline text |
+| `color` | `string` | `'#0a0a0a'` | Text color |
+| `font.name` | `string` | `'Helvetica'` | Font family |
+| `font.size` | `number` | `10` | Font size |
+| `font.bold` | `boolean` | `false` | Bold text |
+| `font.italic` | `boolean` | `false` | Italic text |
+
+```tsx
+<ReactSheet
+  options={{
+    style: {
+      bgcolor: '#f5f5f5',
+      align: 'center',
+      valign: 'middle',
+      textwrap: true,
+      strike: false,
+      underline: false,
+      color: '#333333',
+      font: {
+        name: 'Arial',
+        size: 12,
+        bold: false,
+        italic: false,
+      },
+    },
+  }}
+/>
+```
+
+## Complete Example
+
+```tsx
+import { ReactSheet } from '@tachybase/sheet';
+
+function App() {
+  return (
+    <ReactSheet
+      options={{
+        mode: 'edit',
+        showToolbar: true,
+        showBottomBar: true,
+        showGrid: true,
+        showContextmenu: true,
+        view: {
+          height: () => window.innerHeight - 100,
+          width: () => window.innerWidth,
+        },
+        row: {
+          len: 100,
+          height: 25,
+        },
+        col: {
+          len: 26,
+          width: 100,
+          indexWidth: 60,
+          minWidth: 60,
+        },
+        style: {
+          bgcolor: '#ffffff',
+          align: 'left',
+          valign: 'middle',
+          textwrap: false,
+          strike: false,
+          underline: false,
+          color: '#0a0a0a',
+          font: {
+            name: 'Helvetica',
+            size: 10,
+            bold: false,
+            italic: false,
+          },
+        },
+      }}
+      onChange={(data) => console.log('Data changed:', data)}
+    />
+  );
+}
 ```

@@ -1,108 +1,195 @@
-# 参数说明
+# 配置项说明
 
-这些参数都是在第一次实例化加载的，也可以后期设定，但是建议一次对自己需要变更的提前修改加载
+这些选项可以通过 ReactSheet 组件的 `options` prop 传入。
 
-## 只读/编辑 模式切换
+## 模式
 
-你只需要将配置中的 `mode` 设置为 `read` 或者 `edit` 在第一次加载的时候
+切换只读和编辑模式。
 
-```js
-mode: 'read'; // 'edit'
+```tsx
+<ReactSheet options={{ mode: 'edit' }} />  // 编辑模式（默认）
+<ReactSheet options={{ mode: 'read' }} />  // 只读模式
 ```
 
-## 工具栏
+## UI 开关
 
-工具栏的显示状态 `showToolbar: boolean`, 默认为 true
+### 工具栏
 
-底部工具栏 `showBottomBar: boolean`, 默认为 true
+显示或隐藏工具栏。默认：`true`
 
-```js
-showToolbar: true; // false
-showBottomBar: true; // false
+```tsx
+<ReactSheet options={{ showToolbar: false }} />
 ```
 
-## 网格
+### 底部栏
 
-内容区域网格显示状态 `showGrid: boolean`
+显示或隐藏底部的表格标签栏。默认：`true`
 
-```js
-showGrid: true; // false
+```tsx
+<ReactSheet options={{ showBottomBar: false }} />
 ```
 
-## 右键菜单
+### 网格线
 
-切换右键菜单显示状态 `showContextmenu: boolean`
+显示或隐藏网格线。默认：`true`
 
-```js
-showContextmenu: true; // false
+```tsx
+<ReactSheet options={{ showGrid: false }} />
 ```
 
-## 指定表格宽高
+### 右键菜单
 
-这包含工具栏高度，可以调整表格固定的宽高 `view` 属性的 `height` 和 `width`
+启用或禁用右键菜单。默认：`true`
 
-```js
-  // 可以是固定值
-  view: {
-    height: () => document.documentElement.clientHeight,
-    width: () => document.documentElement.clientWidth
-  }
+```tsx
+<ReactSheet options={{ showContextmenu: false }} />
 ```
 
-## 行
+## 视图尺寸
 
-调整行的高度和默认展示数量，分别通过 `height` 属性和 `len` 调整
+使用返回宽度/高度的函数设置电子表格尺寸。
 
-```js
-  row: {
-    height: 25,
-    len: 100
-  }
-```
-
-## 列
-
-可以调整默认显示的列数 `len`，A-Z，默认每个列的宽度 `width` ，左边序列栏默认宽度 `indexWidth` ，以及每个列默认最小宽度 `minWidth`
-
-```js
-  col: {
-    len: 26,
-    width: 100,
-    indexWidth: 60,
-    minWidth: 60,
-  }
-```
-
-## 样式
-
-可以调整表格渲染的样式
-
-```js
-style: {
-    // 背景颜色
-    bgcolor: '#ffffff',
-    // 水平对齐方式
-    align: 'left',
-    // 垂直对齐方式
-    valign: 'middle',
-    // 是否需要换行
-    textwrap: false,
-    // 虚线边框
-    strike: false,
-    // 下画线
-    underline: false,
-    // 文字颜色
-    color: '#0a0a0a',
-    // 字体设置
-    font: {
-      // 字体
-      name: 'Helvetica',
-      // 字号大小
-      size: 10,
-      // 是否加粗
-      bold: false,
-      // 斜体
-      italic: false,
+```tsx
+<ReactSheet
+  options={{
+    view: {
+      height: () => 600,                              // 固定高度
+      width: () => document.documentElement.clientWidth,  // 全宽
     },
-  }
+  }}
+/>
+```
+
+## 行配置
+
+配置默认行设置。
+
+| 属性 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| `len` | `number` | `100` | 行数 |
+| `height` | `number` | `25` | 默认行高（像素） |
+
+```tsx
+<ReactSheet
+  options={{
+    row: {
+      len: 200,    // 200 行
+      height: 30,  // 30px 行高
+    },
+  }}
+/>
+```
+
+## 列配置
+
+配置默认列设置。
+
+| 属性 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| `len` | `number` | `26` | 列数（A-Z） |
+| `width` | `number` | `100` | 默认列宽 |
+| `indexWidth` | `number` | `60` | 行索引列宽度 |
+| `minWidth` | `number` | `60` | 最小列宽 |
+
+```tsx
+<ReactSheet
+  options={{
+    col: {
+      len: 52,        // A-AZ（52 列）
+      width: 120,     // 默认宽度 120px
+      indexWidth: 50, // 行索引宽度
+      minWidth: 50,   // 最小宽度
+    },
+  }}
+/>
+```
+
+## 默认样式
+
+设置所有单元格的默认样式。
+
+| 属性 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| `bgcolor` | `string` | `'#ffffff'` | 背景色 |
+| `align` | `string` | `'left'` | 水平对齐：`'left'`、`'center'`、`'right'` |
+| `valign` | `string` | `'middle'` | 垂直对齐：`'top'`、`'middle'`、`'bottom'` |
+| `textwrap` | `boolean` | `false` | 启用文本换行 |
+| `strike` | `boolean` | `false` | 删除线 |
+| `underline` | `boolean` | `false` | 下划线 |
+| `color` | `string` | `'#0a0a0a'` | 文字颜色 |
+| `font.name` | `string` | `'Helvetica'` | 字体 |
+| `font.size` | `number` | `10` | 字号 |
+| `font.bold` | `boolean` | `false` | 加粗 |
+| `font.italic` | `boolean` | `false` | 斜体 |
+
+```tsx
+<ReactSheet
+  options={{
+    style: {
+      bgcolor: '#f5f5f5',
+      align: 'center',
+      valign: 'middle',
+      textwrap: true,
+      strike: false,
+      underline: false,
+      color: '#333333',
+      font: {
+        name: 'Arial',
+        size: 12,
+        bold: false,
+        italic: false,
+      },
+    },
+  }}
+/>
+```
+
+## 完整示例
+
+```tsx
+import { ReactSheet } from '@tachybase/sheet';
+
+function App() {
+  return (
+    <ReactSheet
+      options={{
+        mode: 'edit',
+        showToolbar: true,
+        showBottomBar: true,
+        showGrid: true,
+        showContextmenu: true,
+        view: {
+          height: () => window.innerHeight - 100,
+          width: () => window.innerWidth,
+        },
+        row: {
+          len: 100,
+          height: 25,
+        },
+        col: {
+          len: 26,
+          width: 100,
+          indexWidth: 60,
+          minWidth: 60,
+        },
+        style: {
+          bgcolor: '#ffffff',
+          align: 'left',
+          valign: 'middle',
+          textwrap: false,
+          strike: false,
+          underline: false,
+          color: '#0a0a0a',
+          font: {
+            name: 'Helvetica',
+            size: 10,
+            bold: false,
+            italic: false,
+          },
+        },
+      }}
+      onChange={(data) => console.log('数据变化:', data)}
+    />
+  );
+}
 ```

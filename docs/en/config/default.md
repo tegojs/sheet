@@ -1,17 +1,17 @@
-# 默认配置
+# Default Configuration
 
-你可以修改这些配置项，这些都是默认的，关于每个参数，我们会详细说明
+You can customize these options when creating a ReactSheet component. Below are all the default values:
 
-```javascript
+```typescript
 {
-  mode: 'edit',
+  mode: 'edit',              // 'edit' | 'read'
   showToolbar: true,
   showGrid: true,
   showContextmenu: true,
   showBottomBar: true,
   view: {
-    height: () => document.documentElement.clientHeight,
-    width: () => document.documentElement.clientWidth,
+    height: () => 600,
+    width: () => 800,
   },
   row: {
     len: 100,
@@ -40,3 +40,23 @@
   },
 }
 ```
+
+## Usage
+
+```tsx
+import { ReactSheet } from '@tachybase/sheet';
+
+function App() {
+  return (
+    <ReactSheet
+      options={{
+        mode: 'edit',
+        showToolbar: true,
+        // ... other options
+      }}
+    />
+  );
+}
+```
+
+See [Configuration Options](/config/description) for detailed explanations of each option.
