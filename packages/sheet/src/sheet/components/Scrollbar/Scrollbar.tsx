@@ -18,11 +18,11 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
   const contentRef = useRef<HTMLDivElement>(null);
   const isScrollingRef = useRef(false);
 
-  // 计算滚动条尺寸 - 使用 useMemo 在每次渲染时重新计算
+  // 计算滚动条尺寸 - 滚动条始终显示
   // biome-ignore lint/correctness/useExhaustiveDependencies: updateCount triggers recalculation on data changes
   const dimensions = useMemo(() => {
     if (!data) {
-      return { scrollbarSize: 0, contentSize: 0, visible: false };
+      return { scrollbarSize: 0, contentSize: 0 };
     }
 
     const { rows, cols } = data;
@@ -30,31 +30,36 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
     const viewHeight = data.viewHeight();
 
     if (vertical) {
-      const height = viewHeight - 1;
-      const exceptRowTotalHeight = data.exceptRowTotalHeight(0, -1);
-      const contentDistance = rows.totalHeight() - exceptRowTotalHeight;
+      const scrollbarSize = Math.max(viewHeight - 9, 50);
+      const contentViewHeight = viewHeight - rows.height;
+      // 最大可滚动距离 = 总内容高度 - 可视内容高度
+      const maxScroll = Math.max(0, rows.totalHeight() - contentViewHeight);
+      // contentSize = scrollbarSize + maxScroll，这样滚动条最大滚动位置 = maxScroll
+      const contentSize = scrollbarSize + maxScroll;
 
       return {
-        scrollbarSize: height - 15,
-        contentSize: contentDistance,
-        visible: contentDistance > height,
+        scrollbarSize,
+        contentSize,
       };
     }
 
-    const width = viewWidth - 1;
-    const contentDistance = cols.totalWidth();
+    const scrollbarSize = Math.max(viewWidth - 9, 50);
+    const contentViewWidth = viewWidth - cols.indexWidth;
+    // 最大可滚动距离 = 总内容宽度 - 可视内容宽度
+    const maxScroll = Math.max(0, cols.totalWidth() - contentViewWidth);
+    // contentSize = scrollbarSize + maxScroll，这样滚动条最大滚动位置 = maxScroll
+    const contentSize = scrollbarSize + maxScroll;
 
     return {
-      scrollbarSize: width - 15,
-      contentSize: contentDistance,
-      visible: contentDistance > width,
+      scrollbarSize,
+      contentSize,
     };
   }, [data, vertical, updateCount]);
 
   // 同步滚动位置 - 当 updateCount 变化时同步
   // biome-ignore lint/correctness/useExhaustiveDependencies: updateCount triggers sync on data changes
   useEffect(() => {
-    if (!data || !scrollRef.current || !dimensions.visible) return;
+    if (!data || !scrollRef.current) return;
 
     const { scroll } = data;
     if (!isScrollingRef.current) {
@@ -64,7 +69,7 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
         scrollRef.current.scrollLeft = scroll.x;
       }
     }
-  }, [data, vertical, dimensions.visible, updateCount]);
+  }, [data, vertical, updateCount]);
 
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
@@ -92,16 +97,16 @@ export const Scrollbar: React.FC<ScrollbarProps> = ({
       onScroll={handleScroll}
       style={{
         position: 'absolute',
-        bottom: vertical ? 15 : 0,
-        right: vertical ? 0 : 15,
+        bottom: vertical ? 8 : 0,
+        right: vertical ? 0 : 8,
         backgroundColor: '#f4f5f8',
         opacity: 0.9,
         zIndex: 12,
         overflowX: vertical ? 'hidden' : 'scroll',
         overflowY: vertical ? 'scroll' : 'hidden',
         ...(vertical
-          ? { width: 15, height: dimensions.scrollbarSize }
-          : { height: 15, width: dimensions.scrollbarSize }),
+          ? { width: 8, height: dimensions.scrollbarSize }
+          : { height: 8, width: dimensions.scrollbarSize }),
       }}
     >
       <div

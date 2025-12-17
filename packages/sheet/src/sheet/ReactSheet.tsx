@@ -123,7 +123,14 @@ const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
   const handleVerticalScroll = (distance: number) => {
     const data = getActiveSheet();
     if (data) {
-      data.scrolly(distance, () => {
+      const { rows } = data;
+      const viewHeight = data.viewHeight();
+      const maxScrollY = Math.max(
+        0,
+        rows.totalHeight() - (viewHeight - rows.height),
+      );
+      const clampedDistance = Math.min(Math.max(0, distance), maxScrollY);
+      data.scrolly(clampedDistance, () => {
         // 滚动后触发重新渲染 - 使用 setState 强制触发 zustand 订阅者
         useSheetStore.setState({});
       });
@@ -133,7 +140,14 @@ const ReactSheet: React.FC<ReactSheetProps> = ({ options = {}, onChange }) => {
   const handleHorizontalScroll = (distance: number) => {
     const data = getActiveSheet();
     if (data) {
-      data.scrollx(distance, () => {
+      const { cols } = data;
+      const viewWidth = data.viewWidth();
+      const maxScrollX = Math.max(
+        0,
+        cols.totalWidth() - (viewWidth - cols.indexWidth),
+      );
+      const clampedDistance = Math.min(Math.max(0, distance), maxScrollX);
+      data.scrollx(clampedDistance, () => {
         // 滚动后触发重新渲染 - 使用 setState 强制触发 zustand 订阅者
         useSheetStore.setState({});
       });

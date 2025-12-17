@@ -160,17 +160,30 @@ export const OverlayerInteraction: React.FC<OverlayerInteractionProps> = ({
       event.preventDefault();
 
       const { deltaY, deltaX } = event;
+      const { rows, cols } = data;
+      const viewWidth = data.viewWidth();
+      const viewHeight = data.viewHeight();
+
+      // 计算最大可滚动距离
+      const maxScrollY = Math.max(
+        0,
+        rows.totalHeight() - (viewHeight - rows.height),
+      );
+      const maxScrollX = Math.max(
+        0,
+        cols.totalWidth() - (viewWidth - cols.indexWidth),
+      );
 
       if (Math.abs(deltaY) > Math.abs(deltaX)) {
-        // 垂直滚动 - 使用像素值
-        const newY = data.scroll.y + deltaY;
-        data.scrolly(Math.max(0, newY), () => {
+        // 垂直滚动 - 使用像素值，限制范围
+        const newY = Math.min(Math.max(0, data.scroll.y + deltaY), maxScrollY);
+        data.scrolly(newY, () => {
           useSheetStore.getState().triggerChange();
         });
       } else {
-        // 水平滚动 - 使用像素值
-        const newX = data.scroll.x + deltaX;
-        data.scrollx(Math.max(0, newX), () => {
+        // 水平滚动 - 使用像素值，限制范围
+        const newX = Math.min(Math.max(0, data.scroll.x + deltaX), maxScrollX);
+        data.scrollx(newX, () => {
           useSheetStore.getState().triggerChange();
         });
       }
