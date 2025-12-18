@@ -12,5 +12,5 @@
     "useDefineForClassFields": true,
     "downlevelIteration": true
   },
-  "include": ["src", "tests"]
+  "include": ["src"]
 }
